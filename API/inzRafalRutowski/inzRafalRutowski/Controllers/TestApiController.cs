@@ -1,5 +1,8 @@
-﻿using inzRafalRutowski.Data;
+﻿using Azure.Core;
+using inzRafalRutowski.Data;
+using inzRafalRutowski.DTO;
 using inzRafalRutowski.Models;
+using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,23 +13,71 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class TestApiController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly ITestApiService _service;
 
-        public TestApiController(DataContext context)
+        public TestApiController(ITestApiService service)
         {
-            _context = context;
+            _service = service;
         }
 
+        
         [HttpGet] //api/testApi
         public async Task<ActionResult<List<Employer>>> GetEmployers()
         {
-            return await _context.Employers.ToListAsync();
+            if (false)
+            {
+                return BadRequest();
+            }
+
+            var result = await _service.GetEmployers();
+            return Ok(result);
         }
 
         [HttpGet("{id}")] //api/testApi/numberID
-        public async Task<ActionResult<Employer>> GetEmployer(int id)
+        //[Route("{id}")]  alternatywnie można użyć
+        //[FromRoute] z ścieżki
+        //[FromBody] z ciała
+        //[FromQuery] z bazy -w postmanie testuje się Parms-> key,value lub w sciezce np ?key=50
+        public async Task<ActionResult<Employer>> GetEmployer([FromRoute] int id)
         {
-            return await _context.Employers.FindAsync(id);
+            var result = await _service.GetEmployer(id);
+            return Ok(result);
         }
+        
+        
+
+        [HttpPost] //api/testApi
+        public async Task<ActionResult<Employer>> AddEmployer([FromBody]EmployerDTO request)
+        {
+
+            var result = await _service.AddEmployer(request);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Employer>> UpdateEmployer(EmployerDTO request)
+        {
+            var result = await _service.UpdateEmployer(request);
+
+            if (result == null)
+                return BadRequest("Miss Employer");
+           
+            return Ok(result);
+        }
+
+        
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Employer>> DeleteEmployer(int id)
+        {
+
+            var result = await _service.DeleteEmployer(id);
+
+            if (result == null)
+                return BadRequest("Miss Employer");
+
+                return Ok("Poprawnie usunięto pracodawce");
+        }
+        
+        
     }
 }

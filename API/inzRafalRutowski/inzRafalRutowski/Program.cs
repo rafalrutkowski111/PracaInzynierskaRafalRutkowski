@@ -1,4 +1,5 @@
 using inzRafalRutowski.Data;
+using inzRafalRutowski.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
+
+builder.Services.AddTransient<ITestApiService, TestApiService>();
 
 
 builder.Services.AddCors(opt =>
