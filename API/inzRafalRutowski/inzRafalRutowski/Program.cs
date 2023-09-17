@@ -1,4 +1,6 @@
+using AutoMapper;
 using inzRafalRutowski.Data;
+using inzRafalRutowski.Mapper;
 using inzRafalRutowski.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +13,18 @@ builder.Services.AddControllers();
 
 builder.Services.AddTransient<ITestApiService, TestApiService>();
 
+
+// start mapper
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new TestMappingProfile()); // po zrobieniu normalnego mappera zaktualizowaæ
+});
+
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+
+builder.Services.AddMvc();
+//end mapper
 
 builder.Services.AddCors(opt =>
 {

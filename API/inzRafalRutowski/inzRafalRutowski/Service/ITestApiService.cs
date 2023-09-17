@@ -8,7 +8,7 @@ namespace inzRafalRutowski.Service
     {
         Task<ActionResult<Employer>> AddEmployer(EmployerDTO request);
 
-        Task<ActionResult<List<Employer>>> GetEmployers();
+        Task<ActionResult<List<EmployerDTO>>> GetEmployers(); //mapper dodany
 
         Task<ActionResult<Employer>> GetEmployer(int id);
 
