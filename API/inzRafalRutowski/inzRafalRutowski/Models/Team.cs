@@ -10,9 +10,11 @@
         public int MaxNumberOfMembers { get; set;}
 
 
+        /*
         public List<Employee> Employees { get; set; }
         public int EmployerId { get; set; }
         public List<JobTeam> JobTeam { get; set; }
+        */
 
     }
 }

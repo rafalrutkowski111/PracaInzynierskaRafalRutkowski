@@ -5,6 +5,7 @@ import Toolbar from "../../Components/Navbar/Navbar";
 import Login from "../../Components/Login/Login";
 import { useEffect } from 'react';
 import axios from 'axios';
+import AddJob from "../../Components/Job/AddJob";
 
 const Router = () => {
   const [isLogged, setIsLogged] = React.useState(false);
@@ -30,6 +31,7 @@ const Router = () => {
       <BrowserRouter basename="/inzRafalRutkowski">
         <Routes>
           <Route path="/" element={<Home />}></Route>
+          <Route path="/AddJob" element={<AddJob />}></Route>
         </Routes>
       </BrowserRouter>
     </>

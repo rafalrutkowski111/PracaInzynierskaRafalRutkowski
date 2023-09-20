@@ -10,7 +10,8 @@
 
         // co z team, job i employer????
 
-
+        /*
         public int EmployeeId { get; set; }
+        */
     }
 }

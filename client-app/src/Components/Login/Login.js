@@ -18,9 +18,9 @@ const CenteredLabel = styled(Form.Label)`
     justify-content: center;
 `
 const ButtonContainer = styled.div`
-widht:60%;
-display: flex;
-justify-content: center;
+    widht:60%;
+    display: flex;
+    justify-content: center;
 `
 const Button = styled(Form.Control)`
     width:100px;

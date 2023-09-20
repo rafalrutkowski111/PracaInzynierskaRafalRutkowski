@@ -11,10 +11,12 @@
         public string? ContractFinishTime { get; set; }
 
 
+        //public List<Specialization> Specializations { get; set; }
+        /*
         public int EmployerId { get; set; }
         public int TeamId { get; set; }
-        public List<Specialization> Specializations { get; set; }
         public List<JobEmployee> JobEmployee { get; set; }
         public List<WorkDay> WorkDays { get; set; }
+        */
     }
 }

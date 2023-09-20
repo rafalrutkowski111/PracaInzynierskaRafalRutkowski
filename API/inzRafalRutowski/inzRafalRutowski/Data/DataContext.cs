@@ -8,5 +8,6 @@ namespace inzRafalRutowski.Data
         public DataContext (DbContextOptions<DataContext> options) :base(options) { }
 
         public DbSet<Employer> Employers { get; set; }
+        public DbSet<Specialization> Specializations { get; set; }
     }
 }
