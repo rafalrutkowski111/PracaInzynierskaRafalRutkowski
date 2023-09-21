@@ -9,19 +9,21 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-const ButtonContainer = styled.div`
+const ButtonBootstrapContainer = styled.div`
     widht:60%;
     margin-top: 2%;
     display: flex;
     justify-content: center;
 `
-const Button = styled(Form.Control)`
+const ButtonBootstrap = styled(Form.Control)`
     width:150px;
     background-color: green;
     color: white;
 `
-const ButtonBack = styled(Form.Control)`
+const ButtonBootstrapBack = styled(Form.Control)`
     width:150px;
     background-color: red;
     color: white;
@@ -33,6 +35,13 @@ const TittleContainer = styled.div`
 `
 const DataContainer = styled.div`
     margin-top:2%;
+    margin-bottom:5%;
+    display: flex;
+    justify-content: center;
+`
+
+const SelectContainer = styled.div`
+    margin-top: 1%;
     display: flex;
     justify-content: center;
 `
@@ -42,12 +51,14 @@ const AddJob = () => {
     // const today = dayjs(); aktualny dzień biblioteka do tego jeżeli bede tego chciał użyć
     // const yesterday = dayjs().subtract(1, 'day');
 
-    const [specialization, setSpecialization] = useState([true, true]);
+    const [specialization, setSpecialization] = useState([]);
+    const [listSpecialization, setListSpecialization] = useState([]);
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization')
             .then(response => {
-                setSpecialization(response.data)
+                setSpecialization(response.data);
+                addSpecialization();
             })
     }, [])
     const back = () => {
@@ -56,11 +67,9 @@ const AddJob = () => {
 
     const next = () => {
     }
-    const [age, setAge] = useState('');
-    const handleChange = (event) => {
-        setAge(event.target.value);
-    };
-    const array1 = [1, 4, 9, 16];
+    const addSpecialization = () => {
+        setListSpecialization([...listSpecialization, []])
+    }
 
     return (
         <>
@@ -79,37 +88,47 @@ const AddJob = () => {
                     />
                 </LocalizationProvider>
             </DataContainer>
-            <p>wybierz specjalizacje (wybor przez select) podaj czas potrzebny na wykonanie </p>
 
-            dodaj kolejną (button)
+            {listSpecialization.map((data,i)=>{
+                return(
+                    <SelectContainer>
+                    <FormControl sx={{ minWidth: 300 }}>
+                        <InputLabel>Specjazlizacja</InputLabel>
+                        <Select
+                            label="Specjazlizacja"
+                        >
+                            {specialization.map((choice) => (
+                                <MenuItem key={choice.id} value={choice.id}>
+                                    {choice.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <TextField id="outlined-basic" label="Ilość godzin" variant="outlined" />
+                </SelectContainer>
+                )
+            })}
+                        <Button
+                variant="contained"
+                onClick={() => {
+                    addSpecialization();
+                }}
+            >Dodaj kolejny</Button>
 
-            <FormControl sx={{ m: 1, minWidth: 300 }}>
-            <InputLabel>Specjazlizacja</InputLabel>
-                <Select
-                    label="Specjazlizacja"
-                >
-                    {specialization.map((choice) => (
-                        <MenuItem key={choice.id} value={choice.id}>
-                            {choice.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-
-            < ButtonContainer >
-                <Button
+            < ButtonBootstrapContainer >
+                <ButtonBootstrap
                     type="submit"
                     id="button"
                     value="Dalej"
                     onClick={() => { next(); }}
                 />
-                <ButtonBack
+                <ButtonBootstrapBack
                     type="submit"
                     id="button"
                     value="Powrót"
                     onClick={() => { back(); }}
                 />
-            </ButtonContainer >
+            </ButtonBootstrapContainer >
         </>
     )
 }

@@ -23,7 +23,6 @@ namespace inzRafalRutowski.Controllers
         {
             var result = _context.Specializations.ToList();
 
-
             return Ok(result);
         }
     }

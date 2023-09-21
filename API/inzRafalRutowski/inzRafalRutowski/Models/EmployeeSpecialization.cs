@@ -1,0 +1,11 @@
+﻿namespace inzRafalRutowski.Models
+{
+    public class EmployeeSpecialization
+    {
+        public int Id { get; set; }
+        public int EmployeeId { get; set; }
+        public Employee Employee { get; set; }
+        public int SpecializationId { get; set; }
+        public Specialization Specialization { get; set; }
+    }
+}
