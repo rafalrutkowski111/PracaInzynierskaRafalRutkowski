@@ -53,6 +53,8 @@ const AddJob = () => {
 
     const [specialization, setSpecialization] = useState([]);
     const [listSpecialization, setListSpecialization] = useState([]);
+    const [dataStart, setDataStart] = useState([]);
+    const [dataEnd, setDataEnd] = useState([]);
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization')
@@ -81,34 +83,36 @@ const AddJob = () => {
                     <DatePicker
                         label="Data rozpoczęcia projektu"
                         disablePast
+                        onChange={(e) => setDataStart(e)}
                     />
                     <DatePicker
                         disablePast
                         label="Data zakończenia projektu"
+                        onChange={(e) => setDataEnd(e)}
                     />
                 </LocalizationProvider>
             </DataContainer>
 
-            {listSpecialization.map((data,i)=>{
-                return(
+            {listSpecialization.map((data, i) => {
+                return (
                     <SelectContainer>
-                    <FormControl sx={{ minWidth: 300 }}>
-                        <InputLabel>Specjazlizacja</InputLabel>
-                        <Select
-                            label="Specjazlizacja"
-                        >
-                            {specialization.map((choice) => (
-                                <MenuItem key={choice.id} value={choice.id}>
-                                    {choice.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <TextField id="outlined-basic" label="Ilość godzin" variant="outlined" />
-                </SelectContainer>
+                        <FormControl sx={{ minWidth: 300 }}>
+                            <InputLabel>Specjazlizacja</InputLabel>
+                            <Select
+                                label="Specjazlizacja"
+                            >
+                                {specialization.map((choice) => (
+                                    <MenuItem key={choice.id} value={choice.id}>
+                                        {choice.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <TextField id="outlined-basic" label="Ilość godzin" variant="outlined" />
+                    </SelectContainer>
                 )
             })}
-                        <Button
+            <Button
                 variant="contained"
                 onClick={() => {
                     addSpecialization();
