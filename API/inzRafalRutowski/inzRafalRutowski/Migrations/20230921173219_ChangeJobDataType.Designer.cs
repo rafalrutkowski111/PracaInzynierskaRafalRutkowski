@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inzRafalRutowski.Data;
 
@@ -11,9 +12,11 @@ using inzRafalRutowski.Data;
 namespace inzRafalRutowski.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230921173219_ChangeJobDataType")]
+    partial class ChangeJobDataType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.EmployeeSpecialization", b =>
@@ -80,7 +83,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("SpecializationId");
 
-                    b.ToTable("EmployeeSpecialization", (string)null);
+                    b.ToTable("EmployeeSpecialization");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employer", b =>
@@ -109,7 +112,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employers", (string)null);
+                    b.ToTable("Employers");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Job", b =>
@@ -141,7 +144,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Jobs", (string)null);
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Specialization", b =>
@@ -161,7 +164,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specializations", (string)null);
+                    b.ToTable("Specializations");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employee", b =>

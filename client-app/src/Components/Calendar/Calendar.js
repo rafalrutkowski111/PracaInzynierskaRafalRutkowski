@@ -3,6 +3,8 @@ import moment from 'moment';
 import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
 import 'moment/locale/pl';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -17,42 +19,6 @@ const Button = styled(Form.Control)`
 `
 
 const localizer = momentLocalizer(moment)
-
-const myEventsList = [
-  {
-    start: moment("2023-09-21T10:00:00").toDate(),
-    end: moment("2023-09-24T15:00:00").toDate(),
-    title: "Test event2",
-  },
-  {
-    start: moment("2023-09-20T08:00:00").toDate(),
-    end: moment("2023-09-20T16:00:00").toDate(),
-    title: "Test event3",
-  },
-  {
-    start: moment("2023-09-21T08:00:00").toDate(),
-    end: moment("2023-09-25T16:00:00").toDate(),
-    title: "Test event3",
-  },
-  {
-    start: moment("2023-09-20T08:00:00").toDate(),
-    end: moment("2023-09-20T16:00:00").toDate(),
-    title: "Test event4",
-  },
-  {
-    start: moment("2023-09-20T08:00:00").toDate(),
-    end: moment("2023-09-20T16:00:00").toDate(),
-    title: "Test event5",
-    desc: "aaaaaaaaaaaaaa",
-  },
-  {
-    start: new Date(2023, 8, 19, 7, 30, 0), //07:30 AM //miesiac do tyłu w tym formacie pewnei styczen to 0
-    end: new Date(2023, 8, 30, 11, 0, 0), //11:00 AM  
-    title: "Test event67",
-    desc: "asdasdasdasdasd",
-  },
-]
-
 
 function EventAgenda({ event }) {
   return (
@@ -80,11 +46,21 @@ const messagesPl = {
   date: "Data",
   time: "Czas",
   event: "Wydarzenie",
-  allDay: "Cały dzień"
+  allDay: "Cały dzień",
+  showMore: total => `+${total} więcej`,
 }
 
 
 const MyCalendar = (props) => {
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(()=>{
+    axios.get('http://localhost:5000/api/Job')
+      .then(response =>{
+        setEvents(response.data)
+      })
+  }, [])
 
   const addNewJob = () => {
     window.location.pathname = '/inzRafalRutkowski/AddJob';
@@ -95,7 +71,7 @@ const MyCalendar = (props) => {
       < Calendar
         components={components}
         localizer={localizer}
-        events={myEventsList}
+        events={events}
         startAccessor="start"
         endAccessor="end"
         culture='pl'

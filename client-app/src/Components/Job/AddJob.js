@@ -56,6 +56,7 @@ const AddJob = () => {
     const [dataStart, setDataStart] = useState([]);
     const [dataEnd, setDataEnd] = useState([]);
 
+    const userId = sessionStorage.getItem("userId");
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization')
             .then(response => {
@@ -68,6 +69,11 @@ const AddJob = () => {
     }
 
     const next = () => {
+        axios.post('http://localhost:5000/api/Job',{title: "title", description: "description",
+         start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId})
+        .then(response => {
+            console.log(response)
+        })
     }
     const addSpecialization = () => {
         setListSpecialization([...listSpecialization, []])
