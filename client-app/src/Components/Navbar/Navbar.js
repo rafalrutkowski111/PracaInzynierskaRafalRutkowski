@@ -8,11 +8,11 @@ const Toolbar = () => {
     <>
       <Navbar bg="light" data-bs-theme="light">
         <Container>
-          <Navbar.Brand href="#home">Praca inżynierska Rafał Rutkowski</Navbar.Brand>
+          <Navbar.Brand href="calendar">Praca inżynierska Rafał Rutkowski</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
+            <Nav.Link href="calendar">Harmonogram</Nav.Link>
+            <Nav.Link href="employee">Pracownicy</Nav.Link>
+            <Nav.Link href="pricing">Pricing</Nav.Link>
           </Nav>
         </Container>
       </Navbar>

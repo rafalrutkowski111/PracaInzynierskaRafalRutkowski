@@ -6,8 +6,12 @@ import Login from "../../Components/Login/Login";
 import { useEffect } from 'react';
 import axios from 'axios';
 import AddJob from "../../Components/Job/AddJob";
+import Employee from "../../Components/Employee/Employee";
+import AddEmployee from "../../Components/Employee/AddEmployee";
 
 const Router = () => {
+
+  
   const [isLogged, setIsLogged] = React.useState(false);
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
@@ -23,6 +27,9 @@ const Router = () => {
       setIsLogged(false); 
     })
   }, []);
+
+  
+
   return !isLogged ? (
     <Login />
   ) : (
@@ -31,7 +38,10 @@ const Router = () => {
       <BrowserRouter basename="/inzRafalRutkowski">
         <Routes>
           <Route path="/" element={<Home />}></Route>
-          <Route path="/AddJob" element={<AddJob />}></Route>
+          <Route path="/calendar" element={<Home />}></Route>
+          <Route path="/addJob" element={<AddJob />}></Route>
+          <Route path="/employee" element={<Employee />}></Route>
+          <Route path="/addEmployee" element={<AddEmployee />}></Route>
         </Routes>
       </BrowserRouter>
     </>
