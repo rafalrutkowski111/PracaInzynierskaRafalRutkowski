@@ -50,14 +50,41 @@ const messagesPl = {
   showMore: total => `+${total} więcej`,
 }
 
+const myEventsList = [
+  {
+    start: moment("2023-09-21T10:00:00").toDate(),
+    end: moment("2023-09-24T15:00:00").toDate(),
+    title: "Test event2",
+  },
+  {
+    start: moment("2023-09-20T08:00:00").toDate(),
+    end: moment("2023-09-20T16:00:00").toDate(),
+    title: "Test event3",
+  },
+  {
+    start: moment("2023-09-20T08:00:00").toDate(),
+    end: moment("2023-09-20T16:00:00").toDate(),
+    title: "Test event4",
+  },
+  {
+    start: moment("2023-09-20T08:00:00").toDate(),
+    end: moment("2023-09-20T16:00:00").toDate(),
+    title: "Test event5",
+  },
+  {
+    start: new Date(2023, 8, 19, 7, 30, 0), //07:30 AM //miesiac do tyłu w tym formacie pewnei styczen to 0
+    end: new Date(2023, 8, 30, 11, 0, 0), //11:00 AM  
+    title: "Test event67",
+  },
+]
 
 const MyCalendar = (props) => {
 
   const [events, setEvents] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     axios.get('http://localhost:5000/api/Job')
-      .then(response =>{
+      .then(response => {
         setEvents(response.data)
       })
   }, [])
@@ -66,14 +93,15 @@ const MyCalendar = (props) => {
     window.location.pathname = '/inzRafalRutkowski/AddJob';
   }
 
+
   return (
     <div>
       < Calendar
         components={components}
         localizer={localizer}
         events={events}
-        startAccessor="start"
-        endAccessor="end"
+        startAccessor={(event) => { return new Date(event.start) }}
+        endAccessor={(event) => { return new Date(event.end) }}
         culture='pl'
         style={{ height: 600 }}
         messages={messagesPl}

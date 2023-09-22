@@ -69,7 +69,7 @@ const AddJob = () => {
     }
 
     const next = () => {
-        axios.post('http://localhost:5000/api/Job',{title: "title", description: "description",
+        axios.post('http://localhost:5000/api/Job',{title: "title", desc: "description",
          start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId})
         .then(response => {
             console.log(response)
