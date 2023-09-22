@@ -12,7 +12,7 @@ const Toolbar = () => {
           <Nav className="me-auto">
             <Nav.Link href="calendar">Harmonogram</Nav.Link>
             <Nav.Link href="employee">Pracownicy</Nav.Link>
-            <Nav.Link href="pricing">Pricing</Nav.Link>
+            <Nav.Link href="specialization">Specjalizacje</Nav.Link>
           </Nav>
         </Container>
       </Navbar>

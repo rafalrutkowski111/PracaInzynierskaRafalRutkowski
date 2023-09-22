@@ -8,6 +8,8 @@ import axios from 'axios';
 import AddJob from "../../Components/Job/AddJob";
 import Employee from "../../Components/Employee/Employee";
 import AddEmployee from "../../Components/Employee/AddEmployee";
+import Specialization from "../../Components/Specialization/Specialization";
+import AddSpecialization from "../../Components/Specialization/AddSpecialization";
 
 const Router = () => {
 
@@ -42,6 +44,9 @@ const Router = () => {
           <Route path="/addJob" element={<AddJob />}></Route>
           <Route path="/employee" element={<Employee />}></Route>
           <Route path="/addEmployee" element={<AddEmployee />}></Route>
+          <Route path="/specialization" element={<Specialization />}></Route>
+          <Route path="/addSpecialization" element={<AddSpecialization />}></Route>
+          
         </Routes>
       </BrowserRouter>
     </>
