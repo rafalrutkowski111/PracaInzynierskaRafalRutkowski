@@ -14,7 +14,6 @@
         public int? EmployerId { get; set; }
         public Employer? Employer { get; set; }
         public List<EmployeeSpecialization> EmployeeSpecializations { get; set; }
-        public List<Experience> Experiences { get; set; }
 
         //public List<Specialization> Specializations { get; set; }
         /*

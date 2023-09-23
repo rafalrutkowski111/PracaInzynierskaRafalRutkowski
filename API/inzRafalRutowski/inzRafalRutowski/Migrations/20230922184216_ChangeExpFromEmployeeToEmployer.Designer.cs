@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inzRafalRutowski.Data;
 
@@ -11,9 +12,11 @@ using inzRafalRutowski.Data;
 namespace inzRafalRutowski.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230922184216_ChangeExpFromEmployeeToEmployer")]
+    partial class ChangeExpFromEmployeeToEmployer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.EmployeeSpecialization", b =>
@@ -83,7 +86,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("SpecializationId");
 
-                    b.ToTable("EmployeeSpecializations", (string)null);
+                    b.ToTable("EmployeeSpecializations");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employer", b =>
@@ -112,7 +115,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employers", (string)null);
+                    b.ToTable("Employers");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Experience", b =>
@@ -137,7 +140,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Experience", (string)null);
+                    b.ToTable("Experience");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Job", b =>
@@ -169,7 +172,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Jobs", (string)null);
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Specialization", b =>
@@ -180,18 +183,13 @@ namespace inzRafalRutowski.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("EmployerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployerId");
-
-                    b.ToTable("Specializations", (string)null);
+                    b.ToTable("Specializations");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employee", b =>
@@ -242,15 +240,6 @@ namespace inzRafalRutowski.Migrations
                     b.Navigation("Employer");
                 });
 
-            modelBuilder.Entity("inzRafalRutowski.Models.Specialization", b =>
-                {
-                    b.HasOne("inzRafalRutowski.Models.Employer", "Employer")
-                        .WithMany("Specializations")
-                        .HasForeignKey("EmployerId");
-
-                    b.Navigation("Employer");
-                });
-
             modelBuilder.Entity("inzRafalRutowski.Models.Employee", b =>
                 {
                     b.Navigation("EmployeeSpecializations");
@@ -263,8 +252,6 @@ namespace inzRafalRutowski.Migrations
                     b.Navigation("Experiences");
 
                     b.Navigation("Jobs");
-
-                    b.Navigation("Specializations");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Specialization", b =>

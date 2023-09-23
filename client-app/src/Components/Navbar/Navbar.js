@@ -13,6 +13,7 @@ const Toolbar = () => {
             <Nav.Link href="calendar">Harmonogram</Nav.Link>
             <Nav.Link href="employee">Pracownicy</Nav.Link>
             <Nav.Link href="specialization">Specjalizacje</Nav.Link>
+            <Nav.Link href="experience">Poziomy doświaczenia</Nav.Link>
           </Nav>
         </Container>
       </Navbar>

@@ -48,9 +48,6 @@ const SelectContainer = styled.div`
 
 const AddJob = () => {
 
-    // const today = dayjs(); aktualny dzień biblioteka do tego jeżeli bede tego chciał użyć
-    // const yesterday = dayjs().subtract(1, 'day');
-
     const [specialization, setSpecialization] = useState([]);
     const [listSpecialization, setListSpecialization] = useState([]);
     const [dataStart, setDataStart] = useState([]);

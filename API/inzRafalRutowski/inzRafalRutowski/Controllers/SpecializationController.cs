@@ -25,5 +25,14 @@ namespace inzRafalRutowski.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost]
+        public IActionResult AddSpecialization([FromBody] Specialization request)
+        {
+            _context.Specializations.Add(request);
+            _context.SaveChanges();
+
+            return Ok();
+        }
     }
 }

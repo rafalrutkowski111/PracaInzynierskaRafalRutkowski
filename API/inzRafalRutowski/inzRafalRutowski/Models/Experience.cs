@@ -7,8 +7,8 @@
         public int experienceValue { get; set;}
 
 
-        public int? EmployeeId { get; set; } // dodane usuwanie kaskadowe, żeby jeżeli dodamy speronalizowane doświadczenie to
+        public int? EmployerId { get; set; } // dodane usuwanie kaskadowe, żeby jeżeli dodamy speronalizowane doświadczenie to
         //niech usuwa się wraz z nim. Domyślnie było wyłączone, bo employeeId może być nullem
-        public Employee? Employee { get; set; }
+        public Employer? Employer { get; set; }
     }
 }

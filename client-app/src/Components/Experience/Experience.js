@@ -8,32 +8,32 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `
 const Button = styled(Form.Control)`
-  width:200px;
+  width:250px;
   background-color: green;
   color: white;
 `
-const Specialization = () => {
 
-      const addNewSpecialization = () => {
-        window.location.pathname = '/inzRafalRutkowski/addSpecialization';
-      }
+const Experience = () => {
+
+    const addNewExperience = () => {
+        window.location.pathname = '/inzRafalRutkowski/addExperience';
+    }
 
     return (
-        <>lista wszystkich specjalizacji
-
-        
-
+        <>
+            <p>lista wszystkich poziomów doświaczenia</p>
             < ButtonContainer >
                 <Button
                     type="submit"
                     id="button"
-                    value="Dodaj specjalizacje"
-                    onClick={() => { addNewSpecialization(); }}
+                    value="Dodaj poziom doświaczenia"
+                    onClick={() => { addNewExperience(); }}
                 />
-
             </ButtonContainer >
         </>
+
+
     )
 }
 
-export default Specialization;
+export default Experience;

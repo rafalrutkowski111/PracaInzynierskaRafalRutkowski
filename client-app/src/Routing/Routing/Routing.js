@@ -10,6 +10,8 @@ import Employee from "../../Components/Employee/Employee";
 import AddEmployee from "../../Components/Employee/AddEmployee";
 import Specialization from "../../Components/Specialization/Specialization";
 import AddSpecialization from "../../Components/Specialization/AddSpecialization";
+import Experience from "../../Components/Experience/Experience";
+import AddExperience from "../../Components/Experience/AddExperience";
 
 const Router = () => {
 
@@ -46,6 +48,8 @@ const Router = () => {
           <Route path="/addEmployee" element={<AddEmployee />}></Route>
           <Route path="/specialization" element={<Specialization />}></Route>
           <Route path="/addSpecialization" element={<AddSpecialization />}></Route>
+          <Route path="/experience" element={<Experience />}></Route>
+          <Route path="/addExperience" element={<AddExperience />}></Route>
           
         </Routes>
       </BrowserRouter>
