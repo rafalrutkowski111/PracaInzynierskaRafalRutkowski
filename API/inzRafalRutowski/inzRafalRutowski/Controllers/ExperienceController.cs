@@ -19,7 +19,7 @@ namespace inzRafalRutowski.Controllers
         [HttpPost]
         public IActionResult AddExperience([FromBody] Experience request)
         {
-            _context.Experience.Add(request);
+            _context.Experiences.Add(request);
             _context.SaveChanges();
             return Ok(request);
         }
@@ -27,7 +27,7 @@ namespace inzRafalRutowski.Controllers
         [HttpGet]
         public ActionResult<List<Experience>> GetExperience([FromQuery] int EmployerId)
         {
-            var result = _context.Experience.Where(x => int.Equals(x.EmployerId, EmployerId) || int.Equals(x.EmployerId, null));
+            var result = _context.Experiences.Where(x => int.Equals(x.EmployerId, EmployerId) || int.Equals(x.EmployerId, null));
 
             return Ok(result);
         }

@@ -24,11 +24,9 @@ namespace inzRafalRutowski.Migrations
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employee", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ContractFinishTime")
                         .HasColumnType("nvarchar(max)");
@@ -57,7 +55,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.EmployeeSpecialization", b =>
@@ -68,8 +66,8 @@ namespace inzRafalRutowski.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ExperienceId")
                         .HasColumnType("int");
@@ -83,7 +81,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("SpecializationId");
 
-                    b.ToTable("EmployeeSpecializations", (string)null);
+                    b.ToTable("EmployeeSpecializations");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employer", b =>
@@ -112,7 +110,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employers", (string)null);
+                    b.ToTable("Employers");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Experience", b =>
@@ -137,7 +135,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Experience", (string)null);
+                    b.ToTable("Experiences");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Job", b =>
@@ -169,7 +167,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Jobs", (string)null);
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Specialization", b =>
@@ -191,7 +189,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasIndex("EmployerId");
 
-                    b.ToTable("Specializations", (string)null);
+                    b.ToTable("Specializations");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employee", b =>

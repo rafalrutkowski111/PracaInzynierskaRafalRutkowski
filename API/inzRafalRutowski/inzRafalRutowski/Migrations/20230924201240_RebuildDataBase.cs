@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace inzRafalRutowski.Migrations
 {
     /// <inheritdoc />
-    public partial class RebuildDatabase : Migration
+    public partial class RebuildDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,25 +28,10 @@ namespace inzRafalRutowski.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Specializations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Experience = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Specializations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Employees",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsEmployed = table.Column<bool>(type: "bit", nullable: false),
@@ -63,6 +48,27 @@ namespace inzRafalRutowski.Migrations
                         column: x => x.EmployerId,
                         principalTable: "Employers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Experiences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    experienceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    experienceValue = table.Column<int>(type: "int", nullable: false),
+                    EmployerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Experiences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Experiences_Employers_EmployerId",
+                        column: x => x.EmployerId,
+                        principalTable: "Employers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,12 +95,32 @@ namespace inzRafalRutowski.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Specializations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmployerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Specializations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Specializations_Employers_EmployerId",
+                        column: x => x.EmployerId,
+                        principalTable: "Employers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EmployeeSpecializations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SpecializationId = table.Column<int>(type: "int", nullable: false),
                     ExperienceId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -115,27 +141,6 @@ namespace inzRafalRutowski.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Experience",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    experienceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    experienceValue = table.Column<int>(type: "int", nullable: false),
-                    EmployeeId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Experience", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Experience_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_EmployerId",
                 table: "Employees",
@@ -152,13 +157,18 @@ namespace inzRafalRutowski.Migrations
                 column: "SpecializationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Experience_EmployeeId",
-                table: "Experience",
-                column: "EmployeeId");
+                name: "IX_Experiences_EmployerId",
+                table: "Experiences",
+                column: "EmployerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Jobs_EmployerId",
                 table: "Jobs",
+                column: "EmployerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Specializations_EmployerId",
+                table: "Specializations",
                 column: "EmployerId");
         }
 
@@ -169,16 +179,16 @@ namespace inzRafalRutowski.Migrations
                 name: "EmployeeSpecializations");
 
             migrationBuilder.DropTable(
-                name: "Experience");
+                name: "Experiences");
 
             migrationBuilder.DropTable(
                 name: "Jobs");
 
             migrationBuilder.DropTable(
-                name: "Specializations");
+                name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Specializations");
 
             migrationBuilder.DropTable(
                 name: "Employers");

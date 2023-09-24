@@ -49,6 +49,8 @@ const AddEmployee = () => {
     const [dataListSpecializationAndExperience, setDataListSpecializationAndExperience] = useState([]);
     const [openAddSpecialization, setOpenAddSpecialization] = useState(true);
     const [openAddEmployee, setOpenAddEmployee] = useState(true);
+    const [openRemoveSpecialization, setOpenRemoveSpecialization] = useState(true);
+
     const userId = sessionStorage.getItem("userId");
 
 
@@ -81,6 +83,8 @@ const AddEmployee = () => {
         setDataListSpecializationAndExperience([...dataListSpecializationAndExperience, []])
         setOpenAddSpecialization(true)
         setOpenAddEmployee(true)
+        if (dataListSpecializationAndExperience.length > 0)
+            setOpenRemoveSpecialization(false)
 
 
         dataSpecialization.map((date, index) => {
@@ -120,6 +124,11 @@ const AddEmployee = () => {
         else setOpenAddEmployee(true)
     }
     const removeLast = () => {
+
+        if (dataListSpecializationAndExperience.length < 3)
+            setOpenRemoveSpecialization(true)
+
+        if (dataListSpecializationAndExperience.length < 2) return
 
         dataSpecialization.map((date, index) => {
             if (date.id === dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 2].SpecializationId)
@@ -218,6 +227,7 @@ const AddEmployee = () => {
                 }}
             >Dodaj kolejny</Button>
             <Button sx={{ mr: 2 }}
+                disabled={openRemoveSpecialization}
                 variant="contained"
                 onClick={() => {
                     removeLast();

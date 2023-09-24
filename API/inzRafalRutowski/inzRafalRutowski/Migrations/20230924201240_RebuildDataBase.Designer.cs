@@ -12,8 +12,8 @@ using inzRafalRutowski.Data;
 namespace inzRafalRutowski.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230922172023_RemoveColumnExperienceInSpecialization")]
-    partial class RemoveColumnExperienceInSpecialization
+    [Migration("20230924201240_RebuildDataBase")]
+    partial class RebuildDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace inzRafalRutowski.Migrations
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employee", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ContractFinishTime")
                         .HasColumnType("nvarchar(max)");
@@ -71,8 +69,8 @@ namespace inzRafalRutowski.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ExperienceId")
                         .HasColumnType("int");
@@ -126,7 +124,7 @@ namespace inzRafalRutowski.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("EmployeeId")
+                    b.Property<int?>("EmployerId")
                         .HasColumnType("int");
 
                     b.Property<string>("experienceName")
@@ -138,9 +136,9 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployerId");
 
-                    b.ToTable("Experience");
+                    b.ToTable("Experiences");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Job", b =>
@@ -183,11 +181,16 @@ namespace inzRafalRutowski.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("EmployerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployerId");
 
                     b.ToTable("Specializations");
                 });
@@ -222,11 +225,11 @@ namespace inzRafalRutowski.Migrations
 
             modelBuilder.Entity("inzRafalRutowski.Models.Experience", b =>
                 {
-                    b.HasOne("inzRafalRutowski.Models.Employee", "Employee")
+                    b.HasOne("inzRafalRutowski.Models.Employer", "Employer")
                         .WithMany("Experiences")
-                        .HasForeignKey("EmployeeId");
+                        .HasForeignKey("EmployerId");
 
-                    b.Navigation("Employee");
+                    b.Navigation("Employer");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Job", b =>
@@ -240,18 +243,29 @@ namespace inzRafalRutowski.Migrations
                     b.Navigation("Employer");
                 });
 
+            modelBuilder.Entity("inzRafalRutowski.Models.Specialization", b =>
+                {
+                    b.HasOne("inzRafalRutowski.Models.Employer", "Employer")
+                        .WithMany("Specializations")
+                        .HasForeignKey("EmployerId");
+
+                    b.Navigation("Employer");
+                });
+
             modelBuilder.Entity("inzRafalRutowski.Models.Employee", b =>
                 {
                     b.Navigation("EmployeeSpecializations");
-
-                    b.Navigation("Experiences");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employer", b =>
                 {
                     b.Navigation("Employees");
 
+                    b.Navigation("Experiences");
+
                     b.Navigation("Jobs");
+
+                    b.Navigation("Specializations");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.Models.Specialization", b =>
