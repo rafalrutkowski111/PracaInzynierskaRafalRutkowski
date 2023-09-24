@@ -19,9 +19,10 @@ namespace inzRafalRutowski.Controllers
         }
 
         [HttpGet]
-        public  ActionResult<List<Specialization>> GetSpecializations()
+        public  ActionResult<List<Specialization>> GetSpecializations([FromQuery] int EmployerId)
         {
-            var result = _context.Specializations.ToList();
+
+            var result = _context.Specializations.Where(x => int.Equals(x.EmployerId, EmployerId) || int.Equals(x.EmployerId, null)).ToList();
 
             return Ok(result);
         }

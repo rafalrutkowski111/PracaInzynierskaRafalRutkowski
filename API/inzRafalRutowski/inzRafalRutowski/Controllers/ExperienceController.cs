@@ -23,5 +23,13 @@ namespace inzRafalRutowski.Controllers
             _context.SaveChanges();
             return Ok(request);
         }
+
+        [HttpGet]
+        public ActionResult<List<Experience>> GetExperience([FromQuery] int EmployerId)
+        {
+            var result = _context.Experience.Where(x => int.Equals(x.EmployerId, EmployerId) || int.Equals(x.EmployerId, null));
+
+            return Ok(result);
+        }
     }
 }

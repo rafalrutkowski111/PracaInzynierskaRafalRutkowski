@@ -55,7 +55,7 @@ const AddJob = () => {
 
     const userId = sessionStorage.getItem("userId");
     useEffect(() => {
-        axios.get('http://localhost:5000/api/Specialization')
+        axios.get('http://localhost:5000/api/Specialization', {params: {EmployerId: userId}})
             .then(response => {
                 setSpecialization(response.data);
                 addSpecialization();

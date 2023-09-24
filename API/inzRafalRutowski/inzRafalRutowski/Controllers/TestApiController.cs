@@ -35,9 +35,9 @@ namespace inzRafalRutowski.Controllers
 
         [HttpGet("{id}")] //api/testApi/numberID
         //[Route("{id}")]  alternatywnie można użyć
-        //[FromRoute] z ścieżki
-        //[FromBody] z ciała
-        //[FromQuery] z bazy -w postmanie testuje się Parms-> key,value lub w sciezce np ?key=50
+        //[FromRoute] Pobiera wartości z danych trasy
+        //[FromBody] Pobiera wartości z treści żądania
+        //[FromQuery]  Pobiera wartości z ciągu zapytania -w postmanie testuje się Parms-> key,value lub w sciezce np ?key=50
         public async Task<ActionResult<Employer>> GetEmployer([FromRoute] int id)
         {
             var result = await _service.GetEmployer(id);
