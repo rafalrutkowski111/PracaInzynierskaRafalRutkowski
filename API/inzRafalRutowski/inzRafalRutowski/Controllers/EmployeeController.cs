@@ -3,6 +3,7 @@ using inzRafalRutowski.DTO;
 using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -17,8 +18,35 @@ namespace inzRafalRutowski.Controllers
             _context = context;
         }
 
+        [HttpGet("employees")]
+        public ActionResult<List<EmployeeDTO>> GetEmployee()
+        {
+            var result = new List<EmployeeDTO>();
+
+            var employees = _context.Employees.Where(e => int.Equals(e.EmployerId, null) ).ToList();
+
+            employees.ForEach(e =>
+            {
+                
+                var employeeSpecialization = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, e.Id)).ToList();
+                employeeSpecialization.ForEach(e2 =>
+                {
+                    var employee = new EmployeeDTO();
+                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationId));
+                    employee.SpecializationName = specializations.Select(e3 => e3.Name).First();
+
+                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperienceId));
+                    employee.ExperienceName = experiences.Select(e3 => e3.experienceName).First();
+                    employee.Name = e.Name;
+                    employee.Surname = e.Surname;
+                    result.Add(employee);
+                });
+            });
+            return Ok(result);
+        }
+
         [HttpPost]
-        public IActionResult AddEmployee([FromBody] EmployeeDTO request)
+        public IActionResult AddEmployee([FromBody] EmployeeAddDTO request)
         {
 
             var newEmployee = new Employee
