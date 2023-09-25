@@ -28,30 +28,56 @@ const ButtonBootstrapBack = styled(Form.Control)`
 
 const AddSpecialization = () => {
 
-    const [name, setName] = useState(undefined);
+    const [name, setName] = useState("");
+    const [errorName, setErrorName] = useState(false)
+    const [errorNameLabel, setErrorNameLabel] = useState("")
 
     const userId = sessionStorage.getItem("userId");
 
     const add = () => {
+        if (name === "") {
+            setErrorNameLabel("Nazwa nie może być pusta");
+            setErrorName(true);
+            return
+        }
+
         axios.post('http://localhost:5000/api/Specialization', { name: name, employerId: userId })
             .then(window.location.pathname = '/inzRafalRutkowski/Specialization')
     }
     const back = () => {
         window.location.pathname = '/inzRafalRutkowski/Specialization'
     }
+    const changeName = (e) => {
+        setName(e);
+        if (e === "") {
+            setErrorNameLabel("Nazwa nie może być pusta");
+            setErrorName(true);
+        }
+        else {
+            setErrorNameLabel("");
+            setErrorName(false);
+        }
+    }
 
     return (
-        <>dodaj specjalizacje
+        <> <p> Dodaj spersonalizowaną specjalizacje</p>
 
             <TextFieldContainer>
-                <TextField onChange={(e) => setName(e.target.value)} sx={{ minWidth: 250 }} id="outlined-basic" label="Podaj nazwę specjalizacji" variant="outlined" />
+                <TextField
+                    error={errorName}
+                    helperText={errorNameLabel}
+                    onChange={(e) => changeName(e.target.value)}
+                    sx={{ minWidth: 250 }}
+                    id="outlined-basic"
+                    label="Podaj nazwę specjalizacji"
+                    variant="outlined" />
             </TextFieldContainer>
 
             < ButtonContainer >
                 <Button
                     type="submit"
                     id="button"
-                    value="Dodaj poziom specjalizacji"
+                    value="Dodaj specjalizację"
                     onClick={() => { add(); }}
                 />
                 <ButtonBootstrapBack

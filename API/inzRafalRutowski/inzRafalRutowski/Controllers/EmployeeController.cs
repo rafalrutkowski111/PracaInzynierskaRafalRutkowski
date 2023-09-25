@@ -30,8 +30,6 @@ namespace inzRafalRutowski.Controllers
                 Id = Guid.NewGuid()
             };
             _context.Employees.Add(newEmployee);
-           
-            //_context.SaveChangesAsync();
             
             var employeeSpecialization = request.SpecializationAndExperience.Select(
                 e => new EmployeeSpecialization

@@ -28,12 +28,26 @@ const ButtonBootstrapBack = styled(Form.Control)`
 
 const AddExperience = () => {
 
-    const [name, setName] = useState(undefined);
-    const [value, setValue] = useState(undefined)
+    const [name, setName] = useState("");
+    const [value, setValue] = useState("");
+    const [errorValue, setErrorValue] = useState(false);
+    const [errorValueLabel, setErrorValueLabel] = useState("");
+    const [errorName, setErrorName] = useState(false)
+    const [errorNameLabel, setErrorNameLabel] = useState("")
 
     const userId = sessionStorage.getItem("userId");
 
     const add = () => {
+        if (name === "") {
+            setErrorNameLabel("Nazwa nie może być pusta");
+            setErrorName(true);
+        }
+        if (value === "") {
+            setErrorValueLabel("Podana wartość musi być liczbą większa od 30");
+            setErrorValue(true);
+        }
+        if (value === "" || errorName === "") return
+
         axios.post('http://localhost:5000/api/Experience', { experienceName: name, experienceValue: value, employerId: userId })
             .then(window.location.pathname = '/inzRafalRutkowski/Experience')
     }
@@ -41,17 +55,60 @@ const AddExperience = () => {
         window.location.pathname = '/inzRafalRutkowski/Experience'
     }
 
+    const changeValue = (e) => {
+        setValue(e);
+        if (e <= 30) {
+            setErrorValueLabel("Podana wartość musi być liczbą większa od 30");
+            setErrorValue(true);
+        }
+        else {
+            setErrorValueLabel("");
+            setErrorValue(false);
+        }
+    }
+    const changeName = (e) => {
+        setName(e);
+        if (e === "") {
+            setErrorNameLabel("Nazwa nie może być pusta");
+            setErrorName(true);
+        }
+        else {
+            setErrorNameLabel("");
+            setErrorName(false);
+        }
+    }
+
     return (
-        <>            <p>Każdy z pracowników ma pewnien poziom doświadczenia.
-            Dla dokładniejszego działania programu użytkownik
-            może dodać sowje stopnie doświaczenia poza podstawowymi.
-            Odnosimy się w programie do osoby zaawanowanej której współczynnik wynosi 100
-            osoba bez doświadczenia pracuję z współczynnikiem 50, czyli jest dwa razy mniej
-            wydajna. Można tutaj dodawać spersonalizowane dane.
-        </p>
+        <>            <p>Użytkownik może dodać spersonalizowany rodzaj doświadczenia.</p>
+                        <p>System doświadczenia opiera się na wagach, które pomagają obliczyć czas potrzebny na wykonie zlecenia.</p>
+                        <p> Przy nowym zleceniu podajmy czas, który jest wyliczany względem zaawansowango doświaczenia.</p>
+                        <p>Waga nie moze być mniejsza niz waga osoby nie posiadajacej doświadczenia.</p>
+
+                        <p> Domyślny system wag</p>
+                        <p> Ososba Zaawansowana - 100</p>
+                        <p>Oosba Średnio-zaawansowana - 70</p>
+                        <p> Osoba Początkujaca - 40</p>
+                        <p>Osoba nie posiadająca doświadczenia(brak specjalizacji) - 30</p>
+                        
+
             <TextFieldContainer>
-                <TextField onChange={(e) => setName(e.target.value)} sx={{ minWidth: 250 }} id="outlined-basic" label="Podaj nazwę doświadczenia" variant="outlined" />
-                <TextField onChange={(e) => setValue(e.target.value)} sx={{ minWidth: 250 }} id="outlined-number" label="Podaj pozim doświadczenia" variant="outlined" type="number" />
+                <TextField
+                    error={errorName}
+                    helperText={errorNameLabel}
+                    onChange={(e) => changeName(e.target.value)}
+                    sx={{ minWidth: 300 }}
+                    id="outlined-basic"
+                    label="Podaj nazwę doświadczenia"
+                    variant="outlined" />
+                <TextField
+                    error={errorValue}
+                    helperText={errorValueLabel}
+                    onChange={(e) => changeValue(e.target.value)}
+                    sx={{ minWidth: 300 }}
+                    id="outlined-number"
+                    label="Podaj poziom doświadczenia"
+                    variant="outlined"
+                    type="number" />
             </TextFieldContainer>
 
             < ButtonContainer >
