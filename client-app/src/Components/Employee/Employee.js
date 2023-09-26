@@ -14,25 +14,34 @@ const Button = styled(Form.Control)`
 `
 const Employee = () => {
 
-      const addNewEmployee = () => {
-        window.location.pathname = '/inzRafalRutkowski/addEmployee';
-      }
+  const addNewEmployee = () => {
+    window.location.pathname = '/inzRafalRutkowski/addEmployee';
+  }
+  const searchNewEmployee = () => {
+    window.location.pathname = '/inzRafalRutkowski/searchEmployee';
+  }
 
-    return (
-        <>lista pracowników
+  return (
+    <>lista pracowników
 
-        
 
-            < ButtonContainer >
-                <Button
-                    type="submit"
-                    id="button"
-                    value="Dodaj pracownika"
-                    onClick={() => { addNewEmployee(); }}
-                />
-            </ButtonContainer >
-        </>
-    )
+
+      < ButtonContainer >
+        <Button
+          type="submit"
+          id="button"
+          value="Dodaj pracownika"
+          onClick={() => { addNewEmployee(); }}
+        />
+        <Button
+          type="submit"
+          id="button"
+          value="Szukaj pracownika"
+          onClick={() => { searchNewEmployee(); }}
+        />
+      </ButtonContainer >
+    </>
+  )
 }
 
 export default Employee;

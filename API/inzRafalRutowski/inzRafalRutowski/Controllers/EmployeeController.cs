@@ -39,6 +39,7 @@ namespace inzRafalRutowski.Controllers
                     employee.ExperienceName = experiences.Select(e3 => e3.experienceName).First();
                     employee.Name = e.Name;
                     employee.Surname = e.Surname;
+                    employee.EmployeeId = e.Id;
                     result.Add(employee);
                 });
             });

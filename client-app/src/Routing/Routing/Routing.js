@@ -12,6 +12,7 @@ import Specialization from "../../Components/Specialization/Specialization";
 import AddSpecialization from "../../Components/Specialization/AddSpecialization";
 import Experience from "../../Components/Experience/Experience";
 import AddExperience from "../../Components/Experience/AddExperience";
+import SearchEmployee from "../../Components/Employee/SearchEmployee";
 
 const Router = () => {
 
@@ -50,6 +51,8 @@ const Router = () => {
           <Route path="/addSpecialization" element={<AddSpecialization />}></Route>
           <Route path="/experience" element={<Experience />}></Route>
           <Route path="/addExperience" element={<AddExperience />}></Route>
+          <Route path="/searchEmployee" element={<SearchEmployee />}></Route>
+
           
         </Routes>
       </BrowserRouter>
