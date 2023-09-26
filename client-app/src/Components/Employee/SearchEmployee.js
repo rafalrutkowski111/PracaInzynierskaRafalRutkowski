@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import Form from 'react-bootstrap/Form'
-import InputGroup from 'react-bootstrap/InputGroup'
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Button } from "@mui/material";
 import { useEffect, useState } from 'react'
@@ -9,6 +8,9 @@ import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import Typography from '@mui/joy/Typography';
 
 const H1Container = styled.h1`
     margin-top: 1%;
@@ -30,17 +32,22 @@ const ButtonBootstrapBack = styled(Form.Control)`
     background-color: red;
     color: white;
 `
+const ButtonBootstrap = styled(Form.Control)`
+    width:150px;
+    background-color: green;
+    color: white;
+`
 const SearchEmployee = () => {
 
     const [dataListEmployee, setDataListEmployee] = useState([]);
-
     const [searchName, setSearchName] = useState('');
     const [searchSurname, setSearchSurname] = useState('');
     const [searchSpecialization, setSearchSpecialization] = useState('');
     const [searchExperience, setSearchExperience] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [dataEmployee, setDataEmployee] = useState([{ name: '', surname: '', specializationName: '', experienceName: '', employeeId: '' }]);
 
-    console.log(searchName);
-    console.log(searchSurname)
+    const userId = sessionStorage.getItem("userId");
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Employee/employees')
@@ -50,14 +57,80 @@ const SearchEmployee = () => {
     }, [])
 
     const add = (id) => {
-        console.log(id)
+        console.log(dataEmployee)
+        axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: id } })
+            .then(response => {
+                setDataEmployee(response.data)
+            })
+        setModalOpen(true)
     }
     const back = () => {
         window.location.pathname = '/inzRafalRutkowski/Employee'
     }
+    const addEmployee = (id) => {
+        console.log(id)
+        axios.put('http://localhost:5000/api/Employee', null, { params: { EmployeeId: id, EmployerId: userId } })
+            .then(() => {
+                axios.get('http://localhost:5000/api/Employee/employees')
+                    .then(response => {
+                        console.log(response.data)
+                        setDataListEmployee(response.data);
+                        setModalOpen(false);
+                    })
+            })
+    }
 
     return (
         <>
+            <Modal
+                aria-labelledby="modal-title"
+                aria-describedby="modal-desc"
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <Sheet
+                    variant="outlined"
+                    sx={{
+                        width: 300,
+                        maxWidth: 500,
+                        borderRadius: 'md',
+                        p: 3,
+                        boxShadow: 'lg',
+                    }}
+                >
+                    <ModalClose variant="plain" sx={{ m: 1 }} />
+                    <Typography
+                        component="h2"
+                        id="modal-title"
+                        level="h4"
+                        textColor="inherit"
+                        fontWeight="lg"
+                        mb={3}
+                    >
+                        Szczegóły pracownika
+                    </Typography>
+                    <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                        <p><b>Imie</b> - {dataEmployee[0].name}</p>
+                        <p><b>Nazwisko</b> - {dataEmployee[0].surname}</p>
+                        <p><b>Specjalizacja - Doświadczenie</b></p>
+                        {dataEmployee.map((data) => {
+                            return (<>
+                                <p>{data.specializationName} - {data.experienceName}</p>
+                            </>)
+                        })}
+                    </Typography>
+                    < ButtonContainer >
+                        <ButtonBootstrap
+                            type="submit"
+                            id="button"
+                            value="Dodaj"
+                            onClick={() => { addEmployee(dataEmployee[0].employeeId) }}
+                        />
+                    </ButtonContainer >
+                </Sheet>
+            </Modal>
+
             <Container>
                 <H1Container>Szukaj pracownika</H1Container>
                 <TextFieldContaioner>
@@ -129,7 +202,6 @@ const SearchEmployee = () => {
                                         </td>
                                     </tr>
                                 ))}
-
                         </tbody>
                     </Table>
                 </Sheet>

@@ -18,12 +18,42 @@ namespace inzRafalRutowski.Controllers
             _context = context;
         }
 
+        [HttpGet("employeeSearch")]
+        public ActionResult<List<EmployeeDTO>> GetEmployeeSearch([FromQuery] Guid id)
+        {
+            var result = new List<EmployeeDTO>();
+
+            var employeeSearch = _context.Employees.FirstOrDefault(e => Guid.Equals(e.Id, id));
+
+
+          
+                var employeeSpecialization = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, employeeSearch.Id)).ToList();
+                employeeSpecialization.ForEach(e2 =>
+                {
+                    var employee = new EmployeeDTO();
+                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationId));
+                    employee.SpecializationName = specializations.Select(e3 => e3.Name).First();
+
+                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperienceId));
+                    employee.ExperienceName = experiences.Select(e3 => e3.experienceName).First();
+                    employee.Name = employeeSearch.Name;
+                    employee.Surname = employeeSearch.Surname;
+                    employee.EmployeeId = employeeSearch.Id;
+                    result.Add(employee);
+                });
+
+
+            
+            return Ok(result);
+        }
+
         [HttpGet("employees")]
         public ActionResult<List<EmployeeDTO>> GetEmployee()
         {
             var result = new List<EmployeeDTO>();
 
             var employees = _context.Employees.Where(e => int.Equals(e.EmployerId, null) ).ToList();
+
 
             employees.ForEach(e =>
             {
@@ -44,6 +74,16 @@ namespace inzRafalRutowski.Controllers
                 });
             });
             return Ok(result);
+        }
+
+        [HttpPut]
+        public IActionResult AddEmployeeToEmployer([FromQuery] Guid employeeId, [FromQuery] int employerId)
+        {
+            var employee = _context.Employees.FirstOrDefault(e => Guid.Equals(e.Id, employeeId));
+            employee.EmployerId = employerId;
+            employee.IsEmployed = true;
+            _context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpPost]
