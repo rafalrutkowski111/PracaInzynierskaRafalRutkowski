@@ -11,6 +11,10 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import Typography from '@mui/joy/Typography';
+import Sheet from '@mui/joy/Sheet';
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -45,17 +49,23 @@ const SelectContainer = styled.div`
     display: flex;
     justify-content: center;
 `
-
+const ButtonContainer = styled.div`
+  widht:60%;
+  margin-top: 2%;
+  display: flex;
+  justify-content: center;
+`
 const AddJob = () => {
 
     const [specialization, setSpecialization] = useState([]);
     const [listSpecialization, setListSpecialization] = useState([]);
     const [dataStart, setDataStart] = useState([]);
     const [dataEnd, setDataEnd] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
 
     const userId = sessionStorage.getItem("userId");
     useEffect(() => {
-        axios.get('http://localhost:5000/api/Specialization', {params: {EmployerId: userId}})
+        axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
             .then(response => {
                 setSpecialization(response.data);
                 addSpecialization();
@@ -66,18 +76,66 @@ const AddJob = () => {
     }
 
     const next = () => {
-        axios.post('http://localhost:5000/api/Job',{title: "title", desc: "description",
-         start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId})
-        .then(response => {
-            console.log(response)
+        //tu dodać logike dla modali
+        axios.post('http://localhost:5000/api/Job', {
+            title: "title", desc: "description",
+            start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId
         })
+            .then(response => {
+                console.log(response)
+            })
     }
     const addSpecialization = () => {
         setListSpecialization([...listSpecialization, []])
     }
+    const modalTest = () =>{
+
+    }
 
     return (
         <>
+            <Modal
+                aria-labelledby="modal-title"
+                aria-describedby="modal-desc"
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <Sheet
+                    variant="outlined"
+                    sx={{
+                        width: 300,
+                        maxWidth: 500,
+                        borderRadius: 'md',
+                        p: 3,
+                        boxShadow: 'lg',
+                    }}
+                >
+                    <ModalClose variant="plain" sx={{ m: 1 }} />
+                    <Typography
+                        component="h2"
+                        id="modal-title"
+                        level="h4"
+                        textColor="inherit"
+                        fontWeight="lg"
+                        mb={3}
+                    >
+                        Szczegóły pracownika
+                    </Typography>
+                    <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                        <p>test</p>
+                    </Typography>
+                    < ButtonContainer >
+                        <ButtonBootstrap
+                            type="submit"
+                            id="button"
+                            value="Dodaj"
+                            onClick={() => { modalTest() }}
+                        />
+                    </ButtonContainer >
+                </Sheet>
+            </Modal>
+
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>
             </TittleContainer>
@@ -95,6 +153,8 @@ const AddJob = () => {
                     />
                 </LocalizationProvider>
             </DataContainer>
+
+            <p>W każdej specjalizacje musi być </p>
 
             {listSpecialization.map((data, i) => {
                 return (
