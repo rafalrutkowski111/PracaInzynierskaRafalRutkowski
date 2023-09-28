@@ -57,17 +57,23 @@ const ButtonContainer = styled.div`
 `
 const AddJob = () => {
 
-    const [specialization, setSpecialization] = useState([]);
-    const [listSpecialization, setListSpecialization] = useState([]);
-    const [dataStart, setDataStart] = useState([]);
-    const [dataEnd, setDataEnd] = useState([]);
+    const [dataSpecialization, setDataSpecialization] = useState([]);
+    const [dataListSpecialization, setDataListSpecialization] = useState([]);
+    const [dataStart, setDataStart] = useState('');
+    const [dataEnd, setDataEnd] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
+    const [openAddSpecialization, setOpenAddSpecialization] = useState(true);
+    const [openRemoveSpecialization, setOpenRemoveSpecialization] = useState(true);
+    const [openAddEmployee, setOpenAddEmployee] = useState(true);
 
     const userId = sessionStorage.getItem("userId");
+
+    console.log(dataListSpecialization)
+
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
             .then(response => {
-                setSpecialization(response.data);
+                setDataSpecialization(response.data);
                 addSpecialization();
             })
     }, [])
@@ -76,22 +82,144 @@ const AddJob = () => {
     }
 
     const next = () => {
+        if(dataStart>modalOpen) return
         //tu dodać logike dla modali
-        axios.post('http://localhost:5000/api/Job', {
-            title: "title", desc: "description",
-            start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId
-        })
-            .then(response => {
-                console.log(response)
-            })
+
+        // axios.post('http://localhost:5000/api/Job', {
+        //     title: "title", desc: "description",
+        //     start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId
+        // })
+        //     .then(response => {
+        //         console.log(response)
+        //     })
     }
     const addSpecialization = () => {
-        setListSpecialization([...listSpecialization, []])
-    }
-    const modalTest = () =>{
+        setDataListSpecialization([...dataListSpecialization, []])
+        setOpenAddSpecialization(true)
+        setOpenAddEmployee(true)
+
+        if (dataListSpecialization.length > 0)
+            setOpenRemoveSpecialization(false)
+
+
+        dataSpecialization.map((date, index) => {
+            if (date.id === dataListSpecialization[dataListSpecialization.length - 1].SpecializationId)
+                date.Disabled = true
+        })
+
+        if (dataListSpecialization.length > 0)
+            dataListSpecialization[dataListSpecialization.length - 1].Disabled = true
 
     }
 
+    const changeSpecialization = (e, index) => {
+        const list = [...dataListSpecialization];
+        list[index] = { SpecializationId: e, Hours: list[index].Hours };
+        setDataListSpecialization(list);
+
+        if (dataListSpecialization[dataListSpecialization.length - 1].Hours !== undefined)
+            setOpenAddSpecialization(false)
+
+        if (dataListSpecialization[dataListSpecialization.length - 1].Hours !== undefined
+            && dataStart !== "" && dataEnd !== "")
+            setOpenAddEmployee(false)
+        else setOpenAddEmployee(true)
+    }
+
+    const changeHours = (e, index) => {
+        if (e.target.value === '') {
+            e.target.value = 1;
+        }
+        const list = [...dataListSpecialization];
+        list[index] = { Hours: e.target.value, SpecializationId: list[index].SpecializationId, Disabled: list[index].Disabled }
+        setDataListSpecialization(list);
+
+        if (dataListSpecialization[dataListSpecialization.length - 1].SpecializationId !== undefined)
+            setOpenAddSpecialization(false)
+
+        if (dataListSpecialization[dataListSpecialization.length - 1].SpecializationId !== undefined
+            && dataStart !== "" && dataEnd !== "")
+            setOpenAddEmployee(false)
+        else setOpenAddEmployee(true)
+    }
+
+    const removeLast = () => {
+        if (dataListSpecialization.length < 3)
+            setOpenRemoveSpecialization(true)
+
+        if (dataListSpecialization.length < 2) return
+
+        dataSpecialization.map((date, index) => {
+            if (date.id === dataListSpecialization[dataListSpecialization.length - 2].SpecializationId)
+                date.Disabled = false
+        })
+
+        dataListSpecialization[dataListSpecialization.length - 2].Disabled = false
+
+        const list = [...dataListSpecialization];
+        list.splice(dataListSpecialization.length - 1, 1)
+        setDataListSpecialization(list)
+
+        setOpenAddSpecialization(false)
+        if (dataStart !== "" && dataEnd !== "")
+            setOpenAddEmployee(false)
+        else setOpenAddEmployee(true)
+
+        if (dataListSpecialization.length <= 1)
+            setOpenAddEmployee(true)
+    }
+
+    const changeStartDate = (e) => {
+        setDataStart(e)
+
+        if (dataListSpecialization[dataListSpecialization.length - 1].SpecializationId !== undefined
+            && dataListSpecialization[dataListSpecialization.length - 1].Hours !== undefined
+            && e !== "" && dataEnd !== "")
+            setOpenAddEmployee(false)
+        else setOpenAddEmployee(true)
+    }
+
+    const changeEndDate = (e) => {
+        setDataEnd(e)
+
+        if (dataListSpecialization[dataListSpecialization.length - 1].SpecializationId !== undefined
+            && dataListSpecialization[dataListSpecialization.length - 1].Hours !== undefined
+            && dataStart !== "" && e !== "")
+            setOpenAddEmployee(false)
+        else setOpenAddEmployee(true)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const modalTest = () => {
+
+    }
+
+    const startValidation = (date) => {
+        const day = date.day();
+        return day === 0 || day === 6;
+    };
+
+    const endValidation = (date) => {
+        const day = date.day();
+
+        if (dataStart !== '') {
+            return dataStart.add(1, "day") > date || day === 0 || day === 6;
+        }
+        return day === 0 || day === 6;
+    };
     return (
         <>
             <Modal
@@ -144,46 +272,71 @@ const AddJob = () => {
                     <DatePicker
                         label="Data rozpoczęcia projektu"
                         disablePast
-                        onChange={(e) => setDataStart(e)}
+                        shouldDisableDate={startValidation}
+                        onChange={(e) => changeStartDate(e)}
                     />
                     <DatePicker
+                        shouldDisableDate={endValidation}
                         disablePast
                         label="Data zakończenia projektu"
-                        onChange={(e) => setDataEnd(e)}
+                        onChange={(e) => changeEndDate(e)}
                     />
                 </LocalizationProvider>
             </DataContainer>
 
-            <p>W każdej specjalizacje musi być </p>
 
-            {listSpecialization.map((data, i) => {
+            {dataListSpecialization.map((data, index) => {
                 return (
                     <SelectContainer>
                         <FormControl sx={{ minWidth: 300 }}>
                             <InputLabel>Specjazlizacja</InputLabel>
                             <Select
                                 label="Specjazlizacja"
+                                disabled={data.Disabled}
+                                onChange={(e) => changeSpecialization(e.target.value, index)}
                             >
-                                {specialization.map((choice) => (
-                                    <MenuItem key={choice.id} value={choice.id}>
+                                {dataSpecialization.map((choice) => (
+                                    <MenuItem
+                                        disabled={choice.Disabled}
+                                        key={choice.id}
+                                        value={choice.id}>
                                         {choice.name}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
-                        <TextField id="outlined-basic" label="Ilość godzin" variant="outlined" />
+                        <TextField
+                            onChange={(e) => changeHours(e, index)}
+                            type="number"
+                            id="outlined-basic"
+                            label="Ilość godzin"
+                            variant="outlined"
+                            inputProps={{ min: 1 }}
+                            InputLabelProps={{ shrink: true }}
+                        />
                     </SelectContainer>
                 )
             })}
-            <Button
-                variant="contained"
-                onClick={() => {
-                    addSpecialization();
-                }}
-            >Dodaj kolejny</Button>
+            < ButtonContainer >
+                <Button sx={{ mr: 1 }}
+                    disabled={openAddSpecialization}
+                    variant="contained"
+                    onClick={() => {
+                        addSpecialization();
+                    }}
+                >Dodaj kolejny</Button>
+                <Button sx={{ mr: 2 }}
+                    disabled={openRemoveSpecialization}
+                    variant="contained"
+                    onClick={() => {
+                        removeLast();
+                    }}
+                >Usuń ostatni</Button>
+            </ButtonContainer>
 
             < ButtonBootstrapContainer >
                 <ButtonBootstrap
+                    disabled={openAddEmployee}
                     type="submit"
                     id="button"
                     value="Dalej"

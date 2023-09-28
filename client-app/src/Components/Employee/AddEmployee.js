@@ -53,9 +53,6 @@ const AddEmployee = () => {
 
     const userId = sessionStorage.getItem("userId");
 
-
-    console.log(dataListSpecializationAndExperience)
-
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
             .then(response => {
@@ -105,7 +102,7 @@ const AddEmployee = () => {
             setOpenAddSpecialization(false)
 
         if (dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 1].ExperienceId !== undefined
-            && e !== "" && surname !== "")
+            && name !== "" && surname !== "")
             setOpenAddEmployee(false)
         else setOpenAddEmployee(true)
 
@@ -119,7 +116,7 @@ const AddEmployee = () => {
             setOpenAddSpecialization(false)
 
         if (dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 1].SpecializationId !== undefined
-            && e !== "" && surname !== "")
+            && name !== "" && surname !== "")
             setOpenAddEmployee(false)
         else setOpenAddEmployee(true)
     }
