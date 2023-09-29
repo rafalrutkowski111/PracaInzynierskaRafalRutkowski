@@ -68,7 +68,7 @@ const AddJob = () => {
 
     const userId = sessionStorage.getItem("userId");
 
-    console.log(dataListSpecialization)
+    //console.log(dataListSpecialization)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
@@ -82,7 +82,18 @@ const AddJob = () => {
     }
 
     const next = () => {
-        if(dataStart>modalOpen) return
+        if (dataStart > dataEnd) return
+
+        console.log(dataListSpecialization[0])
+        axios.post('http://localhost:5000/api/Job/JobSpecialization', { JobSpecialization: dataListSpecialization, EmployerId: userId} )
+            .then(response => {
+                console.log("test");
+            })
+
+
+
+        //setModalOpen(true)
+
         //tu dodać logike dla modali
 
         // axios.post('http://localhost:5000/api/Job', {
