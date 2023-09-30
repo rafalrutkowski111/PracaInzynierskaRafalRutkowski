@@ -65,6 +65,7 @@ const AddJob = () => {
     const [openAddSpecialization, setOpenAddSpecialization] = useState(true);
     const [openRemoveSpecialization, setOpenRemoveSpecialization] = useState(true);
     const [openAddEmployee, setOpenAddEmployee] = useState(true);
+    const [dataEmployeeWithSpecialization, setDataEmployeeWithSpecialization] = useState([]);
 
     const userId = sessionStorage.getItem("userId");
 
@@ -78,21 +79,21 @@ const AddJob = () => {
             })
     }, [])
     const back = () => {
-        window.location.pathname = '/inzRafalRutkowski/';
+       // window.location.pathname = '/inzRafalRutkowski/';
+       setModalOpen(true)
     }
 
     const next = () => {
         if (dataStart > dataEnd) return
 
-        console.log(dataListSpecialization[0])
-        axios.post('http://localhost:5000/api/Job/JobSpecialization', { JobSpecialization: dataListSpecialization, EmployerId: userId} )
+        axios.post('http://localhost:5000/api/Job/JobSpecialization', 
+        { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day")} )
             .then(response => {
-                console.log("test");
+                //setModalOpen(response.data.isOpenModalSpecialization)
+                setDataEmployeeWithSpecialization(response.data.specializationList)
+                console.log(response.data)
             })
-
-
-
-        //setModalOpen(true)
+            setModalOpen(true)
 
         //tu dodać logike dla modali
 
@@ -200,20 +201,6 @@ const AddJob = () => {
         else setOpenAddEmployee(true)
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     const modalTest = () => {
 
     }
@@ -243,8 +230,8 @@ const AddJob = () => {
                 <Sheet
                     variant="outlined"
                     sx={{
-                        width: 300,
-                        maxWidth: 500,
+                        width: 450,
+                        maxWidth: 600,
                         borderRadius: 'md',
                         p: 3,
                         boxShadow: 'lg',
@@ -259,16 +246,23 @@ const AddJob = () => {
                         fontWeight="lg"
                         mb={3}
                     >
-                        Szczegóły pracownika
+                        Brak wyspecjalizowanych pracowników
                     </Typography>
                     <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                        <p>test</p>
+                        <p>Każde specjalizacja musi mieć przynajmniej jedenego wyspecjalizowanego pracownika.</p>
+                        <p>Specjalizacje bez doświadczonego pracownika: {dataEmployeeWithSpecialization.map((data,index)=>{
+                            return(data.haveSpecialist === false ? " " + data.specializationName + " ": null )
+                        }
+                        )}</p>
+                        Z wprowadzonymi danymi brakuje wyspecjalizowaneo pracownika. Możesz go dodać w zakłądce Pracownicy,
+                        lub jeżeli jest dodać z lsity poniżej.
+                        
                     </Typography>
                     < ButtonContainer >
                         <ButtonBootstrap
                             type="submit"
                             id="button"
-                            value="Dodaj"
+                            value="Dalej"
                             onClick={() => { modalTest() }}
                         />
                     </ButtonContainer >

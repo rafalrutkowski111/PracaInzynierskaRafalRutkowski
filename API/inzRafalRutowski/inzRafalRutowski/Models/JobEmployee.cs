@@ -8,6 +8,8 @@
         public DateTime TimeFinishJob { get; set; }
         public bool IsNeed { get; set; }
 
+        public int EmployerId { get; set; }
+
 
         public Guid EmployeeId { get; set; }
         public Employee Employee { get; set; }
