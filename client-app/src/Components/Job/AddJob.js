@@ -79,23 +79,23 @@ const AddJob = () => {
             })
     }, [])
     const back = () => {
-       // window.location.pathname = '/inzRafalRutkowski/';
-       setModalOpen(true)
+        // window.location.pathname = '/inzRafalRutkowski/';
+        setModalOpen(true)
     }
 
     const next = () => {
         if (dataStart > dataEnd) return
 
-        axios.post('http://localhost:5000/api/Job/JobSpecialization', 
-        { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day")} )
+        axios.post('http://localhost:5000/api/Job/JobSpecialization',
+            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
             .then(response => {
                 //setModalOpen(response.data.isOpenModalSpecialization)
                 setDataEmployeeWithSpecialization(response.data.specializationList)
                 console.log(response.data)
             })
-            setModalOpen(true)
+        setModalOpen(true)
 
-        //tu dodać logike dla modali
+                //tu dodać logike dla modali
 
         // axios.post('http://localhost:5000/api/Job', {
         //     title: "title", desc: "description",
@@ -218,6 +218,20 @@ const AddJob = () => {
         }
         return day === 0 || day === 6;
     };
+
+    const removeButton = (index) => {
+        var test222 = [...dataListSpecialization];
+        test222.splice(index, 1)
+        console.log(index)
+        setDataListSpecialization(test222)
+    }
+
+    const handleChange =(e,i)=>
+    {
+        var test222 = [...dataListSpecialization];
+        test222[i] = e.target.value;
+        setDataListSpecialization(test222);
+    }
     return (
         <>
             <Modal
@@ -250,13 +264,13 @@ const AddJob = () => {
                     </Typography>
                     <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                         <p>Każde specjalizacja musi mieć przynajmniej jedenego wyspecjalizowanego pracownika.</p>
-                        <p>Specjalizacje bez doświadczonego pracownika: {dataEmployeeWithSpecialization.map((data,index)=>{
-                            return(data.haveSpecialist === false ? " " + data.specializationName + " ": null )
+                        <p>Specjalizacje bez doświadczonego pracownika: {dataEmployeeWithSpecialization.map((data, index) => {
+                            return (data.haveSpecialist === false ? " " + data.specializationName + " " : null)
                         }
                         )}</p>
                         Z wprowadzonymi danymi brakuje wyspecjalizowaneo pracownika. Możesz go dodać w zakłądce Pracownicy,
-                        lub jeżeli jest dodać z lsity poniżej.
-                        
+                        lub jeżeli jest dodać z listy poniżej.
+
                     </Typography>
                     < ButtonContainer >
                         <ButtonBootstrap
@@ -291,9 +305,10 @@ const AddJob = () => {
 
 
             {dataListSpecialization.map((data, index) => {
+
                 return (
                     <SelectContainer>
-                        <FormControl sx={{ minWidth: 300 }}>
+                        {/* <FormControl sx={{ minWidth: 300 }}>
                             <InputLabel>Specjazlizacja</InputLabel>
                             <Select
                                 label="Specjazlizacja"
@@ -311,20 +326,30 @@ const AddJob = () => {
                             </Select>
                         </FormControl>
                         <TextField
-                            onChange={(e) => changeHours(e, index)}
+                                                        onChange={(e) => changeHours(e, index)}
                             type="number"
                             id="outlined-basic"
                             label="Ilość godzin"
                             variant="outlined"
                             inputProps={{ min: 1 }}
                             InputLabelProps={{ shrink: true }}
-                        />
+                        />  */}
+                        <input value={data} onChange={e=>handleChange(e,index)}/>
+                        <Button
+                            onClick={(e) => {
+                                removeButton(index)
+                                console.log(data);
+                            }
+                            }
+                        >
+                            x
+                        </Button>
                     </SelectContainer>
                 )
             })}
             < ButtonContainer >
                 <Button sx={{ mr: 1 }}
-                    disabled={openAddSpecialization}
+                    //disabled={openAddSpecialization}
                     variant="contained"
                     onClick={() => {
                         addSpecialization();
