@@ -308,7 +308,7 @@ const AddJob = () => {
 
                 return (
                     <SelectContainer>
-                        {/* <FormControl sx={{ minWidth: 300 }}>
+                        <FormControl sx={{ minWidth: 300 }}>
                             <InputLabel>Specjazlizacja</InputLabel>
                             <Select
                                 label="Specjazlizacja"
@@ -333,8 +333,7 @@ const AddJob = () => {
                             variant="outlined"
                             inputProps={{ min: 1 }}
                             InputLabelProps={{ shrink: true }}
-                        />  */}
-                        <input value={data} onChange={e=>handleChange(e,index)}/>
+                        /> 
                         <Button
                             onClick={(e) => {
                                 removeButton(index)
