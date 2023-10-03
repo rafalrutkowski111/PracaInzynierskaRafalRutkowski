@@ -5,16 +5,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
 import { useState, useEffect } from "react";
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
+import SpecializationAndHours from "./SpecializationAndHours";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -44,11 +40,7 @@ const DataContainer = styled.div`
     justify-content: center;
 `
 
-const SelectContainer = styled.div`
-    margin-top: 1%;
-    display: flex;
-    justify-content: center;
-`
+
 const ButtonContainer = styled.div`
   widht:60%;
   margin-top: 2%;
@@ -69,7 +61,7 @@ const AddJob = () => {
 
     const userId = sessionStorage.getItem("userId");
 
-    //console.log(dataListSpecialization)
+    console.log(dataListSpecialization)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
@@ -95,7 +87,7 @@ const AddJob = () => {
             })
         setModalOpen(true)
 
-                //tu dodać logike dla modali
+        //tu dodać logike dla modali
 
         // axios.post('http://localhost:5000/api/Job', {
         //     title: "title", desc: "description",
@@ -221,16 +213,27 @@ const AddJob = () => {
 
     const removeButton = (index) => {
         var test222 = [...dataListSpecialization];
-        test222.splice(index, 1)
+        const i = test222.findIndex(x=>x.SpecializationId == index)
+        test222.splice(i, 1)
         console.log(index)
         setDataListSpecialization(test222)
     }
 
-    const handleChange =(e,i)=>
-    {
+    const handleChange = (e, i) => {
         var test222 = [...dataListSpecialization];
         test222[i] = e.target.value;
         setDataListSpecialization(test222);
+    }
+
+    const renderSpecjalizationList = () => {
+        return dataListSpecialization.map((data, index) => {
+            return (
+                <SpecializationAndHours key={index} data={data} changeSpecialization={changeSpecialization}
+                    index={index} dataSpecialization={dataSpecialization} changeHours={changeHours}
+                    removeButton={removeButton} />
+
+            )
+        })
     }
     return (
         <>
@@ -304,48 +307,7 @@ const AddJob = () => {
             </DataContainer>
 
 
-            {dataListSpecialization.map((data, index) => {
-
-                return (
-                    <SelectContainer>
-                        <FormControl sx={{ minWidth: 300 }}>
-                            <InputLabel>Specjazlizacja</InputLabel>
-                            <Select
-                                label="Specjazlizacja"
-                                disabled={data.Disabled}
-                                onChange={(e) => changeSpecialization(e.target.value, index)}
-                            >
-                                {dataSpecialization.map((choice) => (
-                                    <MenuItem
-                                        disabled={choice.Disabled}
-                                        key={choice.id}
-                                        value={choice.id}>
-                                        {choice.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <TextField
-                                                        onChange={(e) => changeHours(e, index)}
-                            type="number"
-                            id="outlined-basic"
-                            label="Ilość godzin"
-                            variant="outlined"
-                            inputProps={{ min: 1 }}
-                            InputLabelProps={{ shrink: true }}
-                        /> 
-                        <Button
-                            onClick={(e) => {
-                                removeButton(index)
-                                console.log(data);
-                            }
-                            }
-                        >
-                            x
-                        </Button>
-                    </SelectContainer>
-                )
-            })}
+            {renderSpecjalizationList()}
             < ButtonContainer >
                 <Button sx={{ mr: 1 }}
                     //disabled={openAddSpecialization}
