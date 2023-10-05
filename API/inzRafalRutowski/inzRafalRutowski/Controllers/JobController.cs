@@ -41,6 +41,7 @@ namespace inzRafalRutowski.Controllers
             var employeeDTOListInList = new List<EmployeeSpecializationListDTO>();
             var isOpenModalSpecialization = false;
             var jobFunctions = new JobFunctions();
+            var listEmployeeSpecializationListEmplty = new List<string>();
 
             request.JobSpecialization.ForEach(e =>
             {
@@ -52,6 +53,7 @@ namespace inzRafalRutowski.Controllers
                 ).EmployerId == request.EmployerId));
 
                 var jobSpecializationEmployee = new JobSpecializationEmployeeDTO();
+                
 
                 jobSpecializationEmployee.SpecializationId = e.SpecializationId;
                 jobSpecializationEmployee.SpecializationName = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, e.SpecializationId)).Name;
@@ -63,12 +65,13 @@ namespace inzRafalRutowski.Controllers
                 if (SmployeeSpecialization != null) jobSpecializationEmployee.EmployeeId = SmployeeSpecialization.EmployeeId;
 
                 if (SmployeeSpecialization == null)
-                    jobFunctions.AddEmployeeWithoutEmployerToList(e, jobSpecializationEmployee, employeeDTOListInList, _context);
+                    jobFunctions.AddEmployeeWithoutEmployerToList(e, jobSpecializationEmployee, employeeDTOListInList, _context, listEmployeeSpecializationListEmplty);
 
                 restult.Add(jobSpecializationEmployee);
             });
 
-            return Ok(new { specializationList = restult, isOpenModalSpecialization = isOpenModalSpecialization, searchEmployee = employeeDTOListInList });
+            return Ok(new { specializationList = restult, isOpenModalSpecialization = isOpenModalSpecialization,
+                searchEmployee = employeeDTOListInList, listEmployeeSpecializationListEmplty = listEmployeeSpecializationListEmplty });
         }
 
         [HttpPost]

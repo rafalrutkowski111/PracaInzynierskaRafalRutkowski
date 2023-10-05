@@ -1,5 +1,6 @@
 ﻿using inzRafalRutowski.Data;
 using inzRafalRutowski.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,10 +8,13 @@ namespace inzRafalRutowski.Class
 {
     public class JobFunctions
     {
-        public List<EmployeeSpecializationListDTO> AddEmployeeWithoutEmployerToList(ListJobSpecialization e, JobSpecializationEmployeeDTO jobSpecializationEmployee, List<EmployeeSpecializationListDTO> employeeDTOListInList, DataContext _context)
+        public Tuple<List<EmployeeSpecializationListDTO>, List<string>> AddEmployeeWithoutEmployerToList(
+            ListJobSpecialization e, JobSpecializationEmployeeDTO jobSpecializationEmployee, 
+            List<EmployeeSpecializationListDTO> employeeDTOListInList, DataContext _context,
+             List<string> listEmployeeSpecializationListEmplty)
         {
             var employeeSpecializationListDTO = new EmployeeSpecializationListDTO();
-
+            
             var employees = _context.Employees.Where(e => int.Equals(e.IsEmployed, false)).ToList();
 
             var employeeDTOList = new List<EmployeeDTO>();
@@ -39,9 +43,11 @@ namespace inzRafalRutowski.Class
             employeeSpecializationListDTO.SpecializationName = jobSpecializationEmployee.SpecializationName;
             employeeSpecializationListDTO.EmployeeList = employeeDTOList;
 
+            if (employeeSpecializationListDTO.EmployeeList.Count() == 0) listEmployeeSpecializationListEmplty.Add(employeeSpecializationListDTO.SpecializationName);
+
             employeeDTOListInList.Add(employeeSpecializationListDTO);
 
-            return (employeeDTOListInList);
+            return Tuple.Create(employeeDTOListInList, listEmployeeSpecializationListEmplty);
         }
     }
 }

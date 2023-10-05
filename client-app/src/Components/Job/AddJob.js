@@ -12,6 +12,7 @@ import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import AddSpecializationAndHours from "./AddSpecializationAndHours";
 import ViewSpecializationAndHours from "./ViewSpecializationAndHours";
+import Table from '@mui/joy/Table';
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -53,16 +54,21 @@ const AddJob = () => {
     const [dataStart, setDataStart] = useState('');
     const [dataEnd, setDataEnd] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
+    const [modalSpecializationListEmpltyOpen, setModalSpecializationListEmpltyOpen] = useState(false);
     const [openAddSpecialization, setOpenAddSpecialization] = useState(true);
     const [openAddEmployee, setOpenAddEmployee] = useState(true);
-    const [dataEmployeeWithSpecialization, setDataEmployeeWithSpecialization] = useState([]);
+    const [dataEmployeeWithSpecialization, setDataEmployeeWithSpecialization] = useState([]); //{searchEmployee:[]}
     const [specializationValue, setSpecializationValue] = useState('');
     const [hoursValue, setHoursValue] = useState('');
     const [changeValueHours, setChangeValueHours] = useState(false);
+    const [searchEmployee, setSearchEmployee] = useState([]);
+    const [listEmployeeSpecializationListEmplty, setListEmployeeSpecializationListEmplty] = useState([])
 
     const userId = sessionStorage.getItem("userId");
 
     //console.log(dataListSpecialization)
+    //console.log("aa")
+    //console.log(searchEmployee)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
@@ -83,8 +89,18 @@ const AddJob = () => {
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
+                setSearchEmployee(response.data.searchEmployee)
+                setListEmployeeSpecializationListEmplty(response.data.listEmployeeSpecializationListEmplty)
+
+                console.log("wwwww")
+                console.log(response.data.listEmployeeSpecializationListEmplty )
+                console.log("wwwww")
+
+                if(response.data.listEmployeeSpecializationListEmplty.length != 0)setModalSpecializationListEmpltyOpen(true)
+                 else setModalOpen(true)
             })
-        setModalOpen(true)
+
+        
 
         //tu dodać logike dla modali
 
@@ -203,6 +219,68 @@ const AddJob = () => {
     }
     return (
         <>
+
+<Modal
+                aria-labelledby="modal-title"
+                aria-describedby="modal-desc"
+                open={modalSpecializationListEmpltyOpen}
+                onClose={() => setModalSpecializationListEmpltyOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <Sheet
+                    variant="outlined"
+                    sx={{
+                        width: 450,
+                        maxWidth: 600,
+                        borderRadius: 'md',
+                        p: 3,
+                        boxShadow: 'lg',
+                    }}
+                >
+                    <ModalClose variant="plain" sx={{ m: 1 }} />
+                    <Typography
+                        component="h2"
+                        id="modal-title"
+                        level="h4"
+                        textColor="inherit"
+                        fontWeight="lg"
+                        mb={3}
+                    >
+                        Brak wyspecjalizowanych pracowników
+                    </Typography>
+                    <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                        <p>Brak wyspecjalizowanych pracowników, których nie ma w naszej bazie:
+                         {listEmployeeSpecializationListEmplty.map((data, index) => {
+                            return (" " + data)
+                        }
+                        )}</p>
+                        <p>Chcąc przejść dalej należy wykonać jedą z poniższych rzeczy.</p>
+                        <p>1. Anulowac powyżesze specjalizacje. <br />                    
+                        2. Dodać w zakładce pracownicy takich specjalistów. <br />
+                        3. Poczekać aż będą dostępni specjaliliści poszukujacy pracy. </p>
+
+
+                    </Typography>
+                    < ButtonContainer >
+                        <ButtonBootstrapBack
+                            type="submit"
+                            id="button"
+                            value="Wróć"
+                            onClick={() => { modalTest() }}
+                        />
+                    </ButtonContainer >
+                </Sheet>
+            </Modal >
+
+
+
+
+
+
+
+
+
+
             <Modal
                 aria-labelledby="modal-title"
                 aria-describedby="modal-desc"
@@ -237,8 +315,46 @@ const AddJob = () => {
                             return (data.haveSpecialist === false ? " " + data.specializationName + " " : null)
                         }
                         )}</p>
-                        Z wprowadzonymi danymi brakuje wyspecjalizowaneo pracownika. Możesz go dodać w zakłądce Pracownicy,
-                        lub jeżeli jest dodać z listy poniżej.
+                        <p>Z wprowadzonymi danymi brakuje wyspecjalizowaneo pracownika. Możesz go dodać w zakłądce Pracownicy,
+                        lub jeżeli jest dodać z listy poniżej.</p>
+
+
+                        {searchEmployee.map((item) => {
+
+                            return (
+                                <>
+                                    <td>{item.specializationName}</td>
+                                    < Table
+                                        stickyHeader
+                                        stripe="odd"
+                                        variant="outlined" >
+                                        <thead>
+                                            <tr>
+                                                <th>Specjalizacja</th>
+                                                <th>ilość godzin</th>
+                                                <th>Usuń</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr>
+                                                {/* <td>{item.specializationId}</td>
+                                            <td>{item.specializationName}</td> */}
+                                                <td>
+                                                    <Button>
+                                                        {/* //onClick={() => props.removeSpecializationAndHours(item.SpecializationId)}
+                                                //</td>startIcon={<DeleteIcon />}>Usuń */}
+                                                    </Button>
+                                                </td>
+                                            </tr>
+
+
+                                        </tbody>
+                                    </Table>
+                                </>
+
+                            )
+                        })}
 
                     </Typography>
                     < ButtonContainer >
@@ -250,7 +366,7 @@ const AddJob = () => {
                         />
                     </ButtonContainer >
                 </Sheet>
-            </Modal>
+            </Modal >
 
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>
