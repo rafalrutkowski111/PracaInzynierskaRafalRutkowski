@@ -56,7 +56,7 @@ const SearchEmployee = () => {
             })
     }, [])
 
-    const add = (id) => {
+    const viewEmployee = (id) => {
         console.log(dataEmployee)
         axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: id } })
             .then(response => {
@@ -196,7 +196,7 @@ const SearchEmployee = () => {
                                         <td>{item.experienceName}</td>
                                         <td>
                                             <Button
-                                                onClick={() => add(item.employeeId)}
+                                                onClick={() => viewEmployee(item.employeeId)}
                                                 startIcon={<PersonAddIcon />}>Dodaj
                                             </Button>
                                         </td>

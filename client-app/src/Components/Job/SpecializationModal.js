@@ -4,6 +4,7 @@ import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import Table from '@mui/joy/Table';
 import Button from '@mui/material/Button';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const SpecializationEmptyList = (props) => {
     return (
@@ -37,7 +38,7 @@ const SpecializationEmptyList = (props) => {
                 </Typography>
                 <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                     <p>Brak wyspecjalizowanych pracowników, których nie ma w naszej bazie:
-                        {props.listEmployeeSpecializationListEmplty.map((data, index) => {
+                        {props.listEmployeeSpecializationListEmpty.map((data, index) => {
                             return (" " + data)
                         }
                         )}</p>
@@ -73,8 +74,8 @@ const SpecializationList = (props) => {
             <Sheet
                 variant="outlined"
                 sx={{
-                    width: 450,
-                    maxWidth: 600,
+                    width: 600,
+                    maxWidth: 800,
                     borderRadius: 'md',
                     p: 3,
                     boxShadow: 'lg',
@@ -106,33 +107,43 @@ const SpecializationList = (props) => {
                         return (
                             <>
                                 <td>{item.specializationName}</td>
+
+
+
                                 < Table
                                     stickyHeader
                                     stripe="odd"
                                     variant="outlined" >
                                     <thead>
                                         <tr>
-                                            <th>Specjalizacja</th>
-                                            <th>ilość godzin</th>
-                                            <th>Usuń</th>
+                                            <th>Imie</th>
+                                            <th>Nazwisko</th>
+                                            <th>Doświadczenie</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
-                                        <tr>
-                                            {/* <td>{item.specializationId}</td>
-                                    <td>{item.specializationName}</td> */}
-                                            <td>
-                                                <Button>
-                                                    {/* //onClick={() => props.removeSpecializationAndHours(item.SpecializationId)}
-                                        //</td>startIcon={<DeleteIcon />}>Usuń */}
-                                                </Button>
-                                            </td>
-                                        </tr>
-
+                                        {item.employeeList.map((item2) => {
+                                            return (
+                                                <tr>
+                                                    <td>{item2.name}</td>
+                                                    <td>{item2.surname}</td>
+                                                    <td>{item2.experienceName}</td>
+                                                    <td>
+                                                        <Button
+                                                            onClick={() => props.viewEmployeeDetails(item2.employeeId, item.specializationId)}
+                                                            startIcon={<VisibilityIcon />}>Szczegóły
+                                                        </Button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
 
                                     </tbody>
+
                                 </Table>
+                                <br />
+
                             </>
 
                         )
@@ -144,7 +155,7 @@ const SpecializationList = (props) => {
                         type="submit"
                         id="button"
                         value="Dalej"
-                        //onClick={() => { modalTest() }}
+                    //onClick={() => { modalTest() }}
                     />
                 </props.ButtonContainer >
             </Sheet>
@@ -152,5 +163,65 @@ const SpecializationList = (props) => {
     )
 }
 
+const ViewEmployee = (props) => {
+    return (
+        <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={props.modalOpenViewEmployee}
+            onClose={() => props.setModalOpenViewEmployee(false)}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+            <Sheet
+                variant="outlined"
+                sx={{
+                    width: 300,
+                    maxWidth: 500,
+                    borderRadius: 'md',
+                    p: 3,
+                    boxShadow: 'lg',
+                }}
+            >
+                <ModalClose variant="plain" sx={{ m: 1 }} />
+                <Typography
+                    component="h2"
+                    id="modal-title"
+                    level="h4"
+                    textColor="inherit"
+                    fontWeight="lg"
+                    mb={3}
+                >
+                    Szczegóły pracownika
+                </Typography>
+                <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                    <p><b>Imie</b> - {props.dataEmployee[0].name}</p>
+                    <p><b>Nazwisko</b> - {props.dataEmployee[0].surname}</p>
+                    <p><b>Specjalizacja - Doświadczenie</b></p>
+                    {props.dataEmployee.map((data) => {
+                        return (<>
+                            <p>{data.specializationName} - {data.experienceName}</p>
+                        </>)
+                    })}
+                </Typography>
+                < props.ButtonContainer >
+                    <props.ButtonBootstrap
+                        type="submit"
+                        id="button"
+                        value="Dodaj"
+                        onClick={() => { props.addSpecialistEmployees(props.dataEmployee) }}
+                    />
+                    <props.ButtonBootstrapBack
+                        type="submit"
+                        id="button"
+                        value="Powrót"
+                        onClick={() => { props.setModalOpenViewEmployee(false) }}
+                    />
+                </props.ButtonContainer >
+            </Sheet>
+        </Modal>
+    )
+}
+
 export { SpecializationEmptyList };
 export { SpecializationList };
+export { ViewEmployee };

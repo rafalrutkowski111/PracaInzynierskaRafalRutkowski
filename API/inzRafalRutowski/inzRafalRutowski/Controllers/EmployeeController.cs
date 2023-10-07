@@ -39,6 +39,7 @@ namespace inzRafalRutowski.Controllers
                     employee.Name = employeeSearch.Name;
                     employee.Surname = employeeSearch.Surname;
                     employee.EmployeeId = employeeSearch.Id;
+                    employee.SpecializationId = e2.SpecializationId;
                     result.Add(employee);
                 });
 

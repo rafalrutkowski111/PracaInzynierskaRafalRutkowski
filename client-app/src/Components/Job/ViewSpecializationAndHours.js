@@ -12,7 +12,7 @@ const H1Container = styled.h5`
 `
 
 const ViewSpecializationAndHours = (props) => {
-
+    
     return (
         <Container>
             <H1Container>Lista dodanych specjalizacji</H1Container>
