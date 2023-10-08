@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using inzRafalRutowski.DTO;
+using inzRafalRutowski.DTO.Employer;
+using inzRafalRutowski.DTO.Job;
 using inzRafalRutowski.Models;
 
 namespace inzRafalRutowski.Mapper

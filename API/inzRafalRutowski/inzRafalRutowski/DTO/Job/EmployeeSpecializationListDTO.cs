@@ -1,4 +1,6 @@
-﻿namespace inzRafalRutowski.DTO
+﻿using inzRafalRutowski.DTO.Employee;
+
+namespace inzRafalRutowski.DTO.Job
 {
     public class EmployeeSpecializationListDTO
     {

@@ -1,4 +1,4 @@
-﻿namespace inzRafalRutowski.DTO
+﻿namespace inzRafalRutowski.DTO.Job
 {
     public class ListJobSpecialization
     {

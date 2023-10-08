@@ -1,6 +1,6 @@
 ﻿using Azure.Core;
 using inzRafalRutowski.Data;
-using inzRafalRutowski.DTO;
+using inzRafalRutowski.DTO.Employer;
 using inzRafalRutowski.Models;
 using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Http;

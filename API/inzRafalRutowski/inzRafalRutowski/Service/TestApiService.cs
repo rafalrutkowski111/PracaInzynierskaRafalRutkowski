@@ -2,7 +2,7 @@
 using Azure.Core;
 using inzRafalRutowski.Controllers;
 using inzRafalRutowski.Data;
-using inzRafalRutowski.DTO;
+using inzRafalRutowski.DTO.Employer;
 using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

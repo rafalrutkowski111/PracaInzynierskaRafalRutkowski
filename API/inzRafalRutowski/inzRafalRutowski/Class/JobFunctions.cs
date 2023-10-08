@@ -1,5 +1,6 @@
 ﻿using inzRafalRutowski.Data;
-using inzRafalRutowski.DTO;
+using inzRafalRutowski.DTO.Employee;
+using inzRafalRutowski.DTO.Job;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

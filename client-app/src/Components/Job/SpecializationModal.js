@@ -63,6 +63,9 @@ const SpecializationEmptyList = (props) => {
 }
 
 const SpecializationList = (props) => {
+
+    if (props.searchEmployee.length === 0) props.setDisableButtonSpecialization(false)
+    else props.setDisableButtonSpecialization(true)
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -82,6 +85,7 @@ const SpecializationList = (props) => {
                 }}
             >
                 <ModalClose variant="plain" sx={{ m: 1 }} />
+
                 <Typography
                     component="h2"
                     id="modal-title"
@@ -90,68 +94,78 @@ const SpecializationList = (props) => {
                     fontWeight="lg"
                     mb={3}
                 >
-                    Brak wyspecjalizowanych pracowników
+                    Wyspecjalizowani pracownicy
                 </Typography>
-                <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                    <p>Każde specjalizacja musi mieć przynajmniej jedenego wyspecjalizowanego pracownika.</p>
-                    <p>Specjalizacje bez doświadczonego pracownika: {props.dataEmployeeWithSpecialization.map((data, index) => {
-                        return (data.haveSpecialist === false ? " " + data.specializationName + " " : null)
-                    }
-                    )}</p>
-                    <p>Z wprowadzonymi danymi brakuje wyspecjalizowaneo pracownika. Możesz go dodać w zakłądce Pracownicy,
-                        lub jeżeli jest dodać z listy poniżej.</p>
+
+                {props.searchEmployee.length === 0
+                    ?
+                    <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                        <p>Dodawno wyspecjalizowanych pracowników</p>
+                    </Typography>
+                    :
+                    <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                        <p>Każde specjalizacja musi mieć przynajmniej jedenego wyspecjalizowanego pracownika.</p>
+                        <p>Specjalizacje bez doświadczonego pracownika: {props.dataEmployeeWithSpecialization.map((data, index) => {
+                            return (data.haveSpecialist === false ? " " + data.specializationName + " " : null)
+                        }
+                        )}</p>
+                        <p>Z wprowadzonymi danymi brakuje wyspecjalizowaneo pracownika. Możesz go dodać w zakłądce Pracownicy,
+                            lub jeżeli jest dodać z listy poniżej.</p>
 
 
-                    {props.searchEmployee.map((item) => {
+                        {props.searchEmployee.map((item) => {
 
-                        return (
-                            <>
-                                <td>{item.specializationName}</td>
+                            return (
+                                <>
+                                    <td>{item.specializationName}</td>
 
 
 
-                                < Table
-                                    stickyHeader
-                                    stripe="odd"
-                                    variant="outlined" >
-                                    <thead>
-                                        <tr>
-                                            <th>Imie</th>
-                                            <th>Nazwisko</th>
-                                            <th>Doświadczenie</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {item.employeeList.map((item2) => {
-                                            return (
-                                                <tr>
-                                                    <td>{item2.name}</td>
-                                                    <td>{item2.surname}</td>
-                                                    <td>{item2.experienceName}</td>
-                                                    <td>
-                                                        <Button
-                                                            onClick={() => props.viewEmployeeDetails(item2.employeeId, item.specializationId)}
-                                                            startIcon={<VisibilityIcon />}>Szczegóły
-                                                        </Button>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })}
+                                    < Table
+                                        stickyHeader
+                                        stripe="odd"
+                                        variant="outlined" >
+                                        <thead>
+                                            <tr>
+                                                <th>Imie</th>
+                                                <th>Nazwisko</th>
+                                                <th>Doświadczenie</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {item.employeeList.map((item2) => {
+                                                return (
+                                                    <tr>
+                                                        <td>{item2.name}</td>
+                                                        <td>{item2.surname}</td>
+                                                        <td>{item2.experienceName}</td>
+                                                        <td>
+                                                            <Button
+                                                                onClick={() => props.viewEmployeeDetails(item2.employeeId, item.specializationId)}
+                                                                startIcon={<VisibilityIcon />}>Szczegóły
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
 
-                                    </tbody>
+                                        </tbody>
 
-                                </Table>
-                                <br />
+                                    </Table>
+                                    <br />
 
-                            </>
+                                </>
 
-                        )
-                    })}
+                            )
+                        })}
 
-                </Typography>
+                    </Typography>
+                }
+
                 < props.ButtonContainer >
                     <props.ButtonBootstrap
+                        disabled={props.disableButtonSpecialization}
                         type="submit"
                         id="button"
                         value="Dalej"

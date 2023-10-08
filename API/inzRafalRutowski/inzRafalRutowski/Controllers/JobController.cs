@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using inzRafalRutowski.Data;
-using inzRafalRutowski.DTO;
 using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using inzRafalRutowski.Class;
+using inzRafalRutowski.DTO.Job;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -72,6 +72,16 @@ namespace inzRafalRutowski.Controllers
 
             return Ok(new { specializationList = restult, isOpenModalSpecialization = isOpenModalSpecialization,
                 searchEmployee = employeeDTOListInList, listEmployeeSpecializationListEmplty = listEmployeeSpecializationListEmplty });
+        }
+
+        [HttpPost("JobEmployee")]
+        public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
+        {
+
+
+
+
+            return Ok();
         }
 
         [HttpPost]

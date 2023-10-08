@@ -1,4 +1,4 @@
-﻿namespace inzRafalRutowski.DTO
+﻿namespace inzRafalRutowski.DTO.Employee
 {
     public class EmployeeDTO
     {

@@ -1,4 +1,4 @@
-﻿using inzRafalRutowski.DTO;
+﻿using inzRafalRutowski.DTO.Employer;
 using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Mvc;
 

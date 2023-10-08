@@ -61,13 +61,14 @@ const AddJob = () => {
     const [listEmployeeSpecializationListEmpty, setListEmployeeSpecializationListEmpty] = useState([])
     const [dataEmployee, setDataEmployee] = useState([{ name: '', surname: '', specializationName: '', experienceName: '', employeeId: '' }]);
     const [modalOpenViewEmployee, setModalOpenViewEmployee] = useState(false);
+    const [disableButtonSpecialization, setDisableButtonSpecialization] = useState(true);
 
     const userId = sessionStorage.getItem("userId");
 
-    //console.log(dataListSpecialization)
+    console.log(dataListSpecialization)
     //console.log("aa")
     //console.log(searchEmployee)
-    console.log(searchEmployee)
+    //console.log(searchEmployee)
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
             .then(response => {
@@ -87,12 +88,18 @@ const AddJob = () => {
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
-                //console.log(response.data)
+                console.log(response.data)
                 setSearchEmployee(response.data.searchEmployee)
                 setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
 
-                if (response.data.listEmployeeSpecializationListEmplty.length != 0) setModalSpecializationListEmpltyOpen(true)
-                else setModalOpen(true)
+                if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
+                else if(response.data.searchEmployee.length !== 0) setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
+                else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
+                {
+                    axios.post('http://localhost:5000/api/Job/JobEmployee',
+                    { listJobSpecializationEmployeeDTO: response.data.specializationList, JobSpecialization: dataListSpecialization })
+                    .then (response =>{console.log("przeszło")})
+                }
             })
 
 
@@ -248,7 +255,8 @@ const AddJob = () => {
     const renderModalSpecializationList = () => {
         return (
             <SpecializationList modalOpen={modalOpen} setModalOpen={setModalOpen} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
-                searchEmployee={searchEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} viewEmployeeDetails={viewEmployeeDetails} />
+                searchEmployee={searchEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} viewEmployeeDetails={viewEmployeeDetails} 
+                disableButtonSpecialization={disableButtonSpecialization} setDisableButtonSpecialization={setDisableButtonSpecialization}/>
         )
     }
     const renderModalViewEmployee = () => {

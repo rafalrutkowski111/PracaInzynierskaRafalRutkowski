@@ -1,4 +1,4 @@
-﻿namespace inzRafalRutowski.DTO
+﻿namespace inzRafalRutowski.DTO.Employer
 {
     public class EmployerDTO // klasa zrobiona do testów
     {

@@ -1,6 +1,6 @@
 ﻿using inzRafalRutowski.Models;
 
-namespace inzRafalRutowski.DTO
+namespace inzRafalRutowski.DTO.Job
 {
     public class JobDTO
     {
