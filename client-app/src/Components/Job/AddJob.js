@@ -97,7 +97,8 @@ const AddJob = () => {
                 else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
                 {
                     axios.post('http://localhost:5000/api/Job/JobEmployee',
-                    { listJobSpecializationEmployeeDTO: response.data.specializationList, JobSpecialization: dataListSpecialization })
+                    { listJobSpecializationEmployeeDTO: response.data.specializationList, JobSpecialization: dataListSpecialization, EmployerId: userId,
+                        start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
                     .then (response =>{console.log("przeszło")})
                 }
             })

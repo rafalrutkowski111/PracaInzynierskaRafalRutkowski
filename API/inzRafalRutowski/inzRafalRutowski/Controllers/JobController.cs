@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using inzRafalRutowski.Class;
 using inzRafalRutowski.DTO.Job;
+using System.Linq;
+using System.ComponentModel;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -77,8 +79,25 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
+            var specializationsWithHours = request.JobSpecialization;
+
+            var listEmployeeFreeInTime = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
+            && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
+            && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
+            ).EmployerId == request.EmployerId)
+            ).ToList();
+
+            listEmployeeFreeInTime.ForEach(e => //wykonuje sie dla każdego wolnego pracownika
+            {
+                // _context.Specialization.fristordefault  -jeżeli nie znajdzie specjalizacji to będzie trzeba odjąć od specjalizacji z największą liczbą godzin
+                // jak specjalizacja będzie miała liczbe godzina na minusie to nie brać jej ( może zrobić drugą lsite przechowująca specjalizacje,żeby ciagle nie sprawdzać tego)
+                // jeżeli wszystkie specjalizacje będą miały godziny na minus, to inaczej obliczać (zapisane gdzieś mam jak)
+                // listaUmiejetnoscimalejaco.ForEach(porownanie umiejetnosci najlepszej + praca z jeszcze 1 ForEach.specializationsWithHours(SpecializationId == praca))
+
+                //aby wyjść z foreach jeżeli znajdziemy specjalizacje czyli nie bedzie null zrobić warunetk if(specjalizacja !=null) return true
 
 
+            });
 
 
             return Ok();
