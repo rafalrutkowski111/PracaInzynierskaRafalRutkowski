@@ -10,6 +10,7 @@ using inzRafalRutowski.Class;
 using inzRafalRutowski.DTO.Job;
 using System.Linq;
 using System.ComponentModel;
+using System;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -79,7 +80,15 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
+
             var specializationsWithHours = request.JobSpecialization;
+
+            var specializationsWithHoursSearch = new List<ListJobSpecializationCopy>(specializationsWithHours.Count);
+
+            request.JobSpecialization.ForEach(e =>
+            {
+                specializationsWithHoursSearch.Add(new ListJobSpecializationCopy(e));
+            });
 
             var listEmployeeFreeInTime = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
             && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
@@ -87,19 +96,50 @@ namespace inzRafalRutowski.Controllers
             ).EmployerId == request.EmployerId)
             ).ToList();
 
-            listEmployeeFreeInTime.ForEach(e => //wykonuje sie dla każdego wolnego pracownika
-            {
-                // _context.Specialization.fristordefault  -jeżeli nie znajdzie specjalizacji to będzie trzeba odjąć od specjalizacji z największą liczbą godzin
-                // jak specjalizacja będzie miała liczbe godzina na minusie to nie brać jej ( może zrobić drugą lsite przechowująca specjalizacje,żeby ciagle nie sprawdzać tego)
-                // jeżeli wszystkie specjalizacje będą miały godziny na minus, to inaczej obliczać (zapisane gdzieś mam jak)
-                // listaUmiejetnoscimalejaco.ForEach(porownanie umiejetnosci najlepszej + praca z jeszcze 1 ForEach.specializationsWithHours(SpecializationId == praca))
+            var experianceDescending = _context.Experiences.OrderByDescending(x => x.experienceValue).Where(x=> int.Equals(x.EmployerId, request.EmployerId) || int.Equals(x.EmployerId, null)).ToList();
 
-                //aby wyjść z foreach jeżeli znajdziemy specjalizacje czyli nie bedzie null zrobić warunetk if(specjalizacja !=null) return true
+            var listEmployeeSpecialization = new List<EmployeeSpecialization>();
+
+            var lastExperianceDescending = experianceDescending.Last();
+            var lastSpecializationsWithHours = specializationsWithHours.Last();
+            Guid LastEmployeeId = new Guid();
+
+            var jobFunctions = new JobFunctions();
+            var numberOfWorkDaysWithWeekend = request.End.Subtract(request.Start).Days;
+            var numberOfWorkDays = jobFunctions.NumberOfWorkDays(request.Start, numberOfWorkDaysWithWeekend);
+            int hoursWorkInDay = 8;
+
+            listEmployeeFreeInTime.ForEach(e =>
+            {
+                experianceDescending.ForEach(e2 =>
+                {
+                    specializationsWithHours.ForEach(e3 =>
+                    {
+                        var employeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(e4 => e4.ExperienceId == e2.Id
+                        && e4.SpecializationId == e3.SpecializationId
+                        && e4.EmployeeId == e.Id
+                        );
+
+                        //spradzać czy godziny w specjalizacji są na minusie i czy wszystkie specjalizacje są na minusie
+
+                        if ((employeeSpecialization == null && e2.Equals(lastExperianceDescending) && e3.Equals(lastSpecializationsWithHours) || employeeSpecialization != null)
+                        && LastEmployeeId != e.Id)
+                        {
+                            e3.Hours -= (numberOfWorkDays * hoursWorkInDay);// * (e2.experienceValue / 100); //to trzeba zmienić na double bo sie wyniki psują
+                            if (employeeSpecialization != null)
+                            {
+                                //e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * (e2.experienceValue / 100);
+                            }
+
+                            LastEmployeeId = e.Id;
+                            listEmployeeSpecialization.Add(employeeSpecialization);
+                        }
+                    });
+
+                });
 
 
             });
-
-
             return Ok();
         }
 

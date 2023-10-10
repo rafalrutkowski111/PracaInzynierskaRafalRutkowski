@@ -1,10 +1,27 @@
-﻿namespace inzRafalRutowski.DTO.Job
+﻿using inzRafalRutowski.Models;
+
+namespace inzRafalRutowski.DTO.Job
 {
+    public class ListJobSpecializationCopy
+    {
+        public ListJobSpecializationCopy(ListJobSpecialization e)
+        {
+            SpecializationId = e.SpecializationId;
+            Hours = e.Hours;
+            Disabled = e.Disabled;
+        }
+
+        public int SpecializationId { get; set; }
+        public int Hours { get; set; }
+        public bool? Disabled { get; set; }
+
+    }
     public class ListJobSpecialization
     {
         public int SpecializationId { get; set; }
         public int Hours { get; set; }
         public bool? Disabled { get; set; }
+
     }
 
     public class JobSpecializationDTO

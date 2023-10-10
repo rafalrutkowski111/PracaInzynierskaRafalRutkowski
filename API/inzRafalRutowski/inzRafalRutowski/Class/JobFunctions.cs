@@ -50,5 +50,24 @@ namespace inzRafalRutowski.Class
 
             return Tuple.Create(employeeDTOListInList, listEmployeeSpecializationListEmplty);
         }
+
+        public int NumberOfWorkDays(DateTime start, int numberOfDays)
+        {
+            int workDays = 0;
+
+            DateTime end = start.AddDays(numberOfDays);
+
+            while (start != end)
+            {
+                if (start.DayOfWeek != DayOfWeek.Saturday && start.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    workDays++;
+                }
+
+                start = start.AddDays(1);
+            }
+
+            return workDays;
+        }
     }
 }
