@@ -50,13 +50,13 @@ namespace inzRafalRutowski.Controllers
             {
                 var SmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                 && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
-                && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 waga - stała
+                && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
                 && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
                 ).EmployerId == request.EmployerId));
 
                 var jobSpecializationEmployee = new JobSpecializationEmployeeDTO();
-                
+
 
                 jobSpecializationEmployee.SpecializationId = e.SpecializationId;
                 jobSpecializationEmployee.SpecializationName = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, e.SpecializationId)).Name;
@@ -73,8 +73,13 @@ namespace inzRafalRutowski.Controllers
                 restult.Add(jobSpecializationEmployee);
             });
 
-            return Ok(new { specializationList = restult, isOpenModalSpecialization = isOpenModalSpecialization,
-                searchEmployee = employeeDTOListInList, listEmployeeSpecializationListEmplty = listEmployeeSpecializationListEmplty });
+            return Ok(new
+            {
+                specializationList = restult,
+                isOpenModalSpecialization = isOpenModalSpecialization,
+                searchEmployee = employeeDTOListInList,
+                listEmployeeSpecializationListEmplty = listEmployeeSpecializationListEmplty
+            });
         }
 
         [HttpPost("JobEmployee")]
@@ -83,12 +88,13 @@ namespace inzRafalRutowski.Controllers
 
             var specializationsWithHours = request.JobSpecialization;
 
-            var specializationsWithHoursSearch = new List<ListJobSpecializationCopy>(specializationsWithHours.Count);
+            //var specializationsWithHoursSearch = new List<ListJobSpecializationCopy>(specializationsWithHours.Count);
 
-            request.JobSpecialization.ForEach(e =>
-            {
-                specializationsWithHoursSearch.Add(new ListJobSpecializationCopy(e));
-            });
+            //request.JobSpecialization.ForEach(e =>
+            //{
+            //    specializationsWithHoursSearch.Add(new ListJobSpecializationCopy(e));
+            //});
+
 
             var listEmployeeFreeInTime = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
             && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
@@ -96,7 +102,15 @@ namespace inzRafalRutowski.Controllers
             ).EmployerId == request.EmployerId)
             ).ToList();
 
-            var experianceDescending = _context.Experiences.OrderByDescending(x => x.experienceValue).Where(x=> int.Equals(x.EmployerId, request.EmployerId) || int.Equals(x.EmployerId, null)).ToList();
+            var newEmployee = new Employee();
+            request.listJobSpecializationEmployeeDTO.ForEach(e =>
+            {
+                if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.EmployeeId) == null)
+                    newEmployee.Id = (Guid)e.EmployeeId;
+                listEmployeeFreeInTime.Add(newEmployee);
+            });
+
+            var experianceDescending = _context.Experiences.OrderByDescending(x => x.experienceValue).Where(x => int.Equals(x.EmployerId, request.EmployerId) || int.Equals(x.EmployerId, null)).ToList();
 
             var listEmployeeSpecialization = new List<EmployeeSpecialization>();
 
@@ -108,6 +122,7 @@ namespace inzRafalRutowski.Controllers
             var numberOfWorkDaysWithWeekend = request.End.Subtract(request.Start).Days;
             var numberOfWorkDays = jobFunctions.NumberOfWorkDays(request.Start, numberOfWorkDaysWithWeekend);
             int hoursWorkInDay = 8;
+            double withoutExperience = (double)40 / 100; // 70 stała waga- niedoświadczony
 
             listEmployeeFreeInTime.ForEach(e =>
             {
@@ -120,25 +135,54 @@ namespace inzRafalRutowski.Controllers
                         && e4.EmployeeId == e.Id
                         );
 
-                        //spradzać czy godziny w specjalizacji są na minusie i czy wszystkie specjalizacje są na minusie
-
                         if ((employeeSpecialization == null && e2.Equals(lastExperianceDescending) && e3.Equals(lastSpecializationsWithHours) || employeeSpecialization != null)
                         && LastEmployeeId != e.Id)
                         {
-                            e3.Hours -= (numberOfWorkDays * hoursWorkInDay);// * (e2.experienceValue / 100); //to trzeba zmienić na double bo sie wyniki psują
-                            if (employeeSpecialization != null)
+                            var specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
+
+                            if (specializationMostHours.Hours < 0)
                             {
-                                //e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * (e2.experienceValue / 100);
+                                 employeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(e5 => e5.EmployeeId == e.Id
+                                && e5.SpecializationId == specializationMostHours.SpecializationId);
+                                // wyliczyć i dodać ile dni dla poszczególnych specjalizacji(z listą osób) ile zajmie całkowity czas pracy
+                                // i zrobić odejmowanie dni od konca pracy i zwrócić wynik z wszystkimi danymi
+                                if (employeeSpecialization != null)
+                                {
+                                    var experienceValue = _context.Experiences.FirstOrDefault(x => x.Id == employeeSpecialization.ExperienceId).experienceValue;
+                                    e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)experienceValue / 100);
+                                    listEmployeeSpecialization.Add(employeeSpecialization);
+                                }
+                                else
+                                {
+                                    var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, specializationMostHours.SpecializationId));
+                                    specializationsWithHours[FindIndex].Hours -= (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
+
+                                    var employeeSpecializationNew = new EmployeeSpecialization();
+                                    employeeSpecializationNew.SpecializationId = specializationMostHours.SpecializationId;
+                                    employeeSpecializationNew.EmployeeId = e.Id;
+                                    listEmployeeSpecialization.Add(employeeSpecializationNew);
+                                }     
+                            }
+                            else if (employeeSpecialization != null)
+                            {
+                                e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)e2.experienceValue / 100);
+                                listEmployeeSpecialization.Add(employeeSpecialization);
+                            }
+                            else
+                            {
+                                var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, specializationMostHours.SpecializationId));
+                                specializationsWithHours[FindIndex].Hours -= (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
+
+                                var employeeSpecializationNew = new EmployeeSpecialization();
+                                employeeSpecializationNew.SpecializationId = e3.SpecializationId;
+                                employeeSpecializationNew.EmployeeId = e.Id;
+                                listEmployeeSpecialization.Add(employeeSpecializationNew);
                             }
 
                             LastEmployeeId = e.Id;
-                            listEmployeeSpecialization.Add(employeeSpecialization);
                         }
                     });
-
                 });
-
-
             });
             return Ok();
         }

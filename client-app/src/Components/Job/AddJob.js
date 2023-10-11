@@ -229,6 +229,15 @@ const AddJob = () => {
         list.splice(i, 1)
         setDataListSpecialization(list)
     }
+    const nextButtonSpecializationList = () =>{
+
+        axios.post('http://localhost:5000/api/Job/JobEmployee',
+        { listJobSpecializationEmployeeDTO: dataEmployeeWithSpecialization, JobSpecialization: dataListSpecialization, EmployerId: userId,
+            start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
+        .then (response =>{console.log("przeszło")})
+
+        //setModalOpen(false)
+    }
 
     const renderAddSpecializationAndHours = () => {
         return (
@@ -257,7 +266,8 @@ const AddJob = () => {
         return (
             <SpecializationList modalOpen={modalOpen} setModalOpen={setModalOpen} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
                 searchEmployee={searchEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} viewEmployeeDetails={viewEmployeeDetails} 
-                disableButtonSpecialization={disableButtonSpecialization} setDisableButtonSpecialization={setDisableButtonSpecialization}/>
+                disableButtonSpecialization={disableButtonSpecialization} setDisableButtonSpecialization={setDisableButtonSpecialization}
+                nextButtonSpecializationList={nextButtonSpecializationList}/>
         )
     }
     const renderModalViewEmployee = () => {

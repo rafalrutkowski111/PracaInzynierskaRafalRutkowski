@@ -169,7 +169,7 @@ const SpecializationList = (props) => {
                         type="submit"
                         id="button"
                         value="Dalej"
-                    //onClick={() => { modalTest() }}
+                        onClick={() => { props.nextButtonSpecializationList() }}
                     />
                 </props.ButtonContainer >
             </Sheet>

@@ -12,14 +12,14 @@ namespace inzRafalRutowski.DTO.Job
         }
 
         public int SpecializationId { get; set; }
-        public int Hours { get; set; }
+        public double Hours { get; set; }
         public bool? Disabled { get; set; }
 
     }
     public class ListJobSpecialization
     {
         public int SpecializationId { get; set; }
-        public int Hours { get; set; }
+        public double Hours { get; set; }
         public bool? Disabled { get; set; }
 
     }
