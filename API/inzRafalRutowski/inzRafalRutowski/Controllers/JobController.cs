@@ -86,15 +86,9 @@ namespace inzRafalRutowski.Controllers
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
 
+            var listEmployeeSpecialization = new List<EmployeeSpecialization>();
+
             var specializationsWithHours = request.JobSpecialization;
-
-            //var specializationsWithHoursSearch = new List<ListJobSpecializationCopy>(specializationsWithHours.Count);
-
-            //request.JobSpecialization.ForEach(e =>
-            //{
-            //    specializationsWithHoursSearch.Add(new ListJobSpecializationCopy(e));
-            //});
-
 
             var listEmployeeFreeInTime = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
             && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
@@ -102,17 +96,19 @@ namespace inzRafalRutowski.Controllers
             ).EmployerId == request.EmployerId)
             ).ToList();
 
-            var newEmployee = new Employee();
+            
             request.listJobSpecializationEmployeeDTO.ForEach(e =>
             {
                 if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.EmployeeId) == null)
+                {
+                    var newEmployee = new Employee();
                     newEmployee.Id = (Guid)e.EmployeeId;
-                listEmployeeFreeInTime.Add(newEmployee);
+                    listEmployeeFreeInTime.Add(newEmployee);
+                }
             });
 
             var experianceDescending = _context.Experiences.OrderByDescending(x => x.experienceValue).Where(x => int.Equals(x.EmployerId, request.EmployerId) || int.Equals(x.EmployerId, null)).ToList();
 
-            var listEmployeeSpecialization = new List<EmployeeSpecialization>();
 
             var lastExperianceDescending = experianceDescending.Last();
             var lastSpecializationsWithHours = specializationsWithHours.Last();
@@ -130,10 +126,18 @@ namespace inzRafalRutowski.Controllers
                 {
                     specializationsWithHours.ForEach(e3 =>
                     {
-                        var employeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(e4 => e4.ExperienceId == e2.Id
+                        var employeeSpecializationList = _context.EmployeeSpecializations.Where(e4 => e4.ExperienceId == e2.Id
                         && e4.SpecializationId == e3.SpecializationId
                         && e4.EmployeeId == e.Id
-                        );
+                        ).ToList();
+
+                        // sprawdzanie czy istnieje najlepsze doswiadczenie z wystepujacych specjalizacji(wyżej), ale
+                        // biorąc w przypadku większej ilości tą opcje gdzie jest więcej godzin
+                        var specializationMostHoursList = specializationsWithHours.OrderByDescending(x2 => x2.Hours).ToList();
+                        EmployeeSpecialization employeeSpecialization = null;
+                        specializationMostHoursList.ForEach(x3 =>
+                        employeeSpecialization = employeeSpecializationList.FirstOrDefault(x4 => x4.SpecializationId == x3.SpecializationId));
+
 
                         if ((employeeSpecialization == null && e2.Equals(lastExperianceDescending) && e3.Equals(lastSpecializationsWithHours) || employeeSpecialization != null)
                         && LastEmployeeId != e.Id)
@@ -150,7 +154,7 @@ namespace inzRafalRutowski.Controllers
                                 {
                                     var experienceValue = _context.Experiences.FirstOrDefault(x => x.Id == employeeSpecialization.ExperienceId).experienceValue;
                                     e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)experienceValue / 100);
-                                    listEmployeeSpecialization.Add(employeeSpecialization);
+                                    listEmployeeSpecialization.Add(employeeSpecialization); 
                                 }
                                 else
                                 {
@@ -161,12 +165,20 @@ namespace inzRafalRutowski.Controllers
                                     employeeSpecializationNew.SpecializationId = specializationMostHours.SpecializationId;
                                     employeeSpecializationNew.EmployeeId = e.Id;
                                     listEmployeeSpecialization.Add(employeeSpecializationNew);
-                                }     
+                                }
+                                LastEmployeeId = e.Id;
                             }
                             else if (employeeSpecialization != null)
                             {
-                                e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)e2.experienceValue / 100);
-                                listEmployeeSpecialization.Add(employeeSpecialization);
+                                if (e3.Hours < 0 && e2.Equals(lastExperianceDescending) && e3.Equals(lastSpecializationsWithHours)) { }
+                                else if (e3.Hours < 0) { LastEmployeeId = new Guid(); }
+                                else
+                                {
+                                    e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)e2.experienceValue / 100);
+                                    listEmployeeSpecialization.Add(employeeSpecialization);
+
+                                    LastEmployeeId = e.Id;
+                                }
                             }
                             else
                             {
@@ -177,9 +189,11 @@ namespace inzRafalRutowski.Controllers
                                 employeeSpecializationNew.SpecializationId = e3.SpecializationId;
                                 employeeSpecializationNew.EmployeeId = e.Id;
                                 listEmployeeSpecialization.Add(employeeSpecializationNew);
+
+                                LastEmployeeId = e.Id;
                             }
 
-                            LastEmployeeId = e.Id;
+                            
                         }
                     });
                 });
