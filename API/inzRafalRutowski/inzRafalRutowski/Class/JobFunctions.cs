@@ -69,5 +69,23 @@ namespace inzRafalRutowski.Class
 
             return workDays;
         }
+
+        public DateTime NewDateEnd(DateTime start, int numberOfDays)
+        {
+            int workDays = 0;
+
+            DateTime end = start;
+
+            while (workDays<= numberOfDays)
+            {
+                if (start.DayOfWeek != DayOfWeek.Saturday && start.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    workDays++;
+                    end = end.AddDays(1);
+                }
+            }
+
+            return end;
+        }
     }
 }
