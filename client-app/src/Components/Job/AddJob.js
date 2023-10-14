@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import AddSpecializationAndHours from "./AddSpecializationAndHours";
 import ViewSpecializationAndHours from "./ViewSpecializationAndHours";
 import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./SpecializationModal";
+import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -62,10 +63,14 @@ const AddJob = () => {
     const [dataEmployee, setDataEmployee] = useState([{ name: '', surname: '', specializationName: '', experienceName: '', employeeId: '' }]);
     const [modalOpenViewEmployee, setModalOpenViewEmployee] = useState(false);
     const [disableButtonSpecialization, setDisableButtonSpecialization] = useState(true);
+    const [modalOpenNotEnoughEmployee, setModalOpenNotEnoughEmployee] = useState(false);
+    const [searchEmployeeJob, setSearchEmployeeJob] = useState([]);
+    const [modalOpenEmployeeList, setModalOpenEmployeeList] = useState(false);
+    
 
     const userId = sessionStorage.getItem("userId");
 
-    console.log(dataListSpecialization)
+    //console.log(dataListSpecialization)
     //console.log("aa")
     //console.log(searchEmployee)
     //console.log(searchEmployee)
@@ -88,7 +93,7 @@ const AddJob = () => {
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
-                console.log(response.data)
+                //console.log(response.data)
                 setSearchEmployee(response.data.searchEmployee)
                 setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
 
@@ -98,14 +103,32 @@ const AddJob = () => {
                 {
                     axios.post('http://localhost:5000/api/Job/JobEmployee',
                     { listJobSpecializationEmployeeDTO: response.data.specializationList, JobSpecialization: dataListSpecialization, EmployerId: userId,
-                        start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
-                    .then (response =>{console.log("przeszło")})
+                        start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployeeWithoutEmployer: false }, )
+                    .then (response2 =>{
+                        //console.log(response2.data)
+
+                        if(response2.data.canStartWork === true) //dodanie pracy
+                        {
+                            //dodać prace
+                        }
+                        else // za mało pracowników, będzie sprawdzane w bazie czy jest możliość dodania pracowników bez pracodawcy
+                        {
+                            axios.post('http://localhost:5000/api/Job/JobEmployee',
+                            { listJobSpecializationEmployeeDTO: response.data.specializationList, JobSpecialization: response2.data.specializationList, EmployerId: userId,
+                                start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployeeWithoutEmployer: true }, )
+                            .then (response =>{
+                                console.log(response.data)
+                                if(response.data.canStartWork === true) // jak doda się x pracowniów będzie można rozpocząć pracę
+                                {
+                                    //dodać możliwość dodania pracowników
+                                }
+                                else // za mało pracowników
+                                { setModalOpenNotEnoughEmployee(true) }
+                            })
+                        }
+                    })
                 }
             })
-
-
-
-        //tu dodać logike dla modali
 
         // axios.post('http://localhost:5000/api/Job', {
         //     title: "title", desc: "description",
@@ -234,8 +257,36 @@ const AddJob = () => {
         axios.post('http://localhost:5000/api/Job/JobEmployee',
         { listJobSpecializationEmployeeDTO: dataEmployeeWithSpecialization, JobSpecialization: dataListSpecialization, EmployerId: userId,
             start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
-        .then (response =>{console.log("przeszło")})
+        .then (response2 =>{
+            //console.log(response2.data)
 
+        if(response2.data.canStartWork === true)
+        {
+            //dodać prace
+        }
+        else
+        {
+            axios.post('http://localhost:5000/api/Job/JobEmployee',
+            { listJobSpecializationEmployeeDTO: dataEmployeeWithSpecialization, JobSpecialization: response2.data.specializationList, EmployerId: userId,
+                start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployeeWithoutEmployer: true }, )
+            .then (response =>{
+                console.log(response.data)
+                if(response.data.canStartWork === true)
+                {
+                    console.log("auu")
+                    setSearchEmployeeJob(response.data.listEmployeeInJob)
+                    setModalOpen(false)
+                    setModalOpenEmployeeList(true)
+                    // testować malarz200 testowa1 800
+                    // zapisać response.data.listEmployeeInJob 
+                    // zrobić okno modalne z tabelami gdzie wartościami będzie to co jest linijka wyżej
+                    // z okna modalnego bedzie można dodać prace
+                }
+                else 
+                { setModalOpenNotEnoughEmployee(true) }
+            })
+        }
+    })
         //setModalOpen(false)
     }
 
@@ -277,11 +328,21 @@ const AddJob = () => {
                 addSpecialistEmployees={addSpecialistEmployees} />
         )
     }
+    const renderNotEnoughEmployee = ()=>{
+        return(
+            <NotEnoughEmployee setModalOpenNotEnoughEmployee={setModalOpenNotEnoughEmployee} modalOpenNotEnoughEmployee={modalOpenNotEnoughEmployee}
+            ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack}/>
+        )
+    }
     return (
         <>
             {renderModalViewEmployee()}
             {renderModalSpecializationEmptyList()}
             {renderModalSpecializationList()}
+            {renderNotEnoughEmployee()}
+            <EmployeeList searchEmployeeJob={searchEmployeeJob} modalOpenEmployeeList={modalOpenEmployeeList} setModalOpenEmployeeList={setModalOpenEmployeeList}
+            ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap}
+            />
 
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>

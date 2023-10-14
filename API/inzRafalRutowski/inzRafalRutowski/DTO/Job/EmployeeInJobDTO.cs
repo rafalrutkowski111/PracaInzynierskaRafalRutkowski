@@ -14,5 +14,6 @@
     {
         public Guid EmployeeId { get; set; }
         public int ExperienceValue { get; set; }
+        public double HoursJob { get; set; }
     }
 }
