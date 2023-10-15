@@ -77,7 +77,7 @@ const SpecializationList = (props) => {
             <Sheet
                 variant="outlined"
                 sx={{
-                    width: 600,
+                    width: 650,
                     maxWidth: 800,
                     borderRadius: 'md',
                     p: 3,
@@ -112,15 +112,12 @@ const SpecializationList = (props) => {
                         <p>Z wprowadzonymi danymi brakuje wyspecjalizowaneo pracownika. Możesz go dodać w zakłądce Pracownicy,
                             lub jeżeli jest dodać z listy poniżej.</p>
 
-
                         {props.searchEmployee.map((item) => {
 
                             return (
                                 <>
                                     <td>{item.specializationName}</td>
-
-
-
+                                    <Sheet sx={{ height: 200, maxHeight:400, overflow: 'auto' }}>
                                     < Table
                                         stickyHeader
                                         stripe="odd"
@@ -142,7 +139,7 @@ const SpecializationList = (props) => {
                                                         <td>{item2.experienceName}</td>
                                                         <td>
                                                             <Button
-                                                                onClick={() => props.viewEmployeeDetails(item2.employeeId, item.specializationId)}
+                                                                onClick={() => props.viewEmployeeDetails(item2.employeeId, true)}
                                                                 startIcon={<VisibilityIcon />}>Szczegóły
                                                             </Button>
                                                         </td>
@@ -153,6 +150,7 @@ const SpecializationList = (props) => {
                                         </tbody>
 
                                     </Table>
+                                    </Sheet>
                                     <br />
 
                                 </>
@@ -222,7 +220,10 @@ const ViewEmployee = (props) => {
                         type="submit"
                         id="button"
                         value="Dodaj"
-                        onClick={() => { props.addSpecialistEmployees(props.dataEmployee) }}
+                        onClick={() => 
+                            props.viewSpecialist == true
+                            ? props.addSpecialistEmployees(props.dataEmployee)
+                            : props.addNewEmployee(props.dataEmployee)}
                     />
                     <props.ButtonBootstrapBack
                         type="submit"

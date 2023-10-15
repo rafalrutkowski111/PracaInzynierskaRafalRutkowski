@@ -55,9 +55,10 @@ const NotEnoughEmployee = (props) => {
 
 const EmployeeList = (props) => {
 
-    console.log(props.searchEmployeeJob)
+    //console.log(props.searchEmployeeJob)
     //if (props.searchEmployee.length === 0) props.setDisableButtonSpecialization(false)
     //else props.setDisableButtonSpecialization(true)
+    // button ustawic na disable i zrobić button anulowania
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -69,7 +70,9 @@ const EmployeeList = (props) => {
             <Sheet
                 variant="outlined"
                 sx={{
-                    width: 600,
+                    height: 700, 
+                    overflow: 'auto',
+                    width: 900,
                     maxWidth: 800,
                     borderRadius: 'md',
                     p: 3,
@@ -93,17 +96,18 @@ const EmployeeList = (props) => {
                 <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                     <p>Nie ma wystarczającej ilosci obób, aby móc rozpocząć pracę.</p>
                     <p>W bazie znajduje się odpowiednia ilość, którą można dodać, aby rozpocząć projekt.</p>
-
+                    <br />
 
                     {props.searchEmployeeJob.map((item) => {
 
                         return (
                             <>
-                                <td>{item.specializationId}</td>
+
+                                <td><b>{item.specializationName}</b> - brakująca ilość pracy - <props.ColorRed>{item.hoursStart.toFixed(2)}</props.ColorRed> </td>
 
 
-
-                                {/* < Table
+                                <Sheet sx={{ height: 200, maxHeight:400, overflow: 'auto' }}>
+                                < Table
                                     stickyHeader
                                     stripe="odd"
                                     variant="outlined" >
@@ -112,19 +116,21 @@ const EmployeeList = (props) => {
                                             <th>Imie</th>
                                             <th>Nazwisko</th>
                                             <th>Doświadczenie</th>
+                                            <th>Ilość pracy</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {item.employeeList.map((item2) => {
+                                        {item.employeeInJobList.map((item2) => {
                                             return (
                                                 <tr>
                                                     <td>{item2.name}</td>
                                                     <td>{item2.surname}</td>
                                                     <td>{item2.experienceName}</td>
+                                                    <td>{item2.hoursJob.toFixed(2)}</td>
                                                     <td>
                                                         <Button
-                                                            onClick={() => props.viewEmployeeDetails(item2.employeeId, item.specializationId)} //zmienić
+                                                            onClick={() => props.viewEmployeeDetails(item2.employeeId, false)}
                                                             startIcon={<VisibilityIcon />}>Szczegóły
                                                         </Button>
                                                     </td>
@@ -134,7 +140,8 @@ const EmployeeList = (props) => {
 
                                     </tbody>
 
-                                </Table> */}
+                                </Table>
+                                </Sheet>
                                 <br />
 
                             </>

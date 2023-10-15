@@ -48,7 +48,7 @@ namespace inzRafalRutowski.Controllers
 
             request.JobSpecialization.ForEach(e =>
             {
-                var SmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
+                var EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                 && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
                 && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
@@ -61,13 +61,13 @@ namespace inzRafalRutowski.Controllers
                 jobSpecializationEmployee.SpecializationId = e.SpecializationId;
                 jobSpecializationEmployee.SpecializationName = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, e.SpecializationId)).Name;
 
-                if (SmployeeSpecialization == null) isOpenModalSpecialization = true;
+                if (EmployeeSpecialization == null) isOpenModalSpecialization = true;
 
-                if (SmployeeSpecialization != null) jobSpecializationEmployee.HaveSpecialist = true;
+                if (EmployeeSpecialization != null) jobSpecializationEmployee.HaveSpecialist = true;
                 else jobSpecializationEmployee.HaveSpecialist = false;
-                if (SmployeeSpecialization != null) jobSpecializationEmployee.EmployeeId = SmployeeSpecialization.EmployeeId;
+                if (EmployeeSpecialization != null) jobSpecializationEmployee.EmployeeId = EmployeeSpecialization.EmployeeId;
 
-                if (SmployeeSpecialization == null)
+                if (EmployeeSpecialization == null)
                     jobFunctions.AddEmployeeWithoutEmployerToList(e, jobSpecializationEmployee, employeeDTOListInList, _context, listEmployeeSpecializationListEmplty);
 
                 restult.Add(jobSpecializationEmployee);
@@ -121,6 +121,8 @@ namespace inzRafalRutowski.Controllers
                     if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.EmployeeId) == null)
                     {
                         var newEmployee = new Employee();
+                        newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
+                        newEmployee.Surname = _context.Employees.First(x => x.Id == e.EmployeeId).Surname;
                         newEmployee.Id = (Guid)e.EmployeeId;
                         listEmployeeFreeInTime.Add(newEmployee);
                     }
@@ -150,6 +152,7 @@ namespace inzRafalRutowski.Controllers
                 {
                     HoursStart = x.Hours,
                     SpecializationId = x.SpecializationId,
+                    SpecializationName = _context.Specializations.First(x2=> x2.Id == x.SpecializationId).Name,
                     End = request.End,
                     EmployeeInJobList = employeeInJobDTOlist
                 };
@@ -200,6 +203,9 @@ namespace inzRafalRutowski.Controllers
                                     employeeInJobDTO.EmployeeId = employeeSpecialization.EmployeeId;
                                     employeeInJobDTO.ExperienceValue = experienceValue;
                                     employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * ((double)experienceValue / 100);
+                                    employeeInJobDTO.Name = e.Name;
+                                    employeeInJobDTO.Surname = e.Surname;
+                                    employeeInJobDTO.ExperienceName = _context.Experiences.FirstOrDefault(x => x.Id == employeeSpecialization.ExperienceId).experienceName;
                                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
                                     listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
 
@@ -243,6 +249,9 @@ namespace inzRafalRutowski.Controllers
                                     employeeInJobDTO.ExperienceValue = 40;
                                     employeeInJobDTO.EmployeeId = employeeSpecializationNew.EmployeeId;
                                     employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
+                                    employeeInJobDTO.Name = e.Name;
+                                    employeeInJobDTO.Surname = e.Surname;
+                                    employeeInJobDTO.ExperienceName = "Brak doświadczenia";
                                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
                                     listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
 
@@ -290,6 +299,9 @@ namespace inzRafalRutowski.Controllers
                                     employeeInJobDTO.EmployeeId = employeeSpecialization.EmployeeId;
                                     employeeInJobDTO.ExperienceValue = e2.experienceValue;
                                     employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * ((double)e2.experienceValue / 100);
+                                    employeeInJobDTO.Name = e.Name;
+                                    employeeInJobDTO.Surname = e.Surname;
+                                    employeeInJobDTO.ExperienceName = e2.experienceName;
                                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
                                     listEmployeeInJobDTOList[FindIndexResult].Hours = e3.Hours;
 
@@ -311,11 +323,15 @@ namespace inzRafalRutowski.Controllers
                                 employeeInJobDTO.EmployeeId = employeeSpecializationNew.EmployeeId;
                                 employeeInJobDTO.ExperienceValue = 40;
                                 employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
+                                employeeInJobDTO.Name = e.Name;
+                                employeeInJobDTO.Surname = e.Surname;
+                                employeeInJobDTO.ExperienceName = "Brak doświadczenia";
                                 listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
                                 listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
 
                                 LastEmployeeId = e.Id;
                             }
+
                         }
                     });
                 });
