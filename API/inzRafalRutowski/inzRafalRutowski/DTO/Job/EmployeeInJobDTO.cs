@@ -1,5 +1,10 @@
 ﻿namespace inzRafalRutowski.DTO.Job
 {
+    public class ListEmployeeInJobDTOList
+    {
+        public List<EmployeeInJobDTOList> listEmployeeInJobDTOList { get; set; }
+        public DateTime Start { get; set; }
+    }
     public class EmployeeInJobDTOList
     {
         public int SpecializationId { get; set; }

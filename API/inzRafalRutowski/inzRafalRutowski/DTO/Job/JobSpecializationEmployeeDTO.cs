@@ -15,5 +15,7 @@
         public string SpecializationName { get; set; }
         public bool HaveSpecialist { get; set; }
         public Guid? EmployeeId { get; set; }
+        public string? Name { get; set; }
+        public string? Surname { get; set; }
     }
 }
