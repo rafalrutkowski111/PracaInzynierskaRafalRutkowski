@@ -28,9 +28,9 @@ namespace inzRafalRutowski.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<JobDTO>> GetJobs()
+        public ActionResult<List<JobDTO>> GetJobs([FromQuery] int userId)
         {
-            var restult = _context.Jobs.ToList();
+            var restult = _context.Jobs.Where(x=> int.Equals(x.EmployerId, userId)).ToList();
 
             var resultDTO = _mapper.Map<List<JobDTO>>(restult);
 
@@ -428,6 +428,7 @@ namespace inzRafalRutowski.Controllers
         [HttpPost]
         public async Task<IActionResult> AddJob([FromBody] JobDTO request)
         {
+            //zapisanie eventu dla konkretnego użytkownika
             var result = _mapper.Map<Job>(request);
             _context.Jobs.Add(result);
             await _context.SaveChangesAsync();

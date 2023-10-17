@@ -53,9 +53,10 @@ const messagesPl = {
 const MyCalendar = (props) => {
 
   const [events, setEvents] = useState([]);
+  const userId = sessionStorage.getItem("userId");
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/Job')
+    axios.get('http://localhost:5000/api/Job', { params: { userId: userId } })
       .then(response => {
         setEvents(response.data)
       })
