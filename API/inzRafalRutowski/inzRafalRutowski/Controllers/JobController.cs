@@ -60,7 +60,7 @@ namespace inzRafalRutowski.Controllers
 
                 jobSpecializationEmployee.SpecializationId = e.SpecializationId;
                 jobSpecializationEmployee.SpecializationName = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, e.SpecializationId)).Name;
-                if(EmployeeSpecialization != null)
+                if (EmployeeSpecialization != null)
                 {
                     jobSpecializationEmployee.Name = _context.Employees.FirstOrDefault(x => x.Id == EmployeeSpecialization.EmployeeId).Name;
                     jobSpecializationEmployee.Surname = _context.Employees.FirstOrDefault(x => x.Id == EmployeeSpecialization.EmployeeId).Surname;
@@ -87,7 +87,7 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
-            DateTime EndWorkDay = new DateTime();
+            DateTime EndWorkDay = request.End;
             bool CanStartWork = false;
             var listEmployeeSpecialization = new List<EmployeeSpecialization>();
 
@@ -108,6 +108,21 @@ namespace inzRafalRutowski.Controllers
                             listEmployeeFreeInTime.Remove(e2);
                     });
                 });
+                List<CopyListJobSpecialization> copySpecializationsWithHours = new List<CopyListJobSpecialization>();
+
+                specializationsWithHours.ForEach(x =>
+                {
+                    copySpecializationsWithHours.Add(new CopyListJobSpecialization(x));
+                });
+
+                copySpecializationsWithHours.ForEach(x =>
+                {
+                    if (x.Hours < 0)
+                    {
+                        specializationsWithHours.Remove(specializationsWithHours.Find(x2 => x2.SpecializationId == x.SpecializationId));
+                    }
+                });
+                copySpecializationsWithHours.Clear();
             }
             else
             {
@@ -153,7 +168,7 @@ namespace inzRafalRutowski.Controllers
                 {
                     HoursStart = x.Hours,
                     SpecializationId = x.SpecializationId,
-                    SpecializationName = _context.Specializations.First(x2=> x2.Id == x.SpecializationId).Name,
+                    SpecializationName = _context.Specializations.First(x2 => x2.Id == x.SpecializationId).Name,
                     End = request.End,
                     EmployeeInJobList = employeeInJobDTOlist
                 };
@@ -178,8 +193,11 @@ namespace inzRafalRutowski.Controllers
                         var specializationMostHoursList = specializationsWithHours.OrderByDescending(x2 => x2.Hours).ToList();
                         EmployeeSpecialization employeeSpecialization = null;
                         specializationMostHoursList.ForEach(x3 =>
-                        employeeSpecialization = employeeSpecializationList.FirstOrDefault(x4 => x4.SpecializationId == x3.SpecializationId));
-
+                        {
+                            if(employeeSpecialization == null)
+                            employeeSpecialization = employeeSpecializationList.FirstOrDefault(x4 => x4.SpecializationId == x3.SpecializationId);
+                        }
+                        );
 
                         if ((employeeSpecialization == null && e2.Equals(lastExperianceDescending) && e3.Equals(lastSpecializationsWithHours) || employeeSpecialization != null)
                         && LastEmployeeId != e.Id)
@@ -188,8 +206,6 @@ namespace inzRafalRutowski.Controllers
 
                             if (specializationMostHours.Hours < 0)
                             {
-                                CanStartWork = true;
-
                                 employeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(e5 => e5.EmployeeId == e.Id
                                && e5.SpecializationId == specializationMostHours.SpecializationId);
                                 if (employeeSpecialization != null)
@@ -347,6 +363,10 @@ namespace inzRafalRutowski.Controllers
                                 LastEmployeeId = e.Id;
                             }
 
+                            specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
+                            if (specializationMostHours.Hours < 0)
+                                CanStartWork = true;
+
                         }
                     });
                 });
@@ -391,7 +411,7 @@ namespace inzRafalRutowski.Controllers
                 if (leftHours != 0)
                 {
                     hours = new TimeSpan(8 + leftHours, 0, 0); //dodanie godzin
-                } 
+                }
                 else hours = new TimeSpan(16, 0, 0);
 
                 newDateEnd = newDateEnd.Date + hours;

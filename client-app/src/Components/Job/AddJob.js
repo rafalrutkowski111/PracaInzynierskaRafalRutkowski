@@ -11,6 +11,7 @@ import ViewSpecializationAndHours from "./ViewSpecializationAndHours";
 import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./SpecializationModal";
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
 import { SummaryModal } from "./SummaryModal";
+import * as dayjs from 'dayjs'
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -73,17 +74,20 @@ const AddJob = () => {
     const [searchEmployeeJob, setSearchEmployeeJob] = useState([]);
     const [modalOpenEmployeeList, setModalOpenEmployeeList] = useState(false);
     const [viewSpecialist, setViewSpecialist] = useState(false);
-    const [listEmployeeAddToJob, setListEmployeeAddToJob] = useState([])
+    const [listEmployeeAddToJob, setListEmployeeAddToJob] = useState([{employeeInJobList:[{name:'', surname:''}]}])
     const [disableButtonEmployee, setDisableButtonEmployee] = useState(true);
     const [heightModal, setHeightModal] = useState(700)
     const [modalOpenSummary, setModalOpenSummary] = useState(false);
     const [endDayWork, setEndDayWork] = useState('');
+    const [startDayWork, setStartDayWork] = useState('');
 
     const userId = sessionStorage.getItem("userId");
 
-    //console.log(dataListSpecialization)
+    //                                      POTEM TO DODAĆ JAKO CZAS ROZPOCZĘCIA I ZAKOŃCZENIA (sprawdzić jak zapisują sie dni dla specjalizacji)
+    //                                      dayjs(endDayWork).add(1, "day")
+    //                                      dataStart.add(1, "day")
+    //console.log(endDayWork)
     //console.log("aa")
-    //console.log(searchEmployeeJob)
     //console.log(listEmployeeAddToJob)
     //console.log(searchEmployee)
     useEffect(() => {
@@ -246,7 +250,7 @@ const AddJob = () => {
                     findIndex2 = findIndextemp2;
                     data.hoursStart -= searchEmployeeJob[findIndex1].employeeInJobList[findIndex2].hoursJob
 
-                    if (data.hoursStart < 0) { needRemove = true }
+                    if (data.hoursStart <= 0) { needRemove = true }
                 }
                 findIndextemp2++
                 return data2
@@ -256,15 +260,7 @@ const AddJob = () => {
         })
         setSearchEmployeeJob(updatesearchEmployeeJob)
 
-        const list = [...searchEmployeeJob];
-        list[findIndex1].employeeInJobList.splice(findIndex2, 1)
-        setSearchEmployeeJob(list)
 
-        if (needRemove == true) {
-            const listSearchEmployeeJob = [...searchEmployeeJob];
-            listSearchEmployeeJob.splice(findIndex1, 1)
-            setSearchEmployeeJob(listSearchEmployeeJob)
-        }
 
         findIndextemp1 = 0;
         findIndextemp2 = 0;
@@ -282,6 +278,17 @@ const AddJob = () => {
             return data
         })
         setListEmployeeAddToJob(addElementListEmployeeAddToJob)
+
+        const list = [...searchEmployeeJob];
+        list[findIndex1].employeeInJobList.splice(findIndex2, 1)
+        setSearchEmployeeJob(list)
+
+        if (needRemove == true) {
+            const listSearchEmployeeJob = [...searchEmployeeJob];
+            listSearchEmployeeJob.splice(findIndex1, 1)
+            setSearchEmployeeJob(listSearchEmployeeJob)
+        }
+
         setModalOpenViewEmployee(false)
     }
 
@@ -321,13 +328,7 @@ const AddJob = () => {
             {
                 listEmployeeInJobDTOList: listEmployeeAddToJob, start: dataStart.add(1, "day")
             },)
-            .then(response => { console.log(response) })
-
-
-        console.log("asdasdas")
-        console.log(listEmployeeAddToJob)
-        // tu trzeba przemielić dane
-        //setEndDayWork
+            .then(response => { setEndDayWork(response.data.endWorkDay); setListEmployeeAddToJob(response.data.listEmployeeInJob) })
         setModalOpenEmployeeList(false)
         setModalOpenSummary(true)
     }
@@ -343,8 +344,9 @@ const AddJob = () => {
                 updatedataEmployeeWithSpecialization(props.dataEmployeeWithSpecialization); // aktualizacja specjalistów, też dane do rozpoczecia pracy
 
                 //console.log("mmmmmmmmm")
-                //console.log(response2.data)
+                console.log(response2.data)
                 setEndDayWork(response2.data.endWorkDay)
+                setStartDayWork(dataStart.format('DD/MM/YYYY'))
 
                 if (response2.data.canStartWork === true) {
                     setModalOpenSummary(true) //podsumowanie
@@ -356,11 +358,11 @@ const AddJob = () => {
                             start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployeeWithoutEmployer: true
                         },)
                         .then(response => {
+                            //console.log(response)
                             if (response.data.canStartWork === true) {
                                 setSearchEmployeeJob(response.data.listEmployeeInJob)
                                 setModalOpen(false)
                                 setModalOpenEmployeeList(true)
-                                // testować malarz200 testowa1 800
                             }
                             else { setModalOpenNotEnoughEmployee(true) }
                         })
@@ -422,6 +424,7 @@ const AddJob = () => {
         return (
             <SummaryModal ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} setModalOpenSummary={setModalOpenSummary}
                 modalOpenSummary={modalOpenSummary} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
+                endDayWork={endDayWork} startDayWork={startDayWork} listEmployeeAddToJob={listEmployeeAddToJob}
             />
         )
     }

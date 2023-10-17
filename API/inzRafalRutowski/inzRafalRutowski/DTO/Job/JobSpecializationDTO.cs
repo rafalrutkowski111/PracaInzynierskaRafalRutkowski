@@ -2,6 +2,21 @@
 
 namespace inzRafalRutowski.DTO.Job
 {
+    public class CopyListJobSpecialization
+    {
+
+        public CopyListJobSpecialization(ListJobSpecialization x)
+        {
+            SpecializationId = x.SpecializationId;
+            Hours = x.Hours;
+            Disabled = x.Disabled;
+        }
+
+        public int SpecializationId { get; set; }
+        public double Hours { get; set; }
+        public bool? Disabled { get; set; }
+
+    }
     public class ListJobSpecialization
     {
         public int SpecializationId { get; set; }
