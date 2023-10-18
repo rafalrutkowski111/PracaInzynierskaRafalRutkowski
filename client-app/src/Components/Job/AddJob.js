@@ -12,6 +12,7 @@ import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./Spe
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
 import { SummaryModal } from "./SummaryModal";
 import * as dayjs from 'dayjs'
+import TextField from '@mui/material/TextField';
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -74,12 +75,13 @@ const AddJob = () => {
     const [searchEmployeeJob, setSearchEmployeeJob] = useState([]);
     const [modalOpenEmployeeList, setModalOpenEmployeeList] = useState(false);
     const [viewSpecialist, setViewSpecialist] = useState(false);
-    const [listEmployeeAddToJob, setListEmployeeAddToJob] = useState([{employeeInJobList:[{name:'', surname:''}]}])
+    const [listEmployeeAddToJob, setListEmployeeAddToJob] = useState([{ employeeInJobList: [{ name: '', surname: '' }] }])
     const [disableButtonEmployee, setDisableButtonEmployee] = useState(true);
     const [heightModal, setHeightModal] = useState(700)
     const [modalOpenSummary, setModalOpenSummary] = useState(false);
     const [endDayWork, setEndDayWork] = useState('');
     const [startDayWork, setStartDayWork] = useState('');
+    const [title, setTitle] = useState('');
 
     const userId = sessionStorage.getItem("userId");
 
@@ -150,7 +152,7 @@ const AddJob = () => {
 
         setOpenAddSpecialization(true)
 
-        if (dataStart !== "" && dataEnd !== "")
+        if (dataStart !== "" && dataEnd !== "" && title !== "")
             setOpenAddEmployee(false)
         else setOpenAddEmployee(true)
     }
@@ -176,7 +178,7 @@ const AddJob = () => {
     const changeStartDate = (e) => {
         setDataStart(e)
 
-        if (dataListSpecialization.length - 1 >= 0 && e !== "" && dataEnd !== "")
+        if (dataListSpecialization.length - 1 >= 0 && e !== "" && dataEnd !== "" && title !== "")
             setOpenAddEmployee(false)
         else setOpenAddEmployee(true)
     }
@@ -184,9 +186,20 @@ const AddJob = () => {
     const changeEndDate = (e) => {
         setDataEnd(e)
 
-        if (dataListSpecialization.length - 1 >= 0 && dataStart !== "" && e !== "")
+        if (dataListSpecialization.length - 1 >= 0 && dataStart !== "" && e !== "" && title !== "")
             setOpenAddEmployee(false)
         else setOpenAddEmployee(true)
+    }
+    const changeTitle = (e) =>{
+        const currentDate = new Date();
+        if (e.target.value === '') {
+            e.target.value = "Praca-" + dayjs(currentDate).format('DD/MM/YYYY-HH.mm');
+        }
+        setTitle(e.target.value)
+
+        if (dataListSpecialization.length - 1 >= 0 && dataEnd !== "" && dataStart)
+        setOpenAddEmployee(false)
+    else setOpenAddEmployee(true)
     }
 
     const startValidation = (date) => {
@@ -439,6 +452,14 @@ const AddJob = () => {
 
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>
+            </TittleContainer>
+            <TittleContainer>
+                <TextField
+                    InputLabelProps={{ shrink: true }}
+                    onChange={e => changeTitle(e)}
+                    id="outlined-basic"
+                    label="Nazwa pracy"
+                    variant="outlined" />
             </TittleContainer>
             <DataContainer>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
