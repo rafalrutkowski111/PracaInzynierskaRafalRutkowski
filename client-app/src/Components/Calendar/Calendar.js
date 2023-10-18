@@ -50,6 +50,10 @@ const messagesPl = {
   showMore: total => `+${total} więcej`,
 }
 
+ // https://www.youtube.com/watch?v=ZFhDJAOd9Tg&list=PLAH22H3_Ih9EVU8RqQM7DK3SLJb9HSwWQ&ab_channel=CodingGalore
+ // zmiana koloru 25minuta
+  //ograniczyć terminarz od 8 do 16
+ 
 const MyCalendar = (props) => {
 
   const [events, setEvents] = useState([]);
@@ -74,7 +78,7 @@ const MyCalendar = (props) => {
         localizer={localizer}
         events={events}
         startAccessor={(event) => { return new Date(event.start) }}
-        endAccessor={(event) => { return new Date(event.end) }}
+        endAccessor={(event) => { return new Date(event.currentEnd) }}
         culture='pl'
         style={{ height: 600 }}
         messages={messagesPl}

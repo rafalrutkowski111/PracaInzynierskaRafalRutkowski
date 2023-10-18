@@ -6,10 +6,6 @@ import Table from '@mui/joy/Table';
 import * as dayjs from 'dayjs'
 
 const SummaryModal = (props) => {
-    // console.log("ffffff")
-    // console.log(props.listEmployeeAddToJob)
-   // console.log(props.startDayWork.$d)
-   // const aaa = props.startDayWork.;
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -46,8 +42,10 @@ const SummaryModal = (props) => {
 
 
                 <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                    <p>Czas rozpoczęcia pracy - {props.startDayWork}</p> 
-                    <p>Czas zakończenia pracy - {dayjs(props.endDayWork).subtract(1, "day").format('DD/MM/YYYY')}</p>
+                    <p>Termin rozpoczęcia pracy - {props.startDayWork}</p> 
+                    <p>Termin zakończenia pracy - {dayjs(props.dataEnd).format('DD/MM/YYYY')}</p>
+                    <p>Czas zakończenia pracy - {dayjs(props.endDayWork).subtract(1, "day").format('DD/MM/YYYY-HH.mm')}</p>
+                    
                     <p>Specjalizacje</p>
          
                             <Sheet sx={{ height: 200, maxHeight: 400, overflow: 'auto' }}>
@@ -139,7 +137,7 @@ const SummaryModal = (props) => {
                         type="submit"
                         id="button"
                         value="Dodaj prace"
-                        onClick={() => { }} // fukcja do dodania pracy
+                        onClick={() => { props.addNewJob() }}
                     />
                     <props.ButtonBootstrapBack
                         type="submit"

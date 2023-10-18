@@ -18,11 +18,13 @@ namespace inzRafalRutowski.Mapper
             CreateMap<JobDTO, Job>()
                 .ForMember(m => m.TimeFinishJob, c => c.MapFrom(s => s.End))
                 .ForMember(m => m.TimeStartJob, c => c.MapFrom(s => s.Start))
+                .ForMember(m => m.CurrentTimeFinishJob, c => c.MapFrom(s => s.CurrentEnd))
                 .ForMember(m => m.Description, c => c.MapFrom(s => s.Desc));
 
             CreateMap<Job, JobDTO>()
               .ForMember(m => m.End, c => c.MapFrom(s => s.TimeFinishJob))
               .ForMember(m => m.Start, c => c.MapFrom(s => s.TimeStartJob))
+              .ForMember(m => m.CurrentEnd, c => c.MapFrom(s => s.CurrentTimeFinishJob))
               .ForMember(m => m.Desc, c => c.MapFrom(s => s.Description));
 
         }

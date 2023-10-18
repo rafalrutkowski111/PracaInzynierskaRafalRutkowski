@@ -11,6 +11,7 @@ using inzRafalRutowski.DTO.Job;
 using System.Linq;
 using System.ComponentModel;
 using System;
+using System.Diagnostics.Eventing.Reader;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -87,7 +88,9 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
+            TimeSpan resetHours = new TimeSpan(16, 00, 0);
             DateTime EndWorkDay = request.End;
+            EndWorkDay = EndWorkDay.Date + resetHours;
             bool CanStartWork = false;
             var listEmployeeSpecialization = new List<EmployeeSpecialization>();
 
@@ -312,8 +315,7 @@ namespace inzRafalRutowski.Controllers
 
                                 }
                                 var specializationMostHoursTemp = specializationsWithHours.OrderBy(x => x.Hours).First();
-                                EndWorkDay = listEmployeeInJobDTOList.First(x => x.SpecializationId == specializationMostHoursTemp.SpecializationId).End;
-
+                                EndWorkDay = listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
 
                                 LastEmployeeId = e.Id;
                             }
@@ -428,35 +430,81 @@ namespace inzRafalRutowski.Controllers
         [HttpPost]
         public async Task<IActionResult> AddJob([FromBody] JobDTO request)
         {
-            //zapisanie eventu dla konkretnego użytkownika
+            List<Employee> employeeList= new List<Employee>();
+
+            var desc = "Termin rozpoczęcia pracy-" + request.Start.ToString("yyyy-MM-dd") +
+                " Termin zakończenia pracy-" + request.End.ToString("yyyy-MM-dd") +
+                " Czas zakończenia pracy-" + request.CurrentEnd;
+
+            request.ListEmployeeAddToJob.ForEach(x =>
+            {
+                desc += " Specjalizacja-" + x.SpecializationName;
+                desc += " Czas zakończenia-" + x.End;
+                desc += " Osoba odpowiedzialna-" + x.ResponsiblePersonName + " " + x.ResponsiblePersonSurname;
+                desc += " Pracownicy - doświadczenie: ";
+
+                x.EmployeeInJobList.ForEach(x2 =>
+                {
+                    desc += " " + x2.Name + " " + x2.Surname + "- " + x2.ExperienceName;
+                
+                    var employee = _context.Employees.FirstOrDefault(x3 => x3.Id == x2.EmployeeId && x3.IsEmployed == false);
+
+                    if (employee != null) employeeList.Add(employee);
+
+                });
+
+            });
+
+            //złe podajście, trzeba przesłać liste pracowników do dodania i tu sprawdzać czy zmiany nie nastąpiły- jakaś tranzakcja, albo badrequest w przed zapisem
+
+
+                employeeList.ForEach(async x =>
+                {
+                    var employee = _context.Employees.First(x2 => x2.Id == x.Id);
+                    if (employee.Employer == null && employee.IsEmployed == false)
+                    {
+                        employee.EmployerId = request.EmployerId;
+                        employee.IsEmployed = true;
+                    }
+                });
+
+                await _context.SaveChangesAsync();
+
+
+
+            TimeSpan resetHours = new TimeSpan(8, 00, 0);
+            request.Start = request.Start.Date + resetHours;
+
+            request.Desc = desc;
             var result = _mapper.Map<Job>(request);
             _context.Jobs.Add(result);
             await _context.SaveChangesAsync();
 
             var currentJobId = await _context.Jobs.OrderBy(x => x.Id).LastOrDefaultAsync();
 
+            //dodanie do jobEmployee wszystkich pracowników uwzględniając któro jest odpowiedzialny za specjalizacje
 
-
-            //będzie jeszcze przesyłana lista z user id i czas trwania pracy, na razie na sztywno dodane praametry
-            var test111 = new List<Guid>();
-            test111.Add(Guid.Parse("829d9fd0-3bf7-43f7-a28c-d80ee18e4472"));
-            test111.Add(Guid.Parse("b0d3a1bf-04d8-4a31-bde1-80fcd1f88f75"));
-
-            test111.ForEach(async x =>
+            request.ListEmployeeAddToJob.ForEach(x =>
             {
-                var jobEmployee = new JobEmployee();
+                x.EmployeeInJobList.ForEach(x2 =>
+                {
+                    var jobEmployee = new JobEmployee();
 
-                jobEmployee.EmployerId = request.EmployerId;
-                jobEmployee.EmployeeId = x;
-                jobEmployee.JobId = currentJobId.Id;
-                jobEmployee.IsNeed = false; // będzie trzeba przesyłać czy jest i zmienić tu
-                jobEmployee.TimeStartJob = request.Start;
-                jobEmployee.TimeFinishJob = request.End;
+                    jobEmployee.EmployerId = request.EmployerId;
+                    jobEmployee.EmployeeId = x2.EmployeeId;
+                    jobEmployee.JobId = currentJobId.Id;
+                    jobEmployee.TimeStartJob = request.Start;
+                    jobEmployee.TimeFinishJob = x.End;
+                    if(x.ResponsiblePersonEmployeeId == x2.EmployeeId)
+                        jobEmployee.IsNeed = true;
+                    else 
+                    jobEmployee.IsNeed = false;
 
-                _context.JobEmployees.Add(jobEmployee);
+                    _context.JobEmployees.Add(jobEmployee);
+                });
             });
-            await _context.SaveChangesAsync();
 
+            await _context.SaveChangesAsync();
 
             return Ok();
         }

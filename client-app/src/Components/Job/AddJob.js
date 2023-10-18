@@ -122,14 +122,6 @@ const AddJob = () => {
                     })
                 }
             })
-
-        // axios.post('http://localhost:5000/api/Job', {
-        //     title: "title", desc: "description",
-        //     start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId
-        // })
-        //     .then(response => {
-        //         console.log(response)
-        //     })
     }
     const addSpecialization = () => {
         const list = [...dataListSpecialization];
@@ -190,7 +182,7 @@ const AddJob = () => {
             setOpenAddEmployee(false)
         else setOpenAddEmployee(true)
     }
-    const changeTitle = (e) =>{
+    const changeTitle = (e) => {
         const currentDate = new Date();
         if (e.target.value === '') {
             e.target.value = "Praca-" + dayjs(currentDate).format('DD/MM/YYYY-HH.mm');
@@ -198,8 +190,8 @@ const AddJob = () => {
         setTitle(e.target.value)
 
         if (dataListSpecialization.length - 1 >= 0 && dataEnd !== "" && dataStart)
-        setOpenAddEmployee(false)
-    else setOpenAddEmployee(true)
+            setOpenAddEmployee(false)
+        else setOpenAddEmployee(true)
     }
 
     const startValidation = (date) => {
@@ -357,7 +349,7 @@ const AddJob = () => {
                 updatedataEmployeeWithSpecialization(props.dataEmployeeWithSpecialization); // aktualizacja specjalistów, też dane do rozpoczecia pracy
 
                 //console.log("mmmmmmmmm")
-                console.log(response2.data)
+                //console.log(response2.data)
                 setEndDayWork(response2.data.endWorkDay)
                 setStartDayWork(dataStart.format('DD/MM/YYYY'))
 
@@ -380,6 +372,27 @@ const AddJob = () => {
                             else { setModalOpenNotEnoughEmployee(true) }
                         })
                 }
+            })
+    }
+    const addNewJob = () => {
+        console.log(dataEmployeeWithSpecialization)
+
+        const updatelistEmployeeAddToJob = listEmployeeAddToJob.map(x => {
+            const temp = dataEmployeeWithSpecialization.find(x2 => x2.specializationId === x.specializationId);
+            x.responsiblePersonName = temp.name;
+            x.responsiblePersonSurname = temp.surname
+            x.responsiblePersonEmployeeId = temp.employeeId
+
+            return x;
+        })
+        setListEmployeeAddToJob(updatelistEmployeeAddToJob)
+
+        axios.post('http://localhost:5000/api/Job', {
+            title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob,
+            start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
+        })
+            .then(response => {
+                console.log(response)
             })
     }
 
@@ -437,7 +450,8 @@ const AddJob = () => {
         return (
             <SummaryModal ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} setModalOpenSummary={setModalOpenSummary}
                 modalOpenSummary={modalOpenSummary} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
-                endDayWork={endDayWork} startDayWork={startDayWork} listEmployeeAddToJob={listEmployeeAddToJob}
+                endDayWork={endDayWork} startDayWork={startDayWork} listEmployeeAddToJob={listEmployeeAddToJob} addNewJob={addNewJob}
+                dataEnd={dataEnd}
             />
         )
     }
