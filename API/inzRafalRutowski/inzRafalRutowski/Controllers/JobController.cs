@@ -180,6 +180,8 @@ namespace inzRafalRutowski.Controllers
             }
             );
 
+            //można by jakoś posortować listEmployeeFreeInTime, aby algorytm był bardziej dokłądny
+
             listEmployeeFreeInTime.ForEach(e =>
             {
                 experianceDescending.ForEach(e2 =>
@@ -364,6 +366,7 @@ namespace inzRafalRutowski.Controllers
 
                                 LastEmployeeId = e.Id;
                             }
+                            //w sumie w ele if i w else nie ma wylicznej newDateEnd więc w niektórych przypadkach może podawać end date zamiast dokładnej
 
                             specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
                             if (specializationMostHours.Hours < 0)
@@ -373,6 +376,12 @@ namespace inzRafalRutowski.Controllers
                     });
                 });
             });
+
+            //żeby algorytm był dokładniejszy można ciagle te same dane do niego dawać, zmieniając czas zakończenia o ile ten sie zmienił, wtedy istnieje możliwość,
+            // że bęzie dostępnych więcej pracowników. Problem byłby przy usuwaniu pracowników w podsumowaniu (o ile dodam taką opcję), bo za każdym razem będzie
+            // bo musielibyśmy sprawdzać czy przy usuwaniu pracownika a dalej pracownik b będzie dostępny jeżei zmieni się czas zakończenia, bo jeżeli nie to 
+            // wtedy również pracownik b musiałby być usunięty i wtedy byłoby trzeba sprawdzać czy czasowo praca będzie mogła się odbyć, wypadałboby też dać komunikat o
+            // zmianach
             return Ok(new
             {
                 ListEmployeeInJob = listEmployeeInJobDTOList,
@@ -386,6 +395,8 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("UpdateTimeJob")]
         public IActionResult UpdateTimeJob([FromBody] ListEmployeeInJobDTOList request)
         {
+            //kończąc na niedzieli powinno cofać się do piątku
+
             request.listEmployeeInJobDTOList.ForEach(x =>
             {
                 double workAllEmployeeInSpecializationIn1h = 0;
@@ -458,17 +469,17 @@ namespace inzRafalRutowski.Controllers
             //złe podajście, trzeba przesłać liste pracowników do dodania i tu sprawdzać czy zmiany nie nastąpiły- jakaś tranzakcja, albo badrequest w przed zapisem
 
 
-                employeeList.ForEach(async x =>
-                {
-                    var employee = _context.Employees.First(x2 => x2.Id == x.Id);
-                    if (employee.Employer == null && employee.IsEmployed == false)
-                    {
-                        employee.EmployerId = request.EmployerId;
-                        employee.IsEmployed = true;
-                    }
-                });
+                //employeeList.ForEach(async x =>
+                //{
+                //    var employee = _context.Employees.First(x2 => x2.Id == x.Id);
+                //    if (employee.Employer == null && employee.IsEmployed == false)
+                //    {
+                //        employee.EmployerId = request.EmployerId;
+                //        employee.IsEmployed = true;
+                //    }
+                //});
 
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
 
 
 
@@ -482,27 +493,26 @@ namespace inzRafalRutowski.Controllers
 
             var currentJobId = await _context.Jobs.OrderBy(x => x.Id).LastOrDefaultAsync();
 
-            //dodanie do jobEmployee wszystkich pracowników uwzględniając któro jest odpowiedzialny za specjalizacje
 
-            request.ListEmployeeAddToJob.ForEach(x =>
-            {
-                x.EmployeeInJobList.ForEach(x2 =>
-                {
-                    var jobEmployee = new JobEmployee();
+            //request.ListEmployeeAddToJob.ForEach(x =>
+            //{
+            //    //mejbi tu dodawać najpierw osobe odpowiedzialna, a potem na dole sprawdzać po id czy jest i ją pomijać + zrobić idSpecjalizacji żeby łatwo ogarnąć osoby odpowiedzialne za prace
+            //    x.EmployeeInJobList.ForEach(x2 =>
+            //    {
+            //        var jobEmployee = new JobEmployee();
 
-                    jobEmployee.EmployerId = request.EmployerId;
-                    jobEmployee.EmployeeId = x2.EmployeeId;
-                    jobEmployee.JobId = currentJobId.Id;
-                    jobEmployee.TimeStartJob = request.Start;
-                    jobEmployee.TimeFinishJob = x.End;
-                    if(x.ResponsiblePersonEmployeeId == x2.EmployeeId)
-                        jobEmployee.IsNeed = true;
-                    else 
-                    jobEmployee.IsNeed = false;
-
-                    _context.JobEmployees.Add(jobEmployee);
-                });
-            });
+            //        jobEmployee.EmployerId = request.EmployerId;
+            //        jobEmployee.EmployeeId = x2.EmployeeId;
+            //        jobEmployee.JobId = currentJobId.Id;
+            //        jobEmployee.TimeStartJob = request.Start;
+            //        jobEmployee.TimeFinishJob = x.End;
+            //        if(x.ResponsiblePersonEmployeeId == x2.EmployeeId)
+            //            jobEmployee.IsNeed = true;
+            //        else 
+            //        jobEmployee.IsNeed = false;
+            //        _context.JobEmployees.Add(jobEmployee);
+            //    });
+            //});
 
             await _context.SaveChangesAsync();
 

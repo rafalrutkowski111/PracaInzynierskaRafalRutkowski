@@ -82,6 +82,8 @@ const MyCalendar = (props) => {
         culture='pl'
         style={{ height: 600 }}
         messages={messagesPl}
+        min={moment("1999-01-01T08:00:00").toDate()}
+        max={moment("2200-01-10T16:00:00").toDate()}
       />
       < ButtonContainer >
         <Button

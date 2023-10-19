@@ -85,9 +85,6 @@ const AddJob = () => {
 
     const userId = sessionStorage.getItem("userId");
 
-    //                                      POTEM TO DODAĆ JAKO CZAS ROZPOCZĘCIA I ZAKOŃCZENIA (sprawdzić jak zapisują sie dni dla specjalizacji)
-    //                                      dayjs(endDayWork).add(1, "day")
-    //                                      dataStart.add(1, "day")
     //console.log(endDayWork)
     //console.log("aa")
     //console.log(listEmployeeAddToJob)
