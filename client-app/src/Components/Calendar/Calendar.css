@@ -1,0 +1,9 @@
+.rbc-event{
+    padding: 0 !important;
+}
+.rbc-event:focus{
+    outline-color: black !important;
+    outline-width: 20px !important;
+    padding: 1px !important; 
+}
+

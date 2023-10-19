@@ -11,6 +11,7 @@ namespace inzRafalRutowski.DTO.Job
         public string Desc { get; set; }
         public int EmployerId { get; set; }
         public List<ListEmployeeAddToJob> ListEmployeeAddToJob { get; set; }
+        public string Color { get; set; }
 
     }
 

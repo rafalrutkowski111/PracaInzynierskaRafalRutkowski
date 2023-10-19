@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import 'moment/locale/pl';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import "./Calendar.css"
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -29,10 +30,27 @@ function EventAgenda({ event }) {
   )
 }
 
+function EventColor({ event }) {
+  return (
+    <div style={{ background: event.color, color: 'white', padding: "2px 5px"}}>{event.title}</div>
+  )
+}
+
+
 const components = {
   agenda: {
     event: EventAgenda,
   },
+  month: {
+    event: EventColor,
+  },
+  week: {
+    event: EventColor,
+  },
+  day: {
+    event: EventColor,
+  },
+
 }
 
 const messagesPl = {
@@ -49,11 +67,7 @@ const messagesPl = {
   allDay: "Cały dzień",
   showMore: total => `+${total} więcej`,
 }
-
- // https://www.youtube.com/watch?v=ZFhDJAOd9Tg&list=PLAH22H3_Ih9EVU8RqQM7DK3SLJb9HSwWQ&ab_channel=CodingGalore
- // zmiana koloru 25minuta
-  //ograniczyć terminarz od 8 do 16
- 
+  // mejbi edycje zrobić na evencie. Jak klikniemy na prace to odblokowuje sie button edycji i po nacisnieciu edytujemy konkretna prace
 const MyCalendar = (props) => {
 
   const [events, setEvents] = useState([]);

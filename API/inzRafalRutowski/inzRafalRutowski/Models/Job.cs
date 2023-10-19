@@ -8,6 +8,7 @@
         public DateTime CurrentTimeFinishJob { get; set; }
         public string Title { get; set; }
         public string Description { get; set; } // w przyszłości json przechowujący ważne rzeczy z innych tabel
+        public string Color { get; set; }
 
 
         public int EmployerId { get; set; }

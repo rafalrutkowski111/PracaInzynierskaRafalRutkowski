@@ -385,7 +385,7 @@ const AddJob = () => {
         setListEmployeeAddToJob(updatelistEmployeeAddToJob)
 
         axios.post('http://localhost:5000/api/Job', {
-            title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob,
+            title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob, color: "",
             start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
         })
             .then(response => {

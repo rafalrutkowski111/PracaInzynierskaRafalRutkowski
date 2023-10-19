@@ -488,6 +488,11 @@ namespace inzRafalRutowski.Controllers
 
             request.Desc = desc;
             var result = _mapper.Map<Job>(request);
+
+            if(request.End.Date == request.CurrentEnd.Date) result.Color = "#3174ad"; //niebieski
+            else if(request.End<request.CurrentEnd) result.Color = "#b40000"; //czerwony
+            else result.Color = "#388700"; //zielony
+
             _context.Jobs.Add(result);
             await _context.SaveChangesAsync();
 
