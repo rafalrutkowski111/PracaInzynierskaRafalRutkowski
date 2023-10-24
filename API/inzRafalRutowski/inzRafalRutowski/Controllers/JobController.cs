@@ -88,9 +88,7 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
-            TimeSpan resetHours = new TimeSpan(16, 00, 0);
-            DateTime EndWorkDay = request.End;
-            EndWorkDay = EndWorkDay.Date + resetHours;
+            DateTime EndWorkDay = request.Start;
             bool CanStartWork = false;
             var listEmployeeSpecialization = new List<EmployeeSpecialization>();
 
@@ -180,7 +178,9 @@ namespace inzRafalRutowski.Controllers
             }
             );
 
-            //można by jakoś posortować listEmployeeFreeInTime, aby algorytm był bardziej dokłądny
+            // można by jakoś posortować listEmployeeFreeInTime, aby algorytm był bardziej dokłądny
+            // ogolnie algortm jest niewydajny, słabe podejście robić tyle pętel, program nie jest przystowsowany do dużej ilości danch
+            // wypadałoby napisać jakieś zapytanie łączące tabele i sortujące, coś jak w poście wyżej
 
             listEmployeeFreeInTime.ForEach(e =>
             {
@@ -255,11 +255,11 @@ namespace inzRafalRutowski.Controllers
                                     TimeSpan hours = new TimeSpan(0, 0, 0);
                                     if (leftHours != 0)
                                     {
-                                        hours = new TimeSpan(8 + leftHours, 0, 0); //dodanie godzin
+                                        hours = new TimeSpan(7 + leftHours, 0, 0); //dodanie godzin
                                     }
-                                    else hours = new TimeSpan(16, 0, 0);
+                                    else hours = new TimeSpan(15, 0, 0);
 
-                                    newDateEnd = newDateEnd.Date + hours;
+                                    newDateEnd = newDateEnd.Date.AddDays(2) + hours;
                                     listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
 
                                 }
@@ -287,7 +287,7 @@ namespace inzRafalRutowski.Controllers
                                     double workAllEmployeeInSpecializationIn1h = 0;
                                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
                                     {
-                                        workAllEmployeeInSpecializationIn1h += ((double)40 / 100);
+                                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
                                     });
 
                                     double allHours = 0;
@@ -308,17 +308,15 @@ namespace inzRafalRutowski.Controllers
                                     TimeSpan hours = new TimeSpan(0, 0, 0);
                                     if (leftHours != 0)
                                     {
-                                        hours = new TimeSpan(8 + leftHours, 0, 0); //dodanie godzin
+                                        hours = new TimeSpan(7 + leftHours, 0, 0);
                                     }
-                                    else hours = new TimeSpan(16, 0, 0);
+                                    else hours = new TimeSpan(15, 0, 0);
 
-                                    newDateEnd = newDateEnd.Date + hours;
+                                    newDateEnd = newDateEnd.Date.AddDays(2) + hours;
                                     listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
 
                                 }
                                 var specializationMostHoursTemp = specializationsWithHours.OrderBy(x => x.Hours).First();
-                                EndWorkDay = listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
-
                                 LastEmployeeId = e.Id;
                             }
                             else if (employeeSpecialization != null)
@@ -339,6 +337,37 @@ namespace inzRafalRutowski.Controllers
                                     employeeInJobDTO.ExperienceName = e2.experienceName;
                                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
                                     listEmployeeInJobDTOList[FindIndexResult].Hours = e3.Hours;
+
+                                    double workAllEmployeeInSpecializationIn1h = 0;
+                                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
+                                    {
+                                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
+                                    });
+
+                                    double allHours = 0;
+                                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
+
+                                    while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
+                                    {
+                                        allHours++;
+                                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
+                                    }
+
+                                    int days = (int)allHours / 8;
+                                    int leftHours = (int)allHours % 8;
+                                    if (leftHours != 0) days++;
+
+                                    var jobFunctions = new JobFunctions();
+                                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
+                                    TimeSpan hours = new TimeSpan(0, 0, 0);
+                                    if (leftHours != 0)
+                                    {
+                                        hours = new TimeSpan(7 + leftHours, 0, 0);
+                                    }
+                                    else hours = new TimeSpan(15, 0, 0);
+
+                                    newDateEnd = newDateEnd.Date.AddDays(2) + hours;
+                                    listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
 
                                     LastEmployeeId = e.Id;
                                 }
@@ -364,9 +393,39 @@ namespace inzRafalRutowski.Controllers
                                 listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
                                 listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
 
+                                double workAllEmployeeInSpecializationIn1h = 0;
+                                listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
+                                {
+                                    workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
+                                });
+
+                                double allHours = 0;
+                                double sumWorkAllEmployeeInSpecializationIn1h = 0;
+
+                                while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
+                                {
+                                    allHours++;
+                                    sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
+                                }
+
+                                int days = (int)allHours / 8;
+                                int leftHours = (int)allHours % 8;
+                                if (leftHours != 0) days++;
+
+                                var jobFunctions = new JobFunctions();
+                                var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
+                                TimeSpan hours = new TimeSpan(0, 0, 0);
+                                if (leftHours != 0)
+                                {
+                                    hours = new TimeSpan(7 + leftHours, 0, 0);
+                                }
+                                else hours = new TimeSpan(15, 0, 0);
+
+                                newDateEnd = newDateEnd.Date.AddDays(2) + hours;
+                                listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
+
                                 LastEmployeeId = e.Id;
                             }
-                            //w sumie w ele if i w else nie ma wylicznej newDateEnd więc w niektórych przypadkach może podawać end date zamiast dokładnej
 
                             specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
                             if (specializationMostHours.Hours < 0)
@@ -376,6 +435,8 @@ namespace inzRafalRutowski.Controllers
                     });
                 });
             });
+
+            EndWorkDay = listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
 
             //żeby algorytm był dokładniejszy można ciagle te same dane do niego dawać, zmieniając czas zakończenia o ile ten sie zmienił, wtedy istnieje możliwość,
             // że bęzie dostępnych więcej pracowników. Problem byłby przy usuwaniu pracowników w podsumowaniu (o ile dodam taką opcję), bo za każdym razem będzie
@@ -395,7 +456,6 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("UpdateTimeJob")]
         public IActionResult UpdateTimeJob([FromBody] ListEmployeeInJobDTOList request)
         {
-            //kończąc na niedzieli powinno cofać się do piątku
 
             request.listEmployeeInJobDTOList.ForEach(x =>
             {
@@ -423,11 +483,11 @@ namespace inzRafalRutowski.Controllers
                 TimeSpan hours = new TimeSpan(0, 0, 0);
                 if (leftHours != 0)
                 {
-                    hours = new TimeSpan(8 + leftHours, 0, 0); //dodanie godzin
+                    hours = new TimeSpan(7 + leftHours, 0, 0); //dodanie godzin
                 }
-                else hours = new TimeSpan(16, 0, 0);
+                else hours = new TimeSpan(15, 0, 0);
 
-                newDateEnd = newDateEnd.Date + hours;
+                newDateEnd = newDateEnd.Date.AddDays(2) + hours;
                 x.End = newDateEnd;
             });
             var EndWorkDay = request.listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
@@ -441,6 +501,12 @@ namespace inzRafalRutowski.Controllers
         [HttpPost]
         public async Task<IActionResult> AddJob([FromBody] JobDTO request)
         {
+            //inny system dat, trzeba odjąć 2 dni i dodać 1h dla terminu zakończenia pracy i odjąć 1 dzień i dodać 1h dla każdej spcjalizacji
+            //wynika to z różnego odczytywanaia dat. Najlepiej byłoby przechowywać w naszej strefie czasowej(różnica godziń) i aktualny dzień(zmienia sie przy przesyłaniu)
+            //i na froncie przy wyświetlaniu zmieniać. Może kiedyś do zmiany
+
+            request.CurrentEnd = request.CurrentEnd.AddDays(-2); // -2dni
+            request.CurrentEnd = request.CurrentEnd.AddHours(1); // +1h
             List<Employee> employeeList= new List<Employee>();
 
             var desc = "Termin rozpoczęcia pracy-" + request.Start.ToString("yyyy-MM-dd") +
@@ -449,6 +515,8 @@ namespace inzRafalRutowski.Controllers
 
             request.ListEmployeeAddToJob.ForEach(x =>
             {
+                x.End = x.End.AddHours(1); // +1h
+                x.End = x.End.AddDays(-1); // -1dni
                 desc += " Specjalizacja-" + x.SpecializationName;
                 desc += " Czas zakończenia-" + x.End;
                 desc += " Osoba odpowiedzialna-" + x.ResponsiblePersonName + " " + x.ResponsiblePersonSurname;
