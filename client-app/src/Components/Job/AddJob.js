@@ -10,7 +10,7 @@ import AddSpecializationAndHours from "./AddSpecializationAndHours";
 import ViewSpecializationAndHours from "./ViewSpecializationAndHours";
 import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./SpecializationModal";
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
-import { SummaryModal } from "./SummaryModal";
+import { ChangeSpecialist, ChangeSpecialistModal, Summary, SummaryModal } from "./SummaryModal";
 import * as dayjs from 'dayjs'
 import TextField from '@mui/material/TextField';
 
@@ -82,6 +82,9 @@ const AddJob = () => {
     const [endDayWork, setEndDayWork] = useState('');
     const [startDayWork, setStartDayWork] = useState('');
     const [title, setTitle] = useState('');
+    const [modalOpenChangeSpeclialist, setModalOpenChangeSpeclialist] = useState(false);
+    const [indexSpecialistToChange, setIndexSpecialistToChange] = useState(0);
+    const [currentSpecialistUserIdToChange, setCurrentSpecialistUserIdToChange] = useState();
 
     const userId = sessionStorage.getItem("userId");
 
@@ -393,6 +396,32 @@ const AddJob = () => {
             })
     }
 
+    const changeSpecialist = (idSpecialistToChange, currentSpecialistUserIdToChange) =>{
+
+        setIndexSpecialistToChange(listEmployeeAddToJob.findIndex(x => x.specializationId === idSpecialistToChange ));
+        setCurrentSpecialistUserIdToChange(currentSpecialistUserIdToChange);
+        setModalOpenChangeSpeclialist(true)
+
+        console.log(listEmployeeAddToJob)
+        console.log(dataEmployeeWithSpecialization)
+    }
+
+    const changeSpecialistPerson = (item, userIdToChange) =>{
+        const updateDataEmployeeWithSpecialization = dataEmployeeWithSpecialization.map(x=>{
+            if(x.employeeId === userIdToChange)
+            {
+                x.employeeId = item.employeeId
+                x.name = item.name
+                x.surname = item.surname
+                x.nameSurname = item.name + " " + item.surname
+            }
+            return x
+        })
+        setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
+        setModalOpenChangeSpeclialist(false)
+
+    }
+
     const renderAddSpecializationAndHours = () => {
         return (
             <AddSpecializationAndHours changeSpecialization={changeSpecialization}
@@ -428,13 +457,13 @@ const AddJob = () => {
                 addSpecialistEmployees={addSpecialistEmployees} viewSpecialist={viewSpecialist} addNewEmployee={addNewEmployee} />
         )
     }
-    const renderNotEnoughEmployee = () => {
+    const renderModalNotEnoughEmployee = () => {
         return (
             <NotEnoughEmployee setModalOpenNotEnoughEmployee={setModalOpenNotEnoughEmployee} modalOpenNotEnoughEmployee={modalOpenNotEnoughEmployee}
                 ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} />
         )
     }
-    const renderEmployeeList = () => {
+    const renderModalEmployeeList = () => {
         return (
             <EmployeeList searchEmployeeJob={searchEmployeeJob} modalOpenEmployeeList={modalOpenEmployeeList} setModalOpenEmployeeList={setModalOpenEmployeeList}
                 ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} ColorRed={ColorRed} viewEmployeeDetails={viewEmployeeDetails}
@@ -443,12 +472,21 @@ const AddJob = () => {
             />
         )
     }
-    const renderSummaryModal = () => {
+    const renderModalSummary = () => {
         return (
-            <SummaryModal ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} setModalOpenSummary={setModalOpenSummary}
+            <Summary ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} setModalOpenSummary={setModalOpenSummary}
                 modalOpenSummary={modalOpenSummary} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
                 endDayWork={endDayWork} startDayWork={startDayWork} listEmployeeAddToJob={listEmployeeAddToJob} addNewJob={addNewJob}
-                dataEnd={dataEnd}
+                dataEnd={dataEnd} changeSpecialist={changeSpecialist}
+            />
+        )
+    }
+    const renderModalChangeSpecialist = () =>{
+        return(
+            <ChangeSpecialist  setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist} modalOpenChangeSpeclialist={modalOpenChangeSpeclialist}
+            ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} indexSpecialistToChange={indexSpecialistToChange}
+            listEmployeeAddToJob={listEmployeeAddToJob} currentSpecialistUserIdToChange={currentSpecialistUserIdToChange}
+            changeSpecialistPerson={changeSpecialistPerson}
             />
         )
     }
@@ -457,9 +495,11 @@ const AddJob = () => {
             {renderModalViewEmployee()}
             {renderModalSpecializationEmptyList()}
             {renderModalSpecializationList()}
-            {renderNotEnoughEmployee()}
-            {renderEmployeeList()}
-            {renderSummaryModal()}
+            {renderModalNotEnoughEmployee()}
+            {renderModalEmployeeList()}
+            {renderModalSummary()}
+            {renderModalChangeSpecialist()}
+            
 
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>
