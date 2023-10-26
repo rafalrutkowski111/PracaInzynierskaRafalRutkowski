@@ -421,6 +421,32 @@ const AddJob = () => {
         setModalOpenChangeSpeclialist(false)
 
     }
+    const removePerson = (person, specialist) =>{
+
+        
+        //inne podejście zamiast splice użyte slice. brak mutacji tylko tworzenie nowej tablicy
+        //tu chyba różnicy nie robi bo i tak potem tworzymy nową tablice którą zastępujemy starą
+        const index = specialist.employeeInJobList.findIndex(x=> x.employeeId === person.employeeId)
+        const newSpecialistList = specialist.employeeInJobList.slice(0,index).concat(specialist.employeeInJobList.slice(index + 1))
+
+        const removeListEmployeeAddToJob = listEmployeeAddToJob.map(x=>{
+            if(x.specializationId === specialist.specializationId)
+            {
+                x.employeeInJobList = newSpecialistList
+                x.hours += person.hoursJob
+            }
+            return x;
+        })
+        setListEmployeeAddToJob(removeListEmployeeAddToJob)
+        console.log(listEmployeeAddToJob)
+        //wypada teraz odjąć te liczby mech mech mech
+
+        axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
+        {
+            listEmployeeInJobDTOList: listEmployeeAddToJob, start: dataStart.add(1, "day")
+        },)
+        .then(response => { setEndDayWork(response.data.endWorkDay); setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+    }
 
     const renderAddSpecializationAndHours = () => {
         return (
@@ -477,7 +503,7 @@ const AddJob = () => {
             <Summary ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} setModalOpenSummary={setModalOpenSummary}
                 modalOpenSummary={modalOpenSummary} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
                 endDayWork={endDayWork} startDayWork={startDayWork} listEmployeeAddToJob={listEmployeeAddToJob} addNewJob={addNewJob}
-                dataEnd={dataEnd} changeSpecialist={changeSpecialist}
+                dataEnd={dataEnd} changeSpecialist={changeSpecialist} removePerson={removePerson}
             />
         )
     }

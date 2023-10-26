@@ -259,7 +259,7 @@ namespace inzRafalRutowski.Controllers
                                     }
                                     else hours = new TimeSpan(15, 0, 0);
 
-                                    newDateEnd = newDateEnd.Date.AddDays(2) + hours;
+                                    newDateEnd = newDateEnd.Date + hours;
                                     listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
 
                                 }
@@ -312,7 +312,7 @@ namespace inzRafalRutowski.Controllers
                                     }
                                     else hours = new TimeSpan(15, 0, 0);
 
-                                    newDateEnd = newDateEnd.Date.AddDays(2) + hours;
+                                    newDateEnd = newDateEnd.Date + hours;
                                     listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
 
                                 }
@@ -366,7 +366,7 @@ namespace inzRafalRutowski.Controllers
                                     }
                                     else hours = new TimeSpan(15, 0, 0);
 
-                                    newDateEnd = newDateEnd.Date.AddDays(2) + hours;
+                                    newDateEnd = newDateEnd.Date + hours;
                                     listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
 
                                     LastEmployeeId = e.Id;
@@ -421,7 +421,7 @@ namespace inzRafalRutowski.Controllers
                                 }
                                 else hours = new TimeSpan(15, 0, 0);
 
-                                newDateEnd = newDateEnd.Date.AddDays(2) + hours;
+                                newDateEnd = newDateEnd.Date + hours;
                                 listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
 
                                 LastEmployeeId = e.Id;
@@ -479,7 +479,7 @@ namespace inzRafalRutowski.Controllers
                 if (leftHours != 0) days++; // jeżeli mamy reszte to dodajemy dzień i to ilość godzin pracy w kolejnym dniu
 
                 var jobFunctions = new JobFunctions();
-                var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
+                var newDateEnd = jobFunctions.NewDateEnd(request.Start, days); //coś tu jest nie tak
                 TimeSpan hours = new TimeSpan(0, 0, 0);
                 if (leftHours != 0)
                 {
@@ -487,7 +487,7 @@ namespace inzRafalRutowski.Controllers
                 }
                 else hours = new TimeSpan(15, 0, 0);
 
-                newDateEnd = newDateEnd.Date.AddDays(2) + hours;
+                newDateEnd = newDateEnd.Date + hours;
                 x.End = newDateEnd;
             });
             var EndWorkDay = request.listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;

@@ -80,11 +80,11 @@ namespace inzRafalRutowski.Class
 
             while (workDays<= numberOfDays)
             {
-                if (start.DayOfWeek != DayOfWeek.Saturday && start.DayOfWeek != DayOfWeek.Sunday)
+                if (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday)
                 {
                     workDays++;
-                    end = end.AddDays(1);
                 }
+                end = end.AddDays(1);
             }
 
             return end;

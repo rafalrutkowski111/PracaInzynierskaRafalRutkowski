@@ -7,6 +7,7 @@ import * as dayjs from 'dayjs'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import Button from '@mui/material/Button';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 
 const Summary = (props) => {
     return (
@@ -108,16 +109,26 @@ const Summary = (props) => {
                                                 <th>Imie</th>
                                                 <th>Nazwisko</th>
                                                 <th>Doświadczenie</th>
-                                                {/* usunięcie osoby pod warunkiem że będzie można wystartować prace */}
+                                                <th>Usuń osobę</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {item.employeeInJobList.map((item2) => {
+                                                var specialistId;
+                                                if(item2.name != "")
+                                                specialistId = props.dataEmployeeWithSpecialization.find(x=> x.specializationId ===item.specializationId).employeeId
                                                 return (
                                                     <tr>
                                                         <td>{item2.name}</td>
                                                         <td>{item2.surname}</td>
                                                         <td>{item2.experienceName}</td>
+                                                        <td>
+                                                            <Button
+                                                                disabled={specialistId === item2.employeeId || item.hours + item2.hoursJob > 0 ? true : false}
+                                                                onClick={() => props.removePerson(item2, item)}
+                                                                startIcon={<PersonRemoveIcon />}>Usuń
+                                                            </Button>
+                                                        </td>
                                                     </tr>
                                                 )
                                             })}
