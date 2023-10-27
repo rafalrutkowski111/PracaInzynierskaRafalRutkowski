@@ -10,7 +10,7 @@ import AddSpecializationAndHours from "./AddSpecializationAndHours";
 import ViewSpecializationAndHours from "./ViewSpecializationAndHours";
 import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./SpecializationModal";
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
-import { ChangeSpecialist, ChangeSpecialistModal, Summary, SummaryModal } from "./SummaryModal";
+import { AddEmployee, ChangeSpecialist, ChangeSpecialistModal, Summary, SummaryModal, SummaryViewEmployee } from "./SummaryModal";
 import * as dayjs from 'dayjs'
 import TextField from '@mui/material/TextField';
 
@@ -85,6 +85,9 @@ const AddJob = () => {
     const [modalOpenChangeSpeclialist, setModalOpenChangeSpeclialist] = useState(false);
     const [indexSpecialistToChange, setIndexSpecialistToChange] = useState(0);
     const [currentSpecialistUserIdToChange, setCurrentSpecialistUserIdToChange] = useState();
+    const [modalOpenAddEmployee, setModalOpenAddEmployee] = useState(false);
+    const [listEmployeeToAdd, setListEmployeeToAdd] = useState({ employeeToAdd: [] })
+    const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);
 
     const userId = sessionStorage.getItem("userId");
 
@@ -217,6 +220,13 @@ const AddJob = () => {
             setViewSpecialist(true)
         else setViewSpecialist(false)
         setModalOpenViewEmployee(true)
+    }
+    const viewEmployeeSummaryDetails = (idEmployee) => {
+        axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: idEmployee } })
+            .then(response => {
+                setDataEmployee(response.data)
+            })
+        setModalOpenSummaryViewEmployee(true)
     }
 
     const addSpecialistEmployees = (employee) => {
@@ -396,9 +406,9 @@ const AddJob = () => {
             })
     }
 
-    const changeSpecialist = (idSpecialistToChange, currentSpecialistUserIdToChange) =>{
+    const changeSpecialist = (idSpecialistToChange, currentSpecialistUserIdToChange) => {
 
-        setIndexSpecialistToChange(listEmployeeAddToJob.findIndex(x => x.specializationId === idSpecialistToChange ));
+        setIndexSpecialistToChange(listEmployeeAddToJob.findIndex(x => x.specializationId === idSpecialistToChange));
         setCurrentSpecialistUserIdToChange(currentSpecialistUserIdToChange);
         setModalOpenChangeSpeclialist(true)
 
@@ -406,10 +416,9 @@ const AddJob = () => {
         console.log(dataEmployeeWithSpecialization)
     }
 
-    const changeSpecialistPerson = (item, userIdToChange) =>{
-        const updateDataEmployeeWithSpecialization = dataEmployeeWithSpecialization.map(x=>{
-            if(x.employeeId === userIdToChange)
-            {
+    const changeSpecialistPerson = (item, userIdToChange) => {
+        const updateDataEmployeeWithSpecialization = dataEmployeeWithSpecialization.map(x => {
+            if (x.employeeId === userIdToChange) {
                 x.employeeId = item.employeeId
                 x.name = item.name
                 x.surname = item.surname
@@ -421,17 +430,28 @@ const AddJob = () => {
         setModalOpenChangeSpeclialist(false)
 
     }
-    const removePerson = (person, specialist) =>{
+    const showAddEmployee = (SpecializationId) => {
+        console.log()
 
-        
+        axios.post('http://localhost:5000/api/Job/AddEmployee',
+            {
+                listEmployeeInJobDTOList: listEmployeeAddToJob, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"),
+                SpecializationId: SpecializationId
+            },)
+            .then(response => { console.log(response.data); setListEmployeeToAdd(response.data) }) // zwrócić z wszystkimi potrzebnymi parametrami, albo obliczać w drugim controllerze
+
+        setModalOpenAddEmployee(true)
+    }
+    const removePerson = (person, specialist) => {
+
+
         //inne podejście zamiast splice użyte slice. brak mutacji tylko tworzenie nowej tablicy
         //tu chyba różnicy nie robi bo i tak potem tworzymy nową tablice którą zastępujemy starą
-        const index = specialist.employeeInJobList.findIndex(x=> x.employeeId === person.employeeId)
-        const newSpecialistList = specialist.employeeInJobList.slice(0,index).concat(specialist.employeeInJobList.slice(index + 1))
+        const index = specialist.employeeInJobList.findIndex(x => x.employeeId === person.employeeId)
+        const newSpecialistList = specialist.employeeInJobList.slice(0, index).concat(specialist.employeeInJobList.slice(index + 1))
 
-        const removeListEmployeeAddToJob = listEmployeeAddToJob.map(x=>{
-            if(x.specializationId === specialist.specializationId)
-            {
+        const removeListEmployeeAddToJob = listEmployeeAddToJob.map(x => {
+            if (x.specializationId === specialist.specializationId) {
                 x.employeeInJobList = newSpecialistList
                 x.hours += person.hoursJob
             }
@@ -442,10 +462,10 @@ const AddJob = () => {
         //wypada teraz odjąć te liczby mech mech mech
 
         axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
-        {
-            listEmployeeInJobDTOList: listEmployeeAddToJob, start: dataStart.add(1, "day")
-        },)
-        .then(response => { setEndDayWork(response.data.endWorkDay); setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+            {
+                listEmployeeInJobDTOList: listEmployeeAddToJob, start: dataStart.add(1, "day")
+            },)
+            .then(response => { setEndDayWork(response.data.endWorkDay); setListEmployeeAddToJob(response.data.listEmployeeInJob) })
     }
 
     const renderAddSpecializationAndHours = () => {
@@ -503,16 +523,32 @@ const AddJob = () => {
             <Summary ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} setModalOpenSummary={setModalOpenSummary}
                 modalOpenSummary={modalOpenSummary} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
                 endDayWork={endDayWork} startDayWork={startDayWork} listEmployeeAddToJob={listEmployeeAddToJob} addNewJob={addNewJob}
-                dataEnd={dataEnd} changeSpecialist={changeSpecialist} removePerson={removePerson}
+                dataEnd={dataEnd} changeSpecialist={changeSpecialist} removePerson={removePerson} showAddEmployee={showAddEmployee}
+                viewEmployeeDetails={viewEmployeeDetails}
             />
         )
     }
-    const renderModalChangeSpecialist = () =>{
-        return(
-            <ChangeSpecialist  setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist} modalOpenChangeSpeclialist={modalOpenChangeSpeclialist}
-            ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} indexSpecialistToChange={indexSpecialistToChange}
-            listEmployeeAddToJob={listEmployeeAddToJob} currentSpecialistUserIdToChange={currentSpecialistUserIdToChange}
-            changeSpecialistPerson={changeSpecialistPerson}
+    const renderModalChangeSpecialist = () => {
+        return (
+            <ChangeSpecialist setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist} modalOpenChangeSpeclialist={modalOpenChangeSpeclialist}
+                ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} indexSpecialistToChange={indexSpecialistToChange}
+                listEmployeeAddToJob={listEmployeeAddToJob} currentSpecialistUserIdToChange={currentSpecialistUserIdToChange}
+                changeSpecialistPerson={changeSpecialistPerson}
+            />
+        )
+    }
+    const renderModalAddEmployee = () => {
+        return (
+            <AddEmployee setModalOpenAddEmployee={setModalOpenAddEmployee} modalOpenAddEmployee={modalOpenAddEmployee}
+                ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} listEmployeeToAdd={listEmployeeToAdd}
+                viewEmployeeSummaryDetails={viewEmployeeSummaryDetails}
+            />
+        )
+    }
+    const renderModalSummaryViewEmployee = () => {
+        return (
+            <SummaryViewEmployee setModalOpenSummaryViewEmployee={setModalOpenSummaryViewEmployee} modalOpenSummaryViewEmployee={modalOpenSummaryViewEmployee}
+                ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployee={dataEmployee}
             />
         )
     }
@@ -525,7 +561,11 @@ const AddJob = () => {
             {renderModalEmployeeList()}
             {renderModalSummary()}
             {renderModalChangeSpecialist()}
-            
+            {renderModalAddEmployee()}
+            {renderModalSummaryViewEmployee()}
+
+
+
 
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>

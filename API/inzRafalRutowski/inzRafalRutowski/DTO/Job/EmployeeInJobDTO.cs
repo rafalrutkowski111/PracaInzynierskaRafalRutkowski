@@ -5,6 +5,14 @@
         public List<EmployeeInJobDTOList> listEmployeeInJobDTOList { get; set; }
         public DateTime Start { get; set; }
     }
+    public class ListEmployeeInJobWithEmployerIdDTOList
+    {
+        public List<EmployeeInJobDTOList> listEmployeeInJobDTOList { get; set; }
+        public int EmployerId { get; set; }
+        public int SpecializationId { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+    }
     public class EmployeeInJobDTOList
     {
         public int SpecializationId { get; set; }

@@ -8,6 +8,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import Button from '@mui/material/Button';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const Summary = (props) => {
     return (
@@ -115,8 +116,8 @@ const Summary = (props) => {
                                         <tbody>
                                             {item.employeeInJobList.map((item2) => {
                                                 var specialistId;
-                                                if(item2.name != "")
-                                                specialistId = props.dataEmployeeWithSpecialization.find(x=> x.specializationId ===item.specializationId).employeeId
+                                                if (item2.name != "")
+                                                    specialistId = props.dataEmployeeWithSpecialization.find(x => x.specializationId === item.specializationId).employeeId
                                                 return (
                                                     <tr>
                                                         <td>{item2.name}</td>
@@ -135,8 +136,14 @@ const Summary = (props) => {
 
                                         </tbody>
                                     </Table>
+                                    < props.ButtonContainer >
+                                        <Button
+                                            onClick={() => props.showAddEmployee(item.specializationId)}
+                                            startIcon={<PersonAddIcon />}>Dodaj
+                                        </Button>
+                                    </props.ButtonContainer>
                                 </Sheet>
-                                {/* dodaj osobę */}
+
                                 <br />
 
                             </>
@@ -272,5 +279,159 @@ const ChangeSpecialist = (props) => {
     )
 }
 
+const AddEmployee = (props) => {
+    var noData = false;
+
+    return (
+        <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={props.modalOpenAddEmployee}
+            onClose={() => props.setModalOpenAddEmployee(false)}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+            <Sheet
+                variant="outlined"
+                sx={{
+                    height: 700,
+                    overflow: 'auto',
+                    width: 900,
+                    maxWidth: 800,
+                    borderRadius: 'md',
+                    p: 3,
+                    boxShadow: 'lg',
+                }}
+            >
+                <ModalClose variant="plain" sx={{ m: 1 }} />
+
+                <Typography
+                    component="h2"
+                    id="modal-title"
+                    level="h4"
+                    textColor="inherit"
+                    fontWeight="lg"
+                    mb={3}
+                >
+                    Dodaj praconika do specjalizacji
+                </Typography>
+
+                <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                    <p>{props.listEmployeeToAdd.specialializationName}</p>
+
+                    <Sheet sx={{ heightTabel: 200, maxHeight: 400, overflow: 'auto' }}>
+                        {noData == true
+                            ? <><p>Brak dostępnych osób</p></>   // dodać warunek jeżeli nie bedzie osób do dodnia
+                            :
+                            < Table
+                                stickyHeader
+                                stripe="odd"
+                                variant="outlined" >
+                                <thead>
+                                    <tr>
+                                        <th>Imie</th>
+                                        <th>Nazwisko</th>
+                                        <th>Doświadczenie</th>
+                                        <th>Podgląd</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {props.listEmployeeToAdd.employeeToAdd.map((item) => {
+                                        return (
+                                            <tr>
+                                                <td>{item.name}</td>
+                                                <td>{item.surname}</td>
+                                                <td>{item.experienceName}</td>
+                                                <td>
+                                                    <Button
+                                                        onClick={() => props.viewEmployeeSummaryDetails(item.employeeId)}
+                                                        startIcon={<VisibilityIcon />}>Podgląd
+                                                    </Button>
+                                                </td>
+
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </Table>
+                        }
+                    </Sheet>
+                </Typography>
+
+                < props.ButtonContainer >
+                    <props.ButtonBootstrapBack
+                        type="submit"
+                        id="button"
+                        value="Powrót"
+                        onClick={() => { props.setModalOpenAddEmployee(false) }}
+                    />
+                </props.ButtonContainer >
+
+            </Sheet>
+        </Modal >
+    )
+}
+
+const SummaryViewEmployee = (props) => {
+    return (
+        <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={props.modalOpenSummaryViewEmployee}
+            onClose={() => props.setModalOpenSummaryViewEmployee(false)}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+            <Sheet
+                variant="outlined"
+                sx={{
+                    width: 300,
+                    maxWidth: 500,
+                    borderRadius: 'md',
+                    p: 3,
+                    boxShadow: 'lg',
+                }}
+            >
+                <ModalClose variant="plain" sx={{ m: 1 }} />
+                <Typography
+                    component="h2"
+                    id="modal-title"
+                    level="h4"
+                    textColor="inherit"
+                    fontWeight="lg"
+                    mb={3}
+                >
+                    Szczegóły pracownika
+                </Typography>
+                <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                    <p><b>Imie</b> - {props.dataEmployee[0].name}</p>
+                    <p><b>Nazwisko</b> - {props.dataEmployee[0].surname}</p>
+                    <p><b>Specjalizacja - Doświadczenie</b></p>
+                    {props.dataEmployee.map((data) => {
+                        return (<>
+                            <p>{data.specializationName} - {data.experienceName}</p>
+                        </>)
+                    })}
+                </Typography>
+                < props.ButtonContainer >
+                    <props.ButtonBootstrap
+                    disabled
+                        type="submit"
+                        id="button"
+                        value="Dodaj"
+                    // onClick={() => xxxx}
+                    />
+                    <props.ButtonBootstrapBack
+                        type="submit"
+                        id="button"
+                        value="Powrót"
+                        onClick={() => { props.setModalOpenSummaryViewEmployee(false) }}
+                    />
+                </props.ButtonContainer >
+            </Sheet>
+        </Modal>
+    )
+}
+
 export { ChangeSpecialist }
 export { Summary }
+export { AddEmployee }
+export { SummaryViewEmployee }

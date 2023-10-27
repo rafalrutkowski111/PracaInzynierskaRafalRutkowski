@@ -12,6 +12,7 @@ using System.Linq;
 using System.ComponentModel;
 using System;
 using System.Diagnostics.Eventing.Reader;
+using System.Collections.Generic;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -495,6 +496,54 @@ namespace inzRafalRutowski.Controllers
             {
                 ListEmployeeInJob = request.listEmployeeInJobDTOList,
                 EndWorkDay = EndWorkDay,
+            });
+        }
+
+        [HttpPost("AddEmployee")]
+        public IActionResult AddEmployee([FromBody] ListEmployeeInJobWithEmployerIdDTOList request)
+        {
+            
+            List<EmployeeInJobDTO> EmployeeToAdd = new List<EmployeeInJobDTO>();
+            List<Employee> listEmployeeFreeInTime = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
+                && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
+                && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
+                ).EmployerId == request.EmployerId)
+                ).ToList();
+            List<Employee> listEmployeeWithoutEmployer = _context.Employees.Where(e => e.EmployerId == null).ToList();
+
+            listEmployeeFreeInTime.AddRange(listEmployeeWithoutEmployer);
+
+            var EmployeeInJob = request.listEmployeeInJobDTOList.Find(x=> x.SpecializationId == request.SpecializationId).EmployeeInJobList;
+
+            listEmployeeFreeInTime.ForEach(x =>
+            {
+                if(EmployeeInJob.Find(x2=> x2.EmployeeId == x.Id) == null)
+                {
+                    EmployeeInJobDTO employee = new EmployeeInJobDTO();
+                    employee.Name = x.Name;
+                    employee.Surname = x.Surname;
+                    employee.EmployeeId = x.Id;
+
+
+                    var EmployeeSpecializations = _context.EmployeeSpecializations.FirstOrDefault(x3 => x3.EmployeeId == x.Id && x3.SpecializationId == request.SpecializationId);
+                    if(EmployeeSpecializations != null)
+                    {
+                        employee.ExperienceName = _context.Experiences.First(x3 => x3.Id == EmployeeSpecializations.ExperienceId).experienceName;
+                    }
+                    else employee.ExperienceName = "Brak doświadczenia";
+
+                    EmployeeToAdd.Add(employee);
+                }
+
+            });
+
+            var SpecialializationName = _context.Specializations.FirstOrDefault(x=> x.Id == request.SpecializationId).Name;
+
+
+            return Ok(new
+            {
+                SpecialializationName = SpecialializationName,
+                EmployeeToAdd = EmployeeToAdd
             });
         }
 

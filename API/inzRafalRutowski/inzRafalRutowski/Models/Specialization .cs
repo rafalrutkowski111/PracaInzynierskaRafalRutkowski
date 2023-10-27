@@ -12,7 +12,7 @@
         //niech usuwa się wraz z nim. Domyślnie było wyłączone, bo employeeId może być nullem
         public Employer? Employer { get; set; }
         public List<EmployeeSpecialization>? EmployeeSpecializations { get; set; }
-
+        
         // public int JobId { get; set; }
     }   
 }
