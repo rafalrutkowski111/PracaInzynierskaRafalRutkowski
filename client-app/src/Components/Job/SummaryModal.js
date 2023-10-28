@@ -280,7 +280,7 @@ const ChangeSpecialist = (props) => {
 }
 
 const AddEmployee = (props) => {
-    var noData = false;
+
 
     return (
         <Modal
@@ -319,8 +319,8 @@ const AddEmployee = (props) => {
                     <p>{props.listEmployeeToAdd.specialializationName}</p>
 
                     <Sheet sx={{ heightTabel: 200, maxHeight: 400, overflow: 'auto' }}>
-                        {noData == true
-                            ? <><p>Brak dostępnych osób</p></>   // dodać warunek jeżeli nie bedzie osób do dodnia
+                        { props.listEmployeeToAdd.employeeToAdd.length == 0
+                            ? <><p>Brak dostępnych osób</p></> 
                             :
                             < Table
                                 stickyHeader
@@ -413,11 +413,10 @@ const SummaryViewEmployee = (props) => {
                 </Typography>
                 < props.ButtonContainer >
                     <props.ButtonBootstrap
-                    disabled
                         type="submit"
                         id="button"
                         value="Dodaj"
-                    // onClick={() => xxxx}
+                        onClick={() => props.addEmployee(props.dataEmployee)}
                     />
                     <props.ButtonBootstrapBack
                         type="submit"

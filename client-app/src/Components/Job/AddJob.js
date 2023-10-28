@@ -88,6 +88,7 @@ const AddJob = () => {
     const [modalOpenAddEmployee, setModalOpenAddEmployee] = useState(false);
     const [listEmployeeToAdd, setListEmployeeToAdd] = useState({ employeeToAdd: [] })
     const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);
+    const [idSpecializationToChangeEmployee, setIdSpecializationToChangeEmployee] = useState(-1)
 
     const userId = sessionStorage.getItem("userId");
 
@@ -402,7 +403,7 @@ const AddJob = () => {
             start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
         })
             .then(response => {
-                console.log(response)
+                console.log(response) // może dodac jakiś modal - komunikat o dodanej pracy
             })
     }
 
@@ -411,9 +412,6 @@ const AddJob = () => {
         setIndexSpecialistToChange(listEmployeeAddToJob.findIndex(x => x.specializationId === idSpecialistToChange));
         setCurrentSpecialistUserIdToChange(currentSpecialistUserIdToChange);
         setModalOpenChangeSpeclialist(true)
-
-        console.log(listEmployeeAddToJob)
-        console.log(dataEmployeeWithSpecialization)
     }
 
     const changeSpecialistPerson = (item, userIdToChange) => {
@@ -426,21 +424,42 @@ const AddJob = () => {
             }
             return x
         })
+
         setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
         setModalOpenChangeSpeclialist(false)
 
     }
     const showAddEmployee = (SpecializationId) => {
-        console.log()
 
         axios.post('http://localhost:5000/api/Job/AddEmployee',
             {
                 listEmployeeInJobDTOList: listEmployeeAddToJob, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"),
                 SpecializationId: SpecializationId
             },)
-            .then(response => { console.log(response.data); setListEmployeeToAdd(response.data) }) // zwrócić z wszystkimi potrzebnymi parametrami, albo obliczać w drugim controllerze
+            .then(response => { setListEmployeeToAdd(response.data) })
 
         setModalOpenAddEmployee(true)
+        setIdSpecializationToChangeEmployee(SpecializationId)
+    }
+    const addEmployee = (employee) => {
+
+        axios.post('http://localhost:5000/api/Job/UpdateDataNewEmployee',
+            {
+                listEmployeeInJobDTOList: listEmployeeAddToJob, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"),
+                SpecializationId: idSpecializationToChangeEmployee, employee: employee[0]
+            },)
+            .then(response => { setEndDayWork(response.data.endWorkDay); setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+
+
+        const index = listEmployeeToAdd.employeeToAdd.findIndex(x => x.employeeId == employee[0].employeeId)
+        const newListEmployeeToAddt = listEmployeeToAdd.employeeToAdd.slice(0, index).concat(listEmployeeToAdd.employeeToAdd.slice(index + 1))
+
+        const updateListEmployeeToAdd = listEmployeeToAdd;
+        updateListEmployeeToAdd.employeeToAdd = newListEmployeeToAddt
+        setListEmployeeToAdd(updateListEmployeeToAdd)
+
+        setModalOpenSummaryViewEmployee(false)
+
     }
     const removePerson = (person, specialist) => {
 
@@ -549,6 +568,7 @@ const AddJob = () => {
         return (
             <SummaryViewEmployee setModalOpenSummaryViewEmployee={setModalOpenSummaryViewEmployee} modalOpenSummaryViewEmployee={modalOpenSummaryViewEmployee}
                 ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployee={dataEmployee}
+                addEmployee={addEmployee}
             />
         )
     }

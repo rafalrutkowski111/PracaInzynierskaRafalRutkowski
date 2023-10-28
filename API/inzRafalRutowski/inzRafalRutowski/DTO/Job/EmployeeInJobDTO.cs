@@ -33,4 +33,22 @@
         public string Surname { get; set; }
         public string ExperienceName { get; set; }
     }
+
+    public class ListEmployeeInJobWithNewEmployeeDTOList : ListEmployeeInJobDTOList
+    {
+        public int EmployerId { get; set; }
+        public int SpecializationId { get; set; }
+        public DateTime End { get; set; }
+        public EmployeDataToChangeDTO Employee { get; set; }
+    }
+    public class EmployeDataToChangeDTO
+    {
+        public Guid EmployeeId { get; set;}
+        public string ExperienceName { get; set;}
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public int SpecializationId { get; set; }
+        public string specializationName { get; set; }
+
+    }
 }

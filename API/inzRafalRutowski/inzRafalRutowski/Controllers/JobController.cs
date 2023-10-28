@@ -457,45 +457,13 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("UpdateTimeJob")]
         public IActionResult UpdateTimeJob([FromBody] ListEmployeeInJobDTOList request)
         {
+            JobFunctions jobFunctions = new JobFunctions();
+            var result = jobFunctions.UpdateDateInJob(request);
 
-            request.listEmployeeInJobDTOList.ForEach(x =>
-            {
-                double workAllEmployeeInSpecializationIn1h = 0;
-                x.EmployeeInJobList.ForEach(e =>
-                {
-                    workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
-                });
-
-                double allHours = 0;
-                double sumWorkAllEmployeeInSpecializationIn1h = 0;
-
-                while (sumWorkAllEmployeeInSpecializationIn1h < x.HoursStart)
-                {
-                    allHours++; //zaokrąglamy powyzej potrzebnego czau
-                    sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
-                }
-
-                int days = (int)allHours / 8;
-                int leftHours = (int)allHours % 8;
-                if (leftHours != 0) days++; // jeżeli mamy reszte to dodajemy dzień i to ilość godzin pracy w kolejnym dniu
-
-                var jobFunctions = new JobFunctions();
-                var newDateEnd = jobFunctions.NewDateEnd(request.Start, days); //coś tu jest nie tak
-                TimeSpan hours = new TimeSpan(0, 0, 0);
-                if (leftHours != 0)
-                {
-                    hours = new TimeSpan(7 + leftHours, 0, 0); //dodanie godzin
-                }
-                else hours = new TimeSpan(15, 0, 0);
-
-                newDateEnd = newDateEnd.Date + hours;
-                x.End = newDateEnd;
-            });
-            var EndWorkDay = request.listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
             return Ok(new
             {
-                ListEmployeeInJob = request.listEmployeeInJobDTOList,
-                EndWorkDay = EndWorkDay,
+                ListEmployeeInJob = result.Item1,
+                EndWorkDay = result.Item2,
             });
         }
 
@@ -544,6 +512,48 @@ namespace inzRafalRutowski.Controllers
             {
                 SpecialializationName = SpecialializationName,
                 EmployeeToAdd = EmployeeToAdd
+            });
+        }
+
+        [HttpPost("UpdateDataNewEmployee")]
+        public IActionResult UpdateDateNewEmployee([FromBody] ListEmployeeInJobWithNewEmployeeDTOList request)
+        {
+            var experienceIdNewEnployee = _context.EmployeeSpecializations.FirstOrDefault(x => x.SpecializationId == request.SpecializationId && x.EmployeeId == request.Employee.EmployeeId);
+
+            var experiencesName = "Brak doświadczenia";
+            var experiencesValue = 40;
+
+            if (experienceIdNewEnployee != null)
+            {
+                var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployee.ExperienceId);
+                experiencesName = experiences.experienceName;
+                experiencesValue = experiences.experienceValue;
+            }
+            
+            var jobFunctions = new JobFunctions();
+            var numberOfWorkDaysWithWeekend = request.End.Subtract(request.Start).Days;
+            var numberOfWorkDays = jobFunctions.NumberOfWorkDays(request.Start, numberOfWorkDaysWithWeekend);
+            int hoursWorkInDay = 8;
+
+            EmployeeInJobDTO EmployeeInJobDTO = new EmployeeInJobDTO()
+            {
+                EmployeeId = request.Employee.EmployeeId,
+                ExperienceValue = experiencesValue,
+                ExperienceName = experiencesName,
+                HoursJob = (numberOfWorkDays * hoursWorkInDay) * ((double)experiencesValue / 100),
+                Name = request.Employee.Name,
+                Surname = request.Employee.Surname,
+            };
+
+            request.listEmployeeInJobDTOList.Find(x => x.SpecializationId == request.SpecializationId).EmployeeInJobList.Add(EmployeeInJobDTO);
+            request.listEmployeeInJobDTOList.Find(x => x.SpecializationId == request.SpecializationId).Hours -= EmployeeInJobDTO.HoursJob;
+
+            var result = jobFunctions.UpdateDateInJob(request);
+
+            return Ok(new
+            {
+                ListEmployeeInJob = result.Item1,
+                EndWorkDay = result.Item2,
             });
         }
 
