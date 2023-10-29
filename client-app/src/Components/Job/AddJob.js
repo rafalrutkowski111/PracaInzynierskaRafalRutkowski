@@ -10,7 +10,7 @@ import AddSpecializationAndHours from "./AddSpecializationAndHours";
 import ViewSpecializationAndHours from "./ViewSpecializationAndHours";
 import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./SpecializationModal";
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
-import { AddEmployee, ChangeSpecialist, ChangeSpecialistModal, Summary, SummaryModal, SummaryViewEmployee } from "./SummaryModal";
+import { AddEmployee, ChangeSpecialist, ChangeSpecialistModal, ConfirmAdd, Summary, SummaryModal, SummaryViewEmployee } from "./SummaryModal";
 import * as dayjs from 'dayjs'
 import TextField from '@mui/material/TextField';
 
@@ -89,6 +89,7 @@ const AddJob = () => {
     const [listEmployeeToAdd, setListEmployeeToAdd] = useState({ employeeToAdd: [] })
     const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);
     const [idSpecializationToChangeEmployee, setIdSpecializationToChangeEmployee] = useState(-1)
+    const [modalOpenConfirmAdd, setModalOpenConfirmAdd] = useState(false);
 
     const userId = sessionStorage.getItem("userId");
 
@@ -402,9 +403,7 @@ const AddJob = () => {
             title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob, color: "",
             start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
         })
-            .then(response => {
-                console.log(response) // może dodac jakiś modal - komunikat o dodanej pracy
-            })
+            .then(response => {setModalOpenConfirmAdd(true) })
     }
 
     const changeSpecialist = (idSpecialistToChange, currentSpecialistUserIdToChange) => {
@@ -572,6 +571,12 @@ const AddJob = () => {
             />
         )
     }
+    const renderModalConfirmAdd = () =>{
+        return(
+            <ConfirmAdd ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap}
+            setModalOpenConfirmAdd={setModalOpenConfirmAdd} modalOpenConfirmAdd={modalOpenConfirmAdd}/>
+        )
+    }
     return (
         <>
             {renderModalViewEmployee()}
@@ -583,9 +588,8 @@ const AddJob = () => {
             {renderModalChangeSpecialist()}
             {renderModalAddEmployee()}
             {renderModalSummaryViewEmployee()}
-
-
-
+            {renderModalConfirmAdd()}
+            
 
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>

@@ -319,8 +319,8 @@ const AddEmployee = (props) => {
                     <p>{props.listEmployeeToAdd.specialializationName}</p>
 
                     <Sheet sx={{ heightTabel: 200, maxHeight: 400, overflow: 'auto' }}>
-                        { props.listEmployeeToAdd.employeeToAdd.length == 0
-                            ? <><p>Brak dostępnych osób</p></> 
+                        {props.listEmployeeToAdd.employeeToAdd.length == 0
+                            ? <><p>Brak dostępnych osób</p></>
                             :
                             < Table
                                 stickyHeader
@@ -430,7 +430,54 @@ const SummaryViewEmployee = (props) => {
     )
 }
 
+const ConfirmAdd = (props) => {
+    return (
+        <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={props.modalOpenConfirmAdd}
+            onClose={() => window.location.pathname = '/inzRafalRutkowski/'}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+            <Sheet
+                variant="outlined"
+                sx={{
+                    width: 300,
+                    maxWidth: 500,
+                    borderRadius: 'md',
+                    p: 3,
+                    boxShadow: 'lg',
+                }}
+            >
+                <ModalClose variant="plain" sx={{ m: 1 }} />
+                <Typography
+                    component="h2"
+                    id="modal-title"
+                    level="h4"
+                    textColor="inherit"
+                    fontWeight="lg"
+                    mb={3}
+                >
+                    Nowa praca
+                </Typography>
+                <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                    Poprawnie dodano pracę.
+                </Typography>
+                < props.ButtonContainer >
+                    <props.ButtonBootstrap
+                        type="submit"
+                        id="button"
+                        value="Potwierdź"
+                        onClick={() => window.location.pathname = '/inzRafalRutkowski/'}
+                    />
+                </props.ButtonContainer >
+            </Sheet>
+        </Modal>
+    )
+}
+
 export { ChangeSpecialist }
 export { Summary }
 export { AddEmployee }
 export { SummaryViewEmployee }
+export { ConfirmAdd }
