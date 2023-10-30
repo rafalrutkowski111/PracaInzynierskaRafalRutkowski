@@ -5,7 +5,6 @@ import Toolbar from "../../Components/Navbar/Navbar";
 import Login from "../../Components/Login/Login";
 import { useEffect } from 'react';
 import axios from 'axios';
-import AddJob from "../../Components/Job/AddJob";
 import Employee from "../../Components/Employee/Employee";
 import AddEmployee from "../../Components/Employee/AddEmployee";
 import Specialization from "../../Components/Specialization/Specialization";
@@ -13,6 +12,8 @@ import AddSpecialization from "../../Components/Specialization/AddSpecialization
 import Experience from "../../Components/Experience/Experience";
 import AddExperience from "../../Components/Experience/AddExperience";
 import SearchEmployee from "../../Components/Employee/SearchEmployee";
+import AddJob from "../../Components/Job/AddJob/AddJob";
+import UpdateJob from "../../Components/Job/UpdateJob/UpdateJob";
 
 const Router = () => {
 
@@ -44,7 +45,7 @@ const Router = () => {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/calendar" element={<Home />}></Route>
-          <Route path="/addJob" element={<AddJob />}></Route>
+          <Route path="/addJob" element={<AddJob/>}></Route>
           <Route path="/employee" element={<Employee />}></Route>
           <Route path="/addEmployee" element={<AddEmployee />}></Route>
           <Route path="/specialization" element={<Specialization />}></Route>
@@ -52,6 +53,7 @@ const Router = () => {
           <Route path="/experience" element={<Experience />}></Route>
           <Route path="/addExperience" element={<AddExperience />}></Route>
           <Route path="/searchEmployee" element={<SearchEmployee />}></Route>
+          <Route path="/updateJob" element={<UpdateJob/>}></Route>
 
           
         </Routes>

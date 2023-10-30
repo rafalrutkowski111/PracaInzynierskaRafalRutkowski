@@ -476,8 +476,6 @@ const AddJob = () => {
             return x;
         })
         setListEmployeeAddToJob(removeListEmployeeAddToJob)
-        console.log(listEmployeeAddToJob)
-        //wypada teraz odjąć te liczby mech mech mech
 
         axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
             {
