@@ -15,7 +15,7 @@ const Button = styled(Form.Control)`
 const Specialization = () => {
 
       const addNewSpecialization = () => {
-        window.location.pathname = '/inzRafalRutkowski/addSpecialization';
+        window.location.pathname = '/inzRafalRutkowski/specialization/addSpecialization';
       }
 
     return (

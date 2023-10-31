@@ -4,6 +4,7 @@ namespace inzRafalRutowski.DTO.Job
 {
     public class JobDTO
     {
+        public int Id { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public DateTime CurrentEnd { get; set; }

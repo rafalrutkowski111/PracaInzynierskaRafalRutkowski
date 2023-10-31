@@ -16,7 +16,7 @@ const Button = styled(Form.Control)`
 const Experience = () => {
 
     const addNewExperience = () => {
-        window.location.pathname = '/inzRafalRutkowski/addExperience';
+        window.location.pathname = '/inzRafalRutkowski/experience/addExperience';
     }
 
     return (

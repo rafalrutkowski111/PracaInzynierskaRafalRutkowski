@@ -1,7 +1,11 @@
+import { useParams } from "react-router-dom";
+
 const UpdateJob = (props) => {
-    console.log(props)
+
+    const params = useParams()
+    console.log(params)
     return (
-        <>test</>
+        <>test + {params.id}</>
     )
 }
 

@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import "./Calendar.css"
 import React, { useCallback } from 'react'
+import calendarComponent from './CalendarComponent';
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -24,41 +25,6 @@ const H1Container = styled.h3`
     display: flex;
     justify-content: center;
 `
-
-const localizer = momentLocalizer(moment)
-
-function eventAgenda({ event }) {
-  return (
-    <span>
-      <b>{event.title}</b>
-      <p>{event.desc}</p>
-    </span>
-  )
-}
-
-function eventColor({ event }) {
-  return (
-    <div style={{ background: event.color, color: 'white', padding: "2px 5px" }}>{event.title}</div>
-  )
-}
-
-const components = {
-
-  agenda: {
-    event: eventAgenda,
-  },
-  month: {
-    event: eventColor,
-  },
-  week: {
-    event: eventColor,
-  },
-  day: {
-    event: eventColor,
-  },
-
-}
-
 const messagesPl = {
   next: "Następny",
   previous: "Poprzedni",
@@ -74,14 +40,14 @@ const messagesPl = {
   showMore: total => `+${total} więcej`,
 }
 
-
-const MyCalendar = (props) => {
+const MyCalendar = () => {
 
   const [events, setEvents] = useState([]);
   const userId = sessionStorage.getItem("userId");
   const [selectJob, setSelectJob] = useState("Nie wybrano pracy");
   const [disableButtonUpdateJob, setisableButtonUpdateJob] = useState(true);
   const [eventData, setEventData] = useState();
+  const localizer = momentLocalizer(moment)
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/Job', { params: { userId: userId } })
@@ -91,11 +57,10 @@ const MyCalendar = (props) => {
   }, [])
 
   const addNewJob = () => {
-    window.location.pathname = '/inzRafalRutkowski/AddJob';
+    window.location.pathname = '/inzRafalRutkowski/calendar/addJob';
   }
   const updateJob = () => {
-    console.log(events)
-    window.location.pathname = '/inzRafalRutkowski/updateJob';
+    window.location.pathname = '/inzRafalRutkowski/calendar/updateJob/' + eventData.id;
   }
 
   const eventSelect = useCallback(
@@ -106,33 +71,11 @@ const MyCalendar = (props) => {
       setisableButtonUpdateJob(false)
     }
   )
-  // const eventPropGetter = useCallback(
-  //   (event, start, end, isSelected) => ({
-  //     ...(isSelected && {
-  //       className: 'newStyle',
-  //     }),
-
-  //     ...(event.color == event.color && {
-  //       className: 'myStyle',
-  //     }),
-
-  //     // ...(event.color == event.color && {
-  //     //   style: {
-  //     //     backgroundColor: event.color,
-  //     //   },
-  //     // }),
-
-
-  //   }),
-  //   []
-  // )
-
   return (
     <div>
       < Calendar
-        //eventPropGetter={eventPropGetter}
         onSelectEvent={eventSelect}
-        components={components}
+        components={calendarComponent}
         localizer={localizer}
         events={events}
         startAccessor={(event) => { return new Date(event.start) }}
@@ -158,17 +101,12 @@ const MyCalendar = (props) => {
           type="submit"
           id="button"
           value="Edytuj pracę"
-          onClick={() => { updateJob(eventData); }} //przechodzimy do nowej strony, zrobić żeby przechodziło do strony potomnej i przesyłało propsy
+          onClick={() => { updateJob(eventData); }}
         />
       </ButtonContainer >
 
     </div >
   )
 }
-
-
-
-
-
 
 export default MyCalendar

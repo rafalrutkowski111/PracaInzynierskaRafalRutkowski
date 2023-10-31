@@ -45,17 +45,15 @@ const Router = () => {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/calendar" element={<Home />}></Route>
-          <Route path="/addJob" element={<AddJob/>}></Route>
+          <Route path="/calendar/addJob" element={<AddJob/>}></Route>
+          <Route path="/calendar/updateJob/:id" element={<UpdateJob/>}></Route>
           <Route path="/employee" element={<Employee />}></Route>
-          <Route path="/addEmployee" element={<AddEmployee />}></Route>
+          <Route path="/employee/addEmployee" element={<AddEmployee />}></Route>
+          <Route path="/employee/searchEmployee" element={<SearchEmployee />}></Route>
           <Route path="/specialization" element={<Specialization />}></Route>
-          <Route path="/addSpecialization" element={<AddSpecialization />}></Route>
+          <Route path="/specialization/addSpecialization" element={<AddSpecialization />}></Route>
           <Route path="/experience" element={<Experience />}></Route>
-          <Route path="/addExperience" element={<AddExperience />}></Route>
-          <Route path="/searchEmployee" element={<SearchEmployee />}></Route>
-          <Route path="/updateJob" element={<UpdateJob/>}></Route>
-
-          
+          <Route path="/experience/addExperience" element={<AddExperience />}></Route>
         </Routes>
       </BrowserRouter>
     </>

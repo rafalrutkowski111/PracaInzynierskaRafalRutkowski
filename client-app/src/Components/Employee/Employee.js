@@ -15,10 +15,10 @@ const Button = styled(Form.Control)`
 const Employee = () => {
 
   const addNewEmployee = () => {
-    window.location.pathname = '/inzRafalRutkowski/addEmployee';
+    window.location.pathname = '/inzRafalRutkowski/employee/addEmployee';
   }
   const searchNewEmployee = () => {
-    window.location.pathname = '/inzRafalRutkowski/searchEmployee';
+    window.location.pathname = '/inzRafalRutkowski/employee/searchEmployee';
   }
 
   return (
