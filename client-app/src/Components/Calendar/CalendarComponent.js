@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 const eventAgenda = ({ event }) => {
+  console.log(event)
   const idRandom = uuidv4();
 
   const showHide = () => {
@@ -31,9 +32,9 @@ const eventColor = ({ event }) => {
 }
 
 const calendarComponent = {
-  agenda: {
-    event: eventAgenda,
-  },
+  // agenda: {
+  //   event: eventAgenda,
+  // },
   month: {
     event: eventColor,
   },

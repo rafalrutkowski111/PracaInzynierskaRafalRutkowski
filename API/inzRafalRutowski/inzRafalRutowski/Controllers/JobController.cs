@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System;
 using System.Diagnostics.Eventing.Reader;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -34,7 +35,13 @@ namespace inzRafalRutowski.Controllers
         {
             var restult = _context.Jobs.Where(x=> int.Equals(x.EmployerId, userId)).ToList();
 
+
             var resultDTO = _mapper.Map<List<JobDTO>>(restult);
+
+            //resultDTO.ForEach(x =>
+            //{
+            //    x.ListEmployeeAddToJob = JsonSerializer.Deserialize<List<ListEmployeeAddToJob>>(x.Desc);
+            //});
 
             return Ok(resultDTO);
         }
@@ -568,27 +575,15 @@ namespace inzRafalRutowski.Controllers
             request.CurrentEnd = request.CurrentEnd.AddHours(1); // +1h
             List<Employee> employeeList= new List<Employee>();
 
-            var desc = "Termin rozpoczęcia pracy-" + request.Start.ToString("yyyy-MM-dd") +
-                " Termin zakończenia pracy-" + request.End.ToString("yyyy-MM-dd") +
-                " Czas zakończenia pracy-" + request.CurrentEnd;
-
             request.ListEmployeeAddToJob.ForEach(x =>
             {
                 x.End = x.End.AddHours(1); // +1h
                 x.End = x.End.AddDays(-1); // -1dni
-                desc += " Specjalizacja-" + x.SpecializationName;
-                desc += " Czas zakończenia-" + x.End;
-                desc += " Osoba odpowiedzialna-" + x.ResponsiblePersonName + " " + x.ResponsiblePersonSurname;
-                desc += " Pracownicy - doświadczenie: ";
 
                 x.EmployeeInJobList.ForEach(x2 =>
                 {
-                    desc += " " + x2.Name + " " + x2.Surname + "- " + x2.ExperienceName;
-                
                     var employee = _context.Employees.FirstOrDefault(x3 => x3.Id == x2.EmployeeId && x3.IsEmployed == false);
-
                     if (employee != null) employeeList.Add(employee);
-
                 });
 
             });
@@ -613,7 +608,6 @@ namespace inzRafalRutowski.Controllers
             TimeSpan resetHours = new TimeSpan(8, 00, 0);
             request.Start = request.Start.Date + resetHours;
 
-            request.Desc = desc;
             var result = _mapper.Map<Job>(request);
 
             if(request.End.Date == request.CurrentEnd.Date) result.Color = "#3174ad"; //niebieski
