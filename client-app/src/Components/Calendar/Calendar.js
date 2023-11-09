@@ -40,8 +40,9 @@ const messagesPl = {
   showMore: total => `+${total} więcej`,
 }
 
-const MyCalendar = () => {
-
+const MyCalendar = () => {    //w job wysłać liste all pracowników do controllera, w controller porównać z pobraną listą praconików 
+                              // i stworzyć liste po czym wysłać lsite na fronta i zrobić drugą tabele z naszymi pracownikami
+                              
   const [events, setEvents] = useState([]);
   const userId = sessionStorage.getItem("userId");
   const [selectJob, setSelectJob] = useState("Nie wybrano pracy");
