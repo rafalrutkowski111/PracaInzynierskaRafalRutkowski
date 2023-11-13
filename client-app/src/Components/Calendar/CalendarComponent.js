@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import * as dayjs from 'dayjs'
 
 const eventAgenda = ({ event }) => {
   console.log(event)
@@ -19,7 +20,26 @@ const eventAgenda = ({ event }) => {
         <b>{event.title}</b>
       </div>
 
-      <div style={{ display: "none" }} id={idRandom}> <p>{event.desc}</p></div>
+      <div style={{ display: "none" }} id={idRandom}> 
+      <br />
+      <p>Termin rozpoczęcia pracy {dayjs(event.start).format('DD/MM/YYYY')}</p>
+      <b><p style={{ color: event.color}}>Termin zakończenia pracy {dayjs(event.end).format('DD/MM/YYYY')}</p></b>
+      <p>Czas zakończenia pracy {dayjs(event.currentEnd).format('DD/MM/YYYY-HH.mm')}</p>
+      <p>Specjalizacje </p>
+      {event.listEmployeeAddToJob.map((data)=>
+      <div>
+        <b>{data.specializationName}</b>
+        <p>Termin zakończenia {dayjs(data.end).format('DD/MM/YYYY-HH.mm')}</p>
+        <p>Oosba odpowiedzialna za specjalizację {data.responsiblePersonName + " " + data.responsiblePersonSurname}</p>
+        <p>Pracownicy <br />
+        {data.employeeInJobList.map((data2)=>
+        <div>
+          {data2.name + " " + data2.surname + " " + data2.experienceName}
+        </div>
+        )}</p>
+      </div>
+      )}
+      </div>
 
     </span >
   )
@@ -32,9 +52,9 @@ const eventColor = ({ event }) => {
 }
 
 const calendarComponent = {
-  // agenda: {
-  //   event: eventAgenda,
-  // },
+  agenda: {
+    event: eventAgenda,
+  },
   month: {
     event: eventColor,
   },
