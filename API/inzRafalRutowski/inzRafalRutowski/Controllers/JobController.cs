@@ -33,18 +33,19 @@ namespace inzRafalRutowski.Controllers
         [HttpGet]
         public ActionResult<List<JobDTO>> GetJobs([FromQuery] int userId)
         {
-            var restult = _context.Jobs.Where(x=> int.Equals(x.EmployerId, userId)).ToList();
-
-
-            var resultDTO = _mapper.Map<List<JobDTO>>(restult);
-
-            //resultDTO.ForEach(x =>
-            //{
-            //    x.ListEmployeeAddToJob = JsonSerializer.Deserialize<List<ListEmployeeAddToJob>>(x.Desc);
-            //});
-
+            var result = _context.Jobs.Where(x=> int.Equals(x.EmployerId, userId)).ToList();
+            var resultDTO = _mapper.Map<List<JobDTO>>(result);
             return Ok(resultDTO);
         }
+
+        [HttpGet("GetJob")]
+        public ActionResult<JobDTO> GetJob([FromQuery] int jobId) 
+        {
+            var result = _context.Jobs.FirstOrDefault(x => int.Equals(x.Id, jobId));
+            var resultDTO = _mapper.Map<JobDTO>(result);
+            return Ok(resultDTO);
+        }
+
 
         [HttpPost("JobSpecialization")]
         public IActionResult SpecialisationInJob([FromBody] JobSpecializationDTO request)

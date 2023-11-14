@@ -23,8 +23,8 @@ const eventAgenda = ({ event }) => {
       <div style={{ display: "none" }} id={idRandom}> 
       <br />
       <p>Termin rozpoczęcia pracy {dayjs(event.start).format('DD/MM/YYYY')}</p>
-      <b><p style={{ color: event.color}}>Termin zakończenia pracy {dayjs(event.end).format('DD/MM/YYYY')}</p></b>
-      <p>Czas zakończenia pracy {dayjs(event.currentEnd).format('DD/MM/YYYY-HH.mm')}</p>
+      <p>Termin zakończenia pracy {dayjs(event.end).format('DD/MM/YYYY')}</p>
+      <b><p style={{ color: event.color}}>Czas zakończenia pracy {dayjs(event.currentEnd).format('DD/MM/YYYY-HH.mm')}</p></b>
       <p>Specjalizacje </p>
       {event.listEmployeeAddToJob.map((data)=>
       <div>

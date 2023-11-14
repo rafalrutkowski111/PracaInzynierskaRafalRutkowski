@@ -1,18 +1,15 @@
 import styled from "styled-components";
 import Form from 'react-bootstrap/Form';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
-import AddSpecializationAndHours from "./AddSpecializationAndHours";
-import ViewSpecializationAndHours from "./ViewSpecializationAndHours";
 import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./SpecializationModal";
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
-import { AddEmployee, ChangeSpecialist, ChangeSpecialistModal, ConfirmAdd, Summary, SummaryModal, SummaryViewEmployee } from "./SummaryModal";
+import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "./SummaryModal";
 import * as dayjs from 'dayjs'
 import TextField from '@mui/material/TextField';
+import { ViewSpecializationAndHours, AddSpecializationAndHours } from "../Job/SpecializationAndHours";
+import JobDate from "../Job/JobDates";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -32,12 +29,6 @@ const ButtonBootstrapBack = styled(Form.Control)`
 `
 const TittleContainer = styled.div`
     margin-top:2%;
-    display: flex;
-    justify-content: center;
-`
-const DataContainer = styled.div`
-    margin-top:2%;
-    margin-bottom:3%;
     display: flex;
     justify-content: center;
 `
@@ -102,12 +93,12 @@ const AddJob = () => {
             .then(response => {
                 setDataSpecialization(response.data);
             })
-    }, [])
+    })
     const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
 
     const next = () => {
 
-        if (dataEnd.$d == "Invalid Date" || dataStart.$d == "Invalid Date" || dataStart > dataEnd) return
+        if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
@@ -132,14 +123,14 @@ const AddJob = () => {
         const list = [...dataListSpecialization];
         list.push({ SpecializationId: specializationValue, Hours: hoursValue })
 
-        const SpecializationName = dataSpecialization.find(x => x.id == specializationValue);
+        const SpecializationName = dataSpecialization.find(x => x.id === specializationValue);
         SpecializationName.Disabled = true;
 
         setDataListSpecialization(dataListSpecialization => [...dataListSpecialization,
         { SpecializationId: specializationValue, Hours: hoursValue, SpecializationName: SpecializationName.name }])
 
         var tempDataSpecialization = [...dataSpecialization];
-        const i = tempDataSpecialization.findIndex(x => x.id == specializationValue)
+        const i = tempDataSpecialization.findIndex(x => x.id === specializationValue)
         tempDataSpecialization.splice(i, 1)
         setDataSpecialization(tempDataSpecialization)
 
@@ -171,22 +162,6 @@ const AddJob = () => {
         setChangeValueHours(false);
         setHoursValue(e.target.value);
     }
-
-    const changeStartDate = (e) => {
-        setDataStart(e)
-
-        if (dataListSpecialization.length - 1 >= 0 && e !== "" && dataEnd !== "" && title !== "")
-            setOpenAddEmployee(false)
-        else setOpenAddEmployee(true)
-    }
-
-    const changeEndDate = (e) => {
-        setDataEnd(e)
-
-        if (dataListSpecialization.length - 1 >= 0 && dataStart !== "" && e !== "" && title !== "")
-            setOpenAddEmployee(false)
-        else setOpenAddEmployee(true)
-    }
     const changeTitle = (e) => {
         const currentDate = new Date();
         if (e.target.value === '') {
@@ -198,21 +173,6 @@ const AddJob = () => {
             setOpenAddEmployee(false)
         else setOpenAddEmployee(true)
     }
-
-    const startValidation = (date) => {
-        const day = date.day();
-        return day === 0 || day === 6;
-    };
-
-    const endValidation = (date) => {
-        const day = date.day();
-
-        if (dataStart !== '') {
-            return dataStart.add(1, "day") > date || day === 0 || day === 6;
-        }
-        return day === 0 || day === 6;
-    };
-
     const viewEmployeeDetails = (idEmployee, isViewSpecialist) => {
         axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: idEmployee } })
             .then(response => {
@@ -241,7 +201,7 @@ const AddJob = () => {
                 data.surname = employee[0].surname
 
                 const list = [...searchEmployee];
-                const i = list.findIndex(x => x.specializationId == data.specializationId)
+                const i = list.findIndex(x => x.specializationId === data.specializationId)
                 list.splice(i, 1)
                 setSearchEmployee(list)
             }
@@ -261,7 +221,7 @@ const AddJob = () => {
             findIndextemp2 = 0;
             data.employeeInJobList.map(data2 => {
 
-                if (data2.employeeId == employee[0].employeeId) {
+                if (data2.employeeId === employee[0].employeeId) {
 
                     findIndex1 = findIndextemp1;
                     findIndex2 = findIndextemp2;
@@ -300,7 +260,7 @@ const AddJob = () => {
         list[findIndex1].employeeInJobList.splice(findIndex2, 1)
         setSearchEmployeeJob(list)
 
-        if (needRemove == true) {
+        if (needRemove === true) {
             const listSearchEmployeeJob = [...searchEmployeeJob];
             listSearchEmployeeJob.splice(findIndex1, 1)
             setSearchEmployeeJob(listSearchEmployeeJob)
@@ -310,14 +270,14 @@ const AddJob = () => {
     }
 
     const removeSpecializationAndHours = (indexSpecialization) => {
-        if (dataListSpecialization.length - 1 == 0)
+        if (dataListSpecialization.length - 1 === 0)
             setOpenAddEmployee(true)
 
         const list = [...dataListSpecialization];
-        const specializationRemove = list.find(x => x.SpecializationId == indexSpecialization)
+        const specializationRemove = list.find(x => x.SpecializationId === indexSpecialization)
 
         setDataSpecialization(dataSpecialization => [...dataSpecialization, { name: specializationRemove.SpecializationName, id: specializationRemove.SpecializationId }])
-        const i = list.findIndex(x => x.SpecializationId == indexSpecialization)
+        const i = list.findIndex(x => x.SpecializationId === indexSpecialization)
         list.splice(i, 1)
         setDataListSpecialization(list)
     }
@@ -451,7 +411,7 @@ const AddJob = () => {
             .then(response => { setEndDayWork(response.data.endWorkDay); setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
 
-        const index = listEmployeeToAdd.employeeToAdd.findIndex(x => x.employeeId == employee[0].employeeId)
+        const index = listEmployeeToAdd.employeeToAdd.findIndex(x => x.employeeId === employee[0].employeeId)
         const newListEmployeeToAddt = listEmployeeToAdd.employeeToAdd.slice(0, index).concat(listEmployeeToAdd.employeeToAdd.slice(index + 1))
 
         const updateListEmployeeToAdd = listEmployeeToAdd;
@@ -576,6 +536,14 @@ const AddJob = () => {
             setModalOpenConfirmAdd={setModalOpenConfirmAdd} modalOpenConfirmAdd={modalOpenConfirmAdd}/>
         )
     }
+    const renderJobDates = () =>{
+        return(
+            <JobDate setDataStart={setDataStart} dataListSpecialization={dataListSpecialization} dataEnd={dataEnd}
+            title={title} setOpenAddEmployee={setOpenAddEmployee} dataStart={dataStart} setDataEnd={setDataEnd}
+            isUpdate={false}
+            />
+        )
+    }
     return (
         <>
             {renderModalViewEmployee()}
@@ -601,23 +569,8 @@ const AddJob = () => {
                     label="Nazwa pracy"
                     variant="outlined" />
             </TittleContainer>
-            <DataContainer>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        label="Data rozpoczęcia projektu"
-                        disablePast
-                        shouldDisableDate={startValidation}
-                        onChange={(e) => changeStartDate(e)}
-                    />
-                    <DatePicker
-                        shouldDisableDate={endValidation}
-                        disablePast
-                        label="Data zakończenia projektu"
-                        onChange={(e) => changeEndDate(e)}
-                    />
-                </LocalizationProvider>
-            </DataContainer>
 
+            {renderJobDates()}
             {renderAddSpecializationAndHours()}
 
             < ButtonContainer >
