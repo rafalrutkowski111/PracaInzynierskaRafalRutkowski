@@ -14,8 +14,8 @@ const UpdateJob = () => {
 
     const [title, setTitle] = useState('');
     const [listEmployeeAddToJob, setListEmployeeAddToJob] = useState([{ employeeInJobList: [{ name: '', surname: '' }] }])
-    const [dataStart, setDataStart] = useState(new Date() + 1);
-    const [dataEnd, setDataEnd] = useState(new Date());
+    const [dataStart, setDataStart] = useState('');
+    const [dataEnd, setDataEnd] = useState('');
     const [endDayWork, setEndDayWork] = useState('');
 
     const [dataListSpecialization, setDataListSpecialization] = useState([]); //akutualnie nie używane
@@ -26,16 +26,12 @@ const UpdateJob = () => {
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetJob', { params: { jobId: params.id } })
             .then(response => {
-                setDataStart(response.data.start); //do sformatowania sprawdzać odbyła sie praca
+                setDataStart(response.data.start);
                 setDataEnd(response.data.end);
                 setTitle(response.data.title)
                 console.log(response.data)
             })
-    })
-
-
-
-
+    },[])
 
     const renderJobDates = () => {
         return (

@@ -93,7 +93,7 @@ const AddJob = () => {
             .then(response => {
                 setDataSpecialization(response.data);
             })
-    })
+    },[])
     const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
 
     const next = () => {
