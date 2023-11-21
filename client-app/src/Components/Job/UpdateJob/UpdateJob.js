@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import JobDate from "../Job/JobDates";
+import TextField from '@mui/material/TextField';
+import JobTitle from "../Job/JobTitle";
 
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -31,7 +33,7 @@ const UpdateJob = () => {
                 setTitle(response.data.title)
                 console.log(response.data)
             })
-    },[])
+    }, [])
 
     const renderJobDates = () => {
         return (
@@ -41,6 +43,12 @@ const UpdateJob = () => {
             />
         )
     }
+    const renderJobTitle = () => {
+        return (
+            <JobTitle setTitle={setTitle} dataListSpecialization={dataListSpecialization} dataEnd={dataEnd} dataStart={dataStart}
+                setOpenAddEmployee={setOpenAddEmployee} isUpdate={true} title={title} />
+        )
+    }
 
     return (
         <>
@@ -48,6 +56,7 @@ const UpdateJob = () => {
                 <h1>Edytuj prace {title}</h1>
             </TittleContainer>
 
+            {renderJobTitle()}
             {renderJobDates()}
 
         </>

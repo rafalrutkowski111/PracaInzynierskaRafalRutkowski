@@ -3,7 +3,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import * as dayjs from 'dayjs'
-import { useEffect, useState } from "react";
 
 const DataContainer = styled.div`
     margin-top:2%;

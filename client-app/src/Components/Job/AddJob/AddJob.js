@@ -7,9 +7,9 @@ import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./Spe
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
 import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "./SummaryModal";
 import * as dayjs from 'dayjs'
-import TextField from '@mui/material/TextField';
 import { ViewSpecializationAndHours, AddSpecializationAndHours } from "../Job/SpecializationAndHours";
 import JobDate from "../Job/JobDates";
+import JobTitle from "../Job/JobTitle";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -161,17 +161,6 @@ const AddJob = () => {
 
         setChangeValueHours(false);
         setHoursValue(e.target.value);
-    }
-    const changeTitle = (e) => {
-        const currentDate = new Date();
-        if (e.target.value === '') {
-            e.target.value = "Praca-" + dayjs(currentDate).format('DD/MM/YYYY-HH.mm');
-        }
-        setTitle(e.target.value)
-
-        if (dataListSpecialization.length - 1 >= 0 && dataEnd !== "" && dataStart)
-            setOpenAddEmployee(false)
-        else setOpenAddEmployee(true)
     }
     const viewEmployeeDetails = (idEmployee, isViewSpecialist) => {
         axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: idEmployee } })
@@ -544,6 +533,12 @@ const AddJob = () => {
             />
         )
     }
+    const renderJobTitle = () =>{
+        return(
+            <JobTitle setTitle={setTitle} dataListSpecialization={dataListSpecialization} dataEnd={dataEnd} dataStart={dataStart}
+            setOpenAddEmployee={setOpenAddEmployee}/>
+        )
+    }
     return (
         <>
             {renderModalViewEmployee()}
@@ -561,15 +556,8 @@ const AddJob = () => {
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>
             </TittleContainer>
-            <TittleContainer>
-                <TextField
-                    InputLabelProps={{ shrink: true }}
-                    onChange={e => changeTitle(e)}
-                    id="outlined-basic"
-                    label="Nazwa pracy"
-                    variant="outlined" />
-            </TittleContainer>
 
+            {renderJobTitle()}
             {renderJobDates()}
             {renderAddSpecializationAndHours()}
 
