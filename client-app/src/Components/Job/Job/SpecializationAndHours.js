@@ -23,7 +23,24 @@ const H1Container = styled.h5`
 `
 
 const AddSpecializationAndHours = (props) => {
-    // const {index} = props;
+
+    const changeSpecialization = (e) => {
+        props.setSpecializationValue(e);
+
+        if (e !== '' && props.hoursValue !== '') props.setOpenAddSpecialization(false)
+
+    }
+    const changeHours = (e) => {
+        if (e.target.value === '') {
+            e.target.value = 1;
+        }
+
+        if (props.specializationValue !== '' && e !== '') props.setOpenAddSpecialization(false)
+
+        props.setChangeValueHours(false);
+        props.setHoursValue(e.target.value);
+    }
+
     return (
         <SelectContainer>
             <FormControl sx={{ minWidth: 300 }}>
@@ -33,7 +50,7 @@ const AddSpecializationAndHours = (props) => {
                     value={props.data.SpecializationId}
                     label="Specjazlizacja"
                     disabled={props.data.Disabled}
-                    onChange={(e) => props.changeSpecialization(e.target.value)}
+                    onChange={(e) => changeSpecialization(e.target.value)}
                 >
                     {props.dataSpecialization.map((choice) => (
                         <MenuItem
@@ -49,7 +66,7 @@ const AddSpecializationAndHours = (props) => {
             </FormControl>
             <TextField
                 value={props.changeValueHours === true ? '' : props.data.Hours}
-                onChange={(e) => props.changeHours(e)}
+                onChange={(e) => changeHours(e)}
                 type="number"
                 id="outlined-basic"
                 label="Ilość godzin"
@@ -62,7 +79,20 @@ const AddSpecializationAndHours = (props) => {
 }
 
 const ViewSpecializationAndHours = (props) => {
-    
+
+    const removeSpecializationAndHours = (indexSpecialization) => {
+        if (props.dataListSpecialization.length - 1 === 0)
+            props.setOpenAddEmployee(true)
+
+        const list = [...props.dataListSpecialization];
+        const specializationRemove = list.find(x => x.SpecializationId === indexSpecialization)
+
+        props.setDataSpecialization(dataSpecialization => [...dataSpecialization, { name: specializationRemove.SpecializationName, id: specializationRemove.SpecializationId }])
+        const i = list.findIndex(x => x.SpecializationId === indexSpecialization)
+        list.splice(i, 1)
+        props.setDataListSpecialization(list)
+    }
+
     return (
         <Container>
             <H1Container>Lista dodanych specjalizacji</H1Container>
@@ -86,7 +116,7 @@ const ViewSpecializationAndHours = (props) => {
                                 <td>{item.Hours}</td>
                                 <td>
                                     <Button
-                                        onClick={() => props.removeSpecializationAndHours(item.SpecializationId)}
+                                        onClick={() => removeSpecializationAndHours(item.SpecializationId)}
                                         startIcon={<DeleteIcon />}>Usuń
                                     </Button>
                                 </td>
@@ -99,5 +129,47 @@ const ViewSpecializationAndHours = (props) => {
     )
 }
 
-export  {AddSpecializationAndHours};
-export  {ViewSpecializationAndHours};
+const AddSpecializationButton = (props) => {
+
+    const addSpecialization = () => {
+        const list = [...props.dataListSpecialization];
+        list.push({ SpecializationId: props.specializationValue, Hours: props.hoursValue })
+
+        const SpecializationName = props.dataSpecialization.find(x => x.id === props.specializationValue);
+        SpecializationName.Disabled = true;
+
+        props.setDataListSpecialization([...props.dataListSpecialization,
+        { SpecializationId: props.specializationValue, Hours: props.hoursValue, SpecializationName: SpecializationName.name }])
+
+        var tempDataSpecialization = [...props.dataSpecialization];
+        const i = tempDataSpecialization.findIndex(x => x.id === props.specializationValue)
+        tempDataSpecialization.splice(i, 1)
+        props.setDataSpecialization(tempDataSpecialization)
+
+        props.setChangeValueHours(true);
+        props.setHoursValue('');
+        props.setSpecializationValue('');
+
+        props.setOpenAddSpecialization(true)
+
+        if (props.dataStart !== "" && props.dataEnd !== "" && props.title !== "")
+            props.setOpenAddEmployee(false)
+        else props.setOpenAddEmployee(true)
+    }
+
+    return (
+        < props.ButtonContainer >
+            <Button sx={{ mr: 1 }}
+                disabled={props.openAddSpecialization}
+                variant="contained"
+                onClick={() => {
+                    addSpecialization();
+                }}
+            >Dodaj kolejny</Button>
+        </props.ButtonContainer>
+    )
+}
+
+export { AddSpecializationAndHours };
+export { ViewSpecializationAndHours };
+export { AddSpecializationButton };

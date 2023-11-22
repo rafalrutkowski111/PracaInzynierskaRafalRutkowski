@@ -7,7 +7,7 @@ import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./Spe
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
 import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "./SummaryModal";
 import * as dayjs from 'dayjs'
-import { ViewSpecializationAndHours, AddSpecializationAndHours } from "../Job/SpecializationAndHours";
+import { ViewSpecializationAndHours, AddSpecializationAndHours, AddSpecializationButton } from "../Job/SpecializationAndHours";
 import JobDate from "../Job/JobDates";
 import JobTitle from "../Job/JobTitle";
 
@@ -93,7 +93,7 @@ const AddJob = () => {
             .then(response => {
                 setDataSpecialization(response.data);
             })
-    },[])
+    }, [])
     const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
 
     const next = () => {
@@ -118,49 +118,6 @@ const AddJob = () => {
                     })
                 }
             })
-    }
-    const addSpecialization = () => {
-        const list = [...dataListSpecialization];
-        list.push({ SpecializationId: specializationValue, Hours: hoursValue })
-
-        const SpecializationName = dataSpecialization.find(x => x.id === specializationValue);
-        SpecializationName.Disabled = true;
-
-        setDataListSpecialization(dataListSpecialization => [...dataListSpecialization,
-        { SpecializationId: specializationValue, Hours: hoursValue, SpecializationName: SpecializationName.name }])
-
-        var tempDataSpecialization = [...dataSpecialization];
-        const i = tempDataSpecialization.findIndex(x => x.id === specializationValue)
-        tempDataSpecialization.splice(i, 1)
-        setDataSpecialization(tempDataSpecialization)
-
-        setChangeValueHours(true);
-        setHoursValue('');
-        setSpecializationValue('');
-
-        setOpenAddSpecialization(true)
-
-        if (dataStart !== "" && dataEnd !== "" && title !== "")
-            setOpenAddEmployee(false)
-        else setOpenAddEmployee(true)
-    }
-
-    const changeSpecialization = (e) => {
-        setSpecializationValue(e);
-
-        if (e !== '' && hoursValue !== '') setOpenAddSpecialization(false)
-
-    }
-
-    const changeHours = (e) => {
-        if (e.target.value === '') {
-            e.target.value = 1;
-        }
-
-        if (specializationValue !== '' && e !== '') setOpenAddSpecialization(false)
-
-        setChangeValueHours(false);
-        setHoursValue(e.target.value);
     }
     const viewEmployeeDetails = (idEmployee, isViewSpecialist) => {
         axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: idEmployee } })
@@ -258,19 +215,6 @@ const AddJob = () => {
         setModalOpenViewEmployee(false)
     }
 
-    const removeSpecializationAndHours = (indexSpecialization) => {
-        if (dataListSpecialization.length - 1 === 0)
-            setOpenAddEmployee(true)
-
-        const list = [...dataListSpecialization];
-        const specializationRemove = list.find(x => x.SpecializationId === indexSpecialization)
-
-        setDataSpecialization(dataSpecialization => [...dataSpecialization, { name: specializationRemove.SpecializationName, id: specializationRemove.SpecializationId }])
-        const i = list.findIndex(x => x.SpecializationId === indexSpecialization)
-        list.splice(i, 1)
-        setDataListSpecialization(list)
-    }
-
     const nextButtonSpecializationList = () => {
         verificationEmployeeToJob({
             listJobSpecializationEmployeeDTO: dataEmployeeWithSpecialization,
@@ -353,7 +297,7 @@ const AddJob = () => {
             title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob, color: "",
             start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
         })
-            .then(response => {setModalOpenConfirmAdd(true) })
+            .then(response => { setModalOpenConfirmAdd(true) })
     }
 
     const changeSpecialist = (idSpecialistToChange, currentSpecialistUserIdToChange) => {
@@ -436,15 +380,16 @@ const AddJob = () => {
 
     const renderAddSpecializationAndHours = () => {
         return (
-            <AddSpecializationAndHours changeSpecialization={changeSpecialization}
-                data={dataListSpecialization} changeValueHours={changeValueHours}
-                dataSpecialization={dataSpecialization} changeHours={changeHours} />
+            <AddSpecializationAndHours setSpecializationValue={setSpecializationValue} hoursValue={hoursValue} setHoursValue={setHoursValue}
+                data={dataListSpecialization} changeValueHours={changeValueHours} setOpenAddSpecialization={setOpenAddSpecialization}
+                dataSpecialization={dataSpecialization} specializationValue={specializationValue} setChangeValueHours={setChangeValueHours} />
         )
     }
     const renderViewSpecializationAndHours = () => {
         return (
-            <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization}
-                removeSpecializationAndHours={removeSpecializationAndHours} />
+            <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization} setOpenAddEmployee={setOpenAddEmployee}
+            setDataSpecialization={setDataSpecialization} setDataListSpecialization={setDataListSpecialization}
+            />
         )
     }
     const renderModalSpecializationEmptyList = () => {
@@ -519,24 +464,34 @@ const AddJob = () => {
             />
         )
     }
-    const renderModalConfirmAdd = () =>{
-        return(
+    const renderModalConfirmAdd = () => {
+        return (
             <ConfirmAdd ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap}
-            setModalOpenConfirmAdd={setModalOpenConfirmAdd} modalOpenConfirmAdd={modalOpenConfirmAdd}/>
+                setModalOpenConfirmAdd={setModalOpenConfirmAdd} modalOpenConfirmAdd={modalOpenConfirmAdd} />
         )
     }
-    const renderJobDates = () =>{
-        return(
+    const renderJobDates = () => {
+        return (
             <JobDate setDataStart={setDataStart} dataListSpecialization={dataListSpecialization} dataEnd={dataEnd}
-            title={title} setOpenAddEmployee={setOpenAddEmployee} dataStart={dataStart} setDataEnd={setDataEnd}
-            isUpdate={false}
+                title={title} setOpenAddEmployee={setOpenAddEmployee} dataStart={dataStart} setDataEnd={setDataEnd}
+                isUpdate={false}
             />
         )
     }
-    const renderJobTitle = () =>{
-        return(
+    const renderJobTitle = () => {
+        return (
             <JobTitle setTitle={setTitle} dataListSpecialization={dataListSpecialization} dataEnd={dataEnd} dataStart={dataStart}
-            setOpenAddEmployee={setOpenAddEmployee}/>
+                setOpenAddEmployee={setOpenAddEmployee} />
+        )
+    }
+    const renderButtonSpeciazization = () => {
+        return (
+            <AddSpecializationButton ButtonContainer={ButtonContainer} openAddSpecialization={openAddSpecialization} dataListSpecialization={dataListSpecialization}
+            specializationValue={specializationValue} hoursValue={hoursValue} dataSpecialization={dataSpecialization} setDataListSpecialization={setDataListSpecialization}
+            setDataSpecialization={setDataSpecialization} setChangeValueHours={setChangeValueHours} setHoursValue={setHoursValue} title={title}
+            setSpecializationValue={setSpecializationValue} setOpenAddSpecialization={setOpenAddSpecialization} dataStart={dataStart} dataEnd={dataEnd}
+            setOpenAddEmployee={setOpenAddEmployee}
+            />
         )
     }
     return (
@@ -551,7 +506,7 @@ const AddJob = () => {
             {renderModalAddEmployee()}
             {renderModalSummaryViewEmployee()}
             {renderModalConfirmAdd()}
-            
+
 
             <TittleContainer>
                 <h1>Dodaj nową prace</h1>
@@ -560,17 +515,7 @@ const AddJob = () => {
             {renderJobTitle()}
             {renderJobDates()}
             {renderAddSpecializationAndHours()}
-
-            < ButtonContainer >
-                <Button sx={{ mr: 1 }}
-                    disabled={openAddSpecialization}
-                    variant="contained"
-                    onClick={() => {
-                        addSpecialization();
-                    }}
-                >Dodaj kolejny</Button>
-            </ButtonContainer>
-
+            {renderButtonSpeciazization()}
             {renderViewSpecializationAndHours()}
 
             < ButtonBootstrapContainer >
