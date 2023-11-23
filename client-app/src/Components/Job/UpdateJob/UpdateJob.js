@@ -5,6 +5,7 @@ import styled from "styled-components";
 import JobDate from "../Job/JobDates";
 import JobTitle from "../Job/JobTitle";
 import { AddSpecializationAndHours, AddSpecializationButton, ViewSpecializationAndHours } from "../Job/SpecializationAndHours";
+import Form from 'react-bootstrap/Form';
 
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -16,6 +17,22 @@ const ButtonContainer = styled.div`
   margin-top: 2%;
   display: flex;
   justify-content: center;
+`
+const ButtonBootstrapContainer = styled.div`
+    widht:60%;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
+`
+const ButtonBootstrap = styled(Form.Control)`
+    width:150px;
+    background-color: green;
+    color: white;
+`
+const ButtonBootstrapBack = styled(Form.Control)`
+    width:150px;
+    background-color: red;
+    color: white;
 `
 
 const UpdateJob = () => {
@@ -35,30 +52,72 @@ const UpdateJob = () => {
     const [dataSpecialization, setDataSpecialization] = useState([]);
 
     const userId = sessionStorage.getItem("userId");
-
     const params = useParams()
-
-    //console.log(dataListSpecialization)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
-            .then(response => {
-                setDataSpecialization(response.data);
+            .then(response2 => {
+
+                axios.get('http://localhost:5000/api/Job/GetJob', { params: { jobId: params.id } })
+                    .then(response => {
+                        setDataStart(response.data.start);
+                        setDataEnd(response.data.end);
+                        setTitle(response.data.title)
+                        //console.log(response.data)
+
+                        let tempResponseData = response.data.listEmployeeAddToJob
+                        let tempDataListSpecialization = []
+                        tempResponseData.map(data => {
+                            tempDataListSpecialization.push({ SpecializationId: data.specializationId, Hours: data.hoursStart, SpecializationName: data.specializationName })
+
+                            const i = response2.data.findIndex(x => x.id === data.specializationId)
+                            response2.data.splice(i, 1)
+                            setDataSpecialization(response2.data)
+                        })
+                        setDataListSpecialization(tempDataListSpecialization)
+                    })
             })
 
-        axios.get('http://localhost:5000/api/Job/GetJob', { params: { jobId: params.id } })
-            .then(response => {
-                setDataStart(response.data.start);
-                setDataEnd(response.data.end);
-                setTitle(response.data.title)
-
-                let tempResponseData = response.data.listEmployeeAddToJob
-                tempResponseData.map(data => { console.log(data) })
-                //console.log(tempResponseData)
-
-                // tu uzupełnić liste dodanych specjalizacji i wywalic te prace z drugiej listy
-            })
+        setOpenAddEmployee(false)
     }, [])
+
+    const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
+
+    const next = () => {
+
+        if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
+
+        // TRZEBA TU SPRAWDZIĆ CZY ODBYLIŚMY JAKIEŚ DNI PRACY. JEŻELI NIE TO PRZECHODZIMY DALEJ, JEŻELI TAK TO MUSIMY OBLICZYĆ ILE DLA KAŻDEJ SPECJALIZACJI
+        // ODBYLIŚMY GODZIN I ODJĄĆ TO OD GODZIN POCZĄTKOWYCH - BEDZIE TRZEBA DODAĆ JAKIŚ OBIEKT PRZECHOWUJĄCY CAŁKOWITĄ ILOŚĆ GODZIN LUB ZROBINĄ (MAMY JEDNO MUSIMY DWA ZROBIĆ)
+
+        // axios.post('http://localhost:5000/api/Job/JobSpecialization',
+        //     { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
+        //     .then(response => {
+        //         setDataEmployeeWithSpecialization(response.data.specializationList)
+        //         //console.log(response.data)
+        //         setSearchEmployee(response.data.searchEmployee)
+        //         setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
+
+        //         if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
+        //         else if (response.data.searchEmployee.length !== 0) setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
+        //         else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
+        //         {
+        //             verificationEmployeeToJob({
+        //                 listJobSpecializationEmployeeDTO: response.data.specializationList,
+        //                 dataEmployeeWithSpecialization: response.data.specializationList
+        //             })
+        //         }
+        //     })
+    }
+
+
+
+
+
+
+
+
+
 
     const renderJobDates = () => {
         return (
@@ -112,7 +171,21 @@ const UpdateJob = () => {
             {renderViewSpecializationAndHours()}
 
 
-
+            < ButtonBootstrapContainer >
+                <ButtonBootstrap
+                    disabled={openAddEmployee}
+                    type="submit"
+                    id="button"
+                    value="Dalej"
+                    onClick={() => { next(); }}
+                />
+                <ButtonBootstrapBack
+                    type="submit"
+                    id="button"
+                    value="Powrót"
+                    onClick={() => { back(); }}
+                />
+            </ButtonBootstrapContainer >
         </>
     )
 }

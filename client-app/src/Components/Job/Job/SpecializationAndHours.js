@@ -132,9 +132,6 @@ const ViewSpecializationAndHours = (props) => {
 const AddSpecializationButton = (props) => {
 
     const addSpecialization = () => {
-        const list = [...props.dataListSpecialization];
-        list.push({ SpecializationId: props.specializationValue, Hours: props.hoursValue })
-
         const SpecializationName = props.dataSpecialization.find(x => x.id === props.specializationValue);
         SpecializationName.Disabled = true;
 
