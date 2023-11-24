@@ -280,13 +280,12 @@ const AddJob = () => {
             })
     }
     const addNewJob = () => {
-        console.log(dataEmployeeWithSpecialization)
-
         const updatelistEmployeeAddToJob = listEmployeeAddToJob.map(x => {
             const temp = dataEmployeeWithSpecialization.find(x2 => x2.specializationId === x.specializationId);
             x.responsiblePersonName = temp.name;
             x.responsiblePersonSurname = temp.surname
             x.responsiblePersonEmployeeId = temp.employeeId
+            x.finishWorkHours = 0;
 
             return x;
         })
@@ -294,10 +293,10 @@ const AddJob = () => {
 
         console.log(listEmployeeAddToJob)
         axios.post('http://localhost:5000/api/Job', {
-            title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob, color: "",
-            start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
+        title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob, color: "",
+        start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
         })
-            .then(response => { setModalOpenConfirmAdd(true) })
+        .then(response => { setModalOpenConfirmAdd(true) })
     }
 
     const changeSpecialist = (idSpecialistToChange, currentSpecialistUserIdToChange) => {

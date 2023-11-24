@@ -615,7 +615,7 @@ namespace inzRafalRutowski.Controllers
             else if(request.End<request.CurrentEnd) result.Color = "#b40000"; //czerwony
             else result.Color = "#388700"; //zielony
 
-            _context.Jobs.Add(result);
+            var saveNewJob = _context.Jobs.Add(result);
             await _context.SaveChangesAsync();
 
             var currentJobId = await _context.Jobs.OrderBy(x => x.Id).LastOrDefaultAsync();
@@ -641,6 +641,19 @@ namespace inzRafalRutowski.Controllers
             //    });
             //});
 
+
+
+            var resultJobHistory = _mapper.Map<JobHistory>(request);
+
+            if (request.End.Date == request.CurrentEnd.Date) resultJobHistory.Color = "#3174ad"; //niebieski
+            else if (request.End < request.CurrentEnd) resultJobHistory.Color = "#b40000"; //czerwony
+            else resultJobHistory.Color = "#388700"; //zielony
+            DateTime currentDateTime = DateTime.Now;
+            resultJobHistory.TimeFinishJob = currentDateTime;
+            resultJobHistory.Job = _context.Jobs.FirstOrDefault(x => x.Id == saveNewJob.Entity.Id);
+
+
+            _context.JobHistorys.Add(resultJobHistory);
             await _context.SaveChangesAsync();
 
             return Ok();

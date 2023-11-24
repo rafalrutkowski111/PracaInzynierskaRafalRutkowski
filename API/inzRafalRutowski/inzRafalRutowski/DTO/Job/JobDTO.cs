@@ -25,7 +25,8 @@ namespace inzRafalRutowski.DTO.Job
         public string ResponsiblePersonSurname { get; set; }
         public int SpecializationId { get; set; }
         public string SpecializationName { get; set; }
-        
+        public double? FinishWorkHours { get; set; }
+
     }
 
 

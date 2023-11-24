@@ -29,6 +29,12 @@ namespace inzRafalRutowski.Mapper
               .ForMember(m => m.CurrentEnd, c => c.MapFrom(s => s.CurrentTimeFinishJob))
               .ForMember(m => m.ListEmployeeAddToJob, c => c.MapFrom((s,_) => JsonSerializer.Deserialize<List<ListEmployeeAddToJob>>(s.ListEmployeeAddToJob)));
 
+            CreateMap<JobDTO, JobHistory>()
+                .ForMember(m => m.TimeFinishJob, c => c.MapFrom(s => s.End))
+                .ForMember(m => m.TimeStartJob, c => c.MapFrom(s => s.Start))
+                .ForMember(m => m.CurrentTimeFinishJob, c => c.MapFrom(s => s.CurrentEnd))
+                .ForMember(m => m.ListEmployeeAddToJob, c => c.MapFrom((s, _) => JsonSerializer.Serialize(s.ListEmployeeAddToJob)));
+
         }
     }
 }

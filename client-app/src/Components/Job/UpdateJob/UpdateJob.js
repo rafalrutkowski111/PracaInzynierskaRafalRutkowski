@@ -90,6 +90,11 @@ const UpdateJob = () => {
         // TRZEBA TU SPRAWDZIĆ CZY ODBYLIŚMY JAKIEŚ DNI PRACY. JEŻELI NIE TO PRZECHODZIMY DALEJ, JEŻELI TAK TO MUSIMY OBLICZYĆ ILE DLA KAŻDEJ SPECJALIZACJI
         // ODBYLIŚMY GODZIN I ODJĄĆ TO OD GODZIN POCZĄTKOWYCH - BEDZIE TRZEBA DODAĆ JAKIŚ OBIEKT PRZECHOWUJĄCY CAŁKOWITĄ ILOŚĆ GODZIN LUB ZROBINĄ (MAMY JEDNO MUSIMY DWA ZROBIĆ)
 
+        // na początku zróbmy zapisywanie histori przy tworzeniu pracy i dodajmy pole zapisane godziny
+        // musimy pobrać liczbe godzin już przerobioną następnie obliczyć od ostatniej zmiany ile przerobiliśmy godzin i tą liczbe odjąć od naszych godzin
+        // np mamy 300h do zrobienia- 1 zapis to początek 0 i np oblcizyliśmy że przerobiliśmy 100 godzin. Kolejny zapis będzie początek 100 i uobliczamy ile przerobiliśmy np 150
+        // oznacza to że obliczamy w 1 przypadaku (300-100 = 200h do zrobienia) w drugim przypadku (300-150 = 150h do zrobienia)
+
         // axios.post('http://localhost:5000/api/Job/JobSpecialization',
         //     { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
         //     .then(response => {
