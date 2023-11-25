@@ -649,7 +649,7 @@ namespace inzRafalRutowski.Controllers
             else if (request.End < request.CurrentEnd) resultJobHistory.Color = "#b40000"; //czerwony
             else resultJobHistory.Color = "#388700"; //zielony
             DateTime currentDateTime = DateTime.Now;
-            resultJobHistory.TimeFinishJob = currentDateTime;
+            resultJobHistory.TimeAddHistory = currentDateTime;
             resultJobHistory.Job = _context.Jobs.FirstOrDefault(x => x.Id == saveNewJob.Entity.Id);
 
 
@@ -657,6 +657,14 @@ namespace inzRafalRutowski.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpGet("GetLastUpdate")]
+        public ActionResult<JobHistory> GetLastUpdate([FromQuery] int jobId)
+        {
+            var result = _context.JobHistorys.FirstOrDefault(x => int.Equals(x.JobId, jobId));
+            var resultDTO = _mapper.Map<JobHistory>(result);
+            return Ok(resultDTO);
         }
     }
 }
