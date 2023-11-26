@@ -7,6 +7,7 @@ import JobTitle from "../Job/JobTitle";
 import { AddSpecializationAndHours, AddSpecializationButton, ViewSpecializationAndHours } from "../Job/SpecializationAndHours";
 import Form from 'react-bootstrap/Form';
 import * as dayjs from 'dayjs'
+import { SpecializationEmptyList, SpecializationList } from "../Job/SpecializationModal";
 
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -41,7 +42,6 @@ const UpdateJob = () => {
     const [title, setTitle] = useState('');
     const [dataStart, setDataStart] = useState('');
     const [dataEnd, setDataEnd] = useState('');
-
     const [listEmployeeAddToJob, setListEmployeeAddToJob] = useState([{ employeeInJobList: [{ name: '', surname: '' }] }])
     const [endDayWork, setEndDayWork] = useState('');
     const [hoursValue, setHoursValue] = useState('');
@@ -52,9 +52,17 @@ const UpdateJob = () => {
     const [openAddSpecialization, setOpenAddSpecialization] = useState(true);
     const [dataSpecialization, setDataSpecialization] = useState([]);
     const [needChangeHours, setNeedChangeHours] = useState(false);
+    const [dataEmployeeWithSpecialization, setDataEmployeeWithSpecialization] = useState([]);
+    const [searchEmployee, setSearchEmployee] = useState([]);
+    const [listEmployeeSpecializationListEmpty, setListEmployeeSpecializationListEmpty] = useState([])
+    const [modalSpecializationListEmpltyOpen, setModalSpecializationListEmpltyOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [disableButtonSpecialization, setDisableButtonSpecialization] = useState(true);
 
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
+
+    //console.log(dataStart)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
@@ -87,12 +95,10 @@ const UpdateJob = () => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
             .then(response => {
                 if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD')
-                && dayjs(response.data.timeStartJob).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
-                setNeedChangeHours(true)
+                    && dayjs(response.data.timeStartJob).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
+                    setNeedChangeHours(true)
             })
     }, [])
-
-    // usunąć możliwość edycji niezakończonej pracy
 
     const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
 
@@ -100,31 +106,48 @@ const UpdateJob = () => {
 
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
+        if (needChangeHours) // obliczyć przepracowane gdoziny
+        {
+
+        }
+        else  //to co normalnie
+        {
+            console.log(dataStart)
+            axios.post('http://localhost:5000/api/Job/JobSpecialization',
+                { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
+                .then(response => {
+                    setDataEmployeeWithSpecialization(response.data.specializationList)
+                    //console.log(response.data)
+                    setSearchEmployee(response.data.searchEmployee)
+                    setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
+
+                    if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
+                    else if (response.data.searchEmployee.length !== 0) setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
+                    // else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
+                    // {
+                    //     // verificationEmployeeToJob({
+                    //     //     listJobSpecializationEmployeeDTO: response.data.specializationList,
+                    //     //     dataEmployeeWithSpecialization: response.data.specializationList
+                    //     // })
+                    // }
+                })
+
+        }
+
+
+
+
+
+
+
+
+        // to potem uwzglednić do ifa
         // TRZEBA TU SPRAWDZIĆ CZY ODBYLIŚMY JAKIEŚ DNI PRACY. JEŻELI NIE TO PRZECHODZIMY DALEJ, JEŻELI TAK TO MUSIMY OBLICZYĆ ILE DLA KAŻDEJ SPECJALIZACJI
         // ODBYLIŚMY GODZIN I ODJĄĆ TO OD GODZIN POCZĄTKOWYCH - BEDZIE TRZEBA DODAĆ JAKIŚ OBIEKT PRZECHOWUJĄCY CAŁKOWITĄ ILOŚĆ GODZIN LUB ZROBINĄ (MAMY JEDNO MUSIMY DWA ZROBIĆ)
 
         // musimy pobrać liczbe godzin już przerobioną następnie obliczyć od ostatniej zmiany ile przerobiliśmy godzin i tą liczbe odjąć od naszych godzin
         // np mamy 300h do zrobienia- 1 zapis to początek 0 i np oblcizyliśmy że przerobiliśmy 100 godzin. Kolejny zapis będzie początek 100 i uobliczamy ile przerobiliśmy np 150
         // oznacza to że obliczamy w 1 przypadaku (300-100 = 200h do zrobienia) w drugim przypadku (300-150 = 150h do zrobienia)
-
-        // axios.post('http://localhost:5000/api/Job/JobSpecialization',
-        //     { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
-        //     .then(response => {
-        //         setDataEmployeeWithSpecialization(response.data.specializationList)
-        //         //console.log(response.data)
-        //         setSearchEmployee(response.data.searchEmployee)
-        //         setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
-
-        //         if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
-        //         else if (response.data.searchEmployee.length !== 0) setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
-        //         else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
-        //         {
-        //             verificationEmployeeToJob({
-        //                 listJobSpecializationEmployeeDTO: response.data.specializationList,
-        //                 dataEmployeeWithSpecialization: response.data.specializationList
-        //             })
-        //         }
-        //     })
     }
 
 
@@ -174,9 +197,31 @@ const UpdateJob = () => {
             />
         )
     }
+    const renderModalSpecializationEmptyList = () => {
+        return (
+            <SpecializationEmptyList modalSpecializationListEmpltyOpen={modalSpecializationListEmpltyOpen}
+                setModalSpecializationListEmpltyOpen={setModalSpecializationListEmpltyOpen} listEmployeeSpecializationListEmpty={listEmployeeSpecializationListEmpty}
+                ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} /> // uzupełnić listEmployeeSpecializationListEmpty
+        )
+    }
+    // const renderModalSpecializationList = () => {
+    //     return (
+    //         <SpecializationList modalOpen={modalOpen} setModalOpen={setModalOpen} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
+    //             searchEmployee={searchEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap}
+    //             disableButtonSpecialization={disableButtonSpecialization} setDisableButtonSpecialization={setDisableButtonSpecialization}
+    //             nextButtonSpecializationList={nextButtonSpecializationList} setDataEmployee={setDataEmployee} setViewSpecialist={setViewSpecialist}
+    //             setModalOpenViewEmployee={setModalOpenViewEmployee}
+
+    //         />
+    //     )
+    // }
 
     return (
         <>
+            {renderModalSpecializationEmptyList()}
+            {/* {renderModalSpecializationList()} */}
+
+
             <TittleContainer>
                 <h1>Edytuj prace {title}</h1>
             </TittleContainer>

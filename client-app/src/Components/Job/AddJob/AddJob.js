@@ -2,8 +2,7 @@ import styled from "styled-components";
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import { useState, useEffect } from "react";
-import Button from '@mui/material/Button';
-import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "./SpecializationModal";
+import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "../Job/SpecializationModal";
 import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
 import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "./SummaryModal";
 import * as dayjs from 'dayjs'
@@ -293,12 +292,12 @@ const AddJob = () => {
 
         console.log(listEmployeeAddToJob)
         axios.post('http://localhost:5000/api/Job', {
-        title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob, color: "",
-        start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
+            title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob, color: "",
+            start: dataStart.add(1, "day"), end: dataEnd.add(1, "day"), EmployerId: userId, currentEnd: dayjs(endDayWork).add(1, "day")
         })
-        .then(response => { setModalOpenConfirmAdd(true) })
+            .then(response => { setModalOpenConfirmAdd(true) })
     }
-
+    
     const changeSpecialist = (idSpecialistToChange, currentSpecialistUserIdToChange) => {
 
         setIndexSpecialistToChange(listEmployeeAddToJob.findIndex(x => x.specializationId === idSpecialistToChange));
@@ -387,7 +386,7 @@ const AddJob = () => {
     const renderViewSpecializationAndHours = () => {
         return (
             <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization} setOpenAddEmployee={setOpenAddEmployee}
-            setDataSpecialization={setDataSpecialization} setDataListSpecialization={setDataListSpecialization}
+                setDataSpecialization={setDataSpecialization} setDataListSpecialization={setDataListSpecialization}
             />
         )
     }
@@ -401,9 +400,11 @@ const AddJob = () => {
     const renderModalSpecializationList = () => {
         return (
             <SpecializationList modalOpen={modalOpen} setModalOpen={setModalOpen} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
-                searchEmployee={searchEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} viewEmployeeDetails={viewEmployeeDetails}
+                searchEmployee={searchEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap}
                 disableButtonSpecialization={disableButtonSpecialization} setDisableButtonSpecialization={setDisableButtonSpecialization}
-                nextButtonSpecializationList={nextButtonSpecializationList} />
+                setDataEmployee={setDataEmployee} setViewSpecialist={setViewSpecialist} setModalOpenViewEmployee={setModalOpenViewEmployee}
+                nextButtonSpecializationList={nextButtonSpecializationList}
+            />
         )
     }
     const renderModalViewEmployee = () => {
@@ -486,10 +487,10 @@ const AddJob = () => {
     const renderButtonSpeciazization = () => {
         return (
             <AddSpecializationButton ButtonContainer={ButtonContainer} openAddSpecialization={openAddSpecialization} dataListSpecialization={dataListSpecialization}
-            specializationValue={specializationValue} hoursValue={hoursValue} dataSpecialization={dataSpecialization} setDataListSpecialization={setDataListSpecialization}
-            setDataSpecialization={setDataSpecialization} setChangeValueHours={setChangeValueHours} setHoursValue={setHoursValue} title={title}
-            setSpecializationValue={setSpecializationValue} setOpenAddSpecialization={setOpenAddSpecialization} dataStart={dataStart} dataEnd={dataEnd}
-            setOpenAddEmployee={setOpenAddEmployee}
+                specializationValue={specializationValue} hoursValue={hoursValue} dataSpecialization={dataSpecialization} setDataListSpecialization={setDataListSpecialization}
+                setDataSpecialization={setDataSpecialization} setChangeValueHours={setChangeValueHours} setHoursValue={setHoursValue} title={title}
+                setSpecializationValue={setSpecializationValue} setOpenAddSpecialization={setOpenAddSpecialization} dataStart={dataStart} dataEnd={dataEnd}
+                setOpenAddEmployee={setOpenAddEmployee}
             />
         )
     }

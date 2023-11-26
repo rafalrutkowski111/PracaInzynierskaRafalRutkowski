@@ -5,6 +5,7 @@ import Sheet from '@mui/joy/Sheet';
 import Table from '@mui/joy/Table';
 import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { ViewEmployeeDetails } from './JobFunctions';
 
 const SpecializationEmptyList = (props) => {
     return (
@@ -117,40 +118,42 @@ const SpecializationList = (props) => {
                             return (
                                 <>
                                     <td>{item.specializationName}</td>
-                                    <Sheet sx={{ height: 200, maxHeight:400, overflow: 'auto' }}>
-                                    < Table
-                                        stickyHeader
-                                        stripe="odd"
-                                        variant="outlined" >
-                                        <thead>
-                                            <tr>
-                                                <th>Imie</th>
-                                                <th>Nazwisko</th>
-                                                <th>Doświadczenie</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {item.employeeList.map((item2) => {
-                                                return (
-                                                    <tr>
-                                                        <td>{item2.name}</td>
-                                                        <td>{item2.surname}</td>
-                                                        <td>{item2.experienceName}</td>
-                                                        <td>
-                                                            <Button
-                                                                onClick={() => props.viewEmployeeDetails(item2.employeeId, true)}
-                                                                startIcon={<VisibilityIcon />}>Szczegóły
-                                                            </Button>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })}
+                                    <Sheet sx={{ height: 200, maxHeight: 400, overflow: 'auto' }}>
+                                        < Table
+                                            stickyHeader
+                                            stripe="odd"
+                                            variant="outlined" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Imie</th>
+                                                    <th>Nazwisko</th>
+                                                    <th>Doświadczenie</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {item.employeeList.map((item2) => {
+                                                    return (
+                                                        <tr>
+                                                            <td>{item2.name}</td>
+                                                            <td>{item2.surname}</td>
+                                                            <td>{item2.experienceName}</td>
+                                                            <td>
+                                                                <Button
+                                                                    onClick={() => ViewEmployeeDetails({idEmployee: item2.employeeId, isViewSpecialist: true,
+                                                                        setDataEmployee: props.setDataEmployee, setViewSpecialist: props.setViewSpecialist, 
+                                                                        setModalOpenViewEmployee :props.setModalOpenViewEmployee})}
+                                                                    startIcon={<VisibilityIcon />}>Szczegóły
+                                                                </Button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })}
 
-                                        </tbody>
+                                            </tbody>
 
-                                    </Table>
-                                    </Sheet>
+                                        </Table>
+                                    </Sheet >
                                     <br />
 
                                 </>
@@ -220,10 +223,10 @@ const ViewEmployee = (props) => {
                         type="submit"
                         id="button"
                         value="Dodaj"
-                        onClick={() => 
+                        onClick={() =>
                             props.viewSpecialist == true
-                            ? props.addSpecialistEmployees(props.dataEmployee)
-                            : props.addNewEmployee(props.dataEmployee)}
+                                ? props.addSpecialistEmployees(props.dataEmployee)
+                                : props.addNewEmployee(props.dataEmployee)}
                     />
                     <props.ButtonBootstrapBack
                         type="submit"
