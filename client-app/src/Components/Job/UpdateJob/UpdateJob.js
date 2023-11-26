@@ -86,8 +86,8 @@ const UpdateJob = () => {
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
             .then(response => {
-                if (dayjs(response.data.timeAddHistory).format('DD/MM/YYYY') < dayjs(new Date()).format('DD/MM/YYYY')
-                && dayjs(response.data.timeStartJob).format('DD/MM/YYYY') < dayjs(new Date()).format('DD/MM/YYYY'))
+                if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD')
+                && dayjs(response.data.timeStartJob).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
                 setNeedChangeHours(true)
             })
     }, [])

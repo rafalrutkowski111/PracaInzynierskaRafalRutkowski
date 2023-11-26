@@ -8,6 +8,7 @@ import axios from 'axios';
 import "./Calendar.css"
 import React, { useCallback } from 'react'
 import calendarComponent from './CalendarComponent';
+import * as dayjs from 'dayjs'
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -40,9 +41,8 @@ const messagesPl = {
   showMore: total => `+${total} więcej`,
 }
 
-const MyCalendar = () => {    //w job wysłać liste all pracowników do controllera, w controller porównać z pobraną listą praconików 
-                              // i stworzyć liste po czym wysłać lsite na fronta i zrobić drugą tabele z naszymi pracownikami
-                              
+const MyCalendar = () => {
+
   const [events, setEvents] = useState([]);
   const userId = sessionStorage.getItem("userId");
   const [selectJob, setSelectJob] = useState("Nie wybrano pracy");
@@ -67,9 +67,12 @@ const MyCalendar = () => {    //w job wysłać liste all pracowników do control
   const eventSelect = useCallback(
     (event) => {
       console.log(event)
+      if (dayjs(event.currentEnd).format('YYYY/MM/DD') > dayjs(new Date()).format('YYYY/MM/DD')) {
+        setisableButtonUpdateJob(false)
+      }
+      else setisableButtonUpdateJob(true)
       setEventData(event)
       setSelectJob(event.title)
-      setisableButtonUpdateJob(false)
     }
   )
   return (
@@ -102,7 +105,7 @@ const MyCalendar = () => {    //w job wysłać liste all pracowników do control
           type="submit"
           id="button"
           value="Edytuj pracę"
-          onClick={() => { updateJob(eventData); }}
+          onClick={() => { updateJob(); }}
         />
       </ButtonContainer >
 

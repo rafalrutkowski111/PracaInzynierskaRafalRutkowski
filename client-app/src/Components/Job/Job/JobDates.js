@@ -14,7 +14,7 @@ const JobDate = (props) => {
 
     var changeStartWork = false
 
-    if (dayjs(props.dataStart).format('DD/MM/YYYY') <= dayjs(new Date()).format('DD/MM/YYYY'))
+    if (dayjs(props.dataStart).format('YYYY/MM/DD') <= dayjs(new Date()).format('YYYY/MM/DD'))
         changeStartWork = true;
 
     const changeStartDate = (e) => {
@@ -35,14 +35,14 @@ const JobDate = (props) => {
 
     const startValidation = (date) => {
         const day = date.day();
-        if (props.isUpdate === true && date.format('DD/MM/YYYY') === dayjs(new Date()).format('DD/MM/YYYY')) return true
+        if (props.isUpdate === true && date.format('YYYY/MM/DD') === dayjs(new Date()).format('YYYY/MM/DD')) return true
         return day === 0 || day === 6;
     };
 
     const endValidation = (date) => {
         const day = date.day();
 
-        if (props.isUpdate === true && date.format('DD/MM/YYYY') === dayjs(new Date()).format('DD/MM/YYYY')) return true
+        if (props.isUpdate === true && date.format('YYYY/MM/DD') === dayjs(new Date()).format('YYYY/MM/DD')) return true
         if (props.dataStart !== '') 
             return props.dataStart >= date || day === 0 || day === 6;
         return day === 0 || day === 6;
