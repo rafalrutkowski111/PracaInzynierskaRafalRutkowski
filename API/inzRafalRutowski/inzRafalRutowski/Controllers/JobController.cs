@@ -572,7 +572,7 @@ namespace inzRafalRutowski.Controllers
             //wynika to z różnego odczytywanaia dat. Najlepiej byłoby przechowywać w naszej strefie czasowej(różnica godziń) i aktualny dzień(zmienia sie przy przesyłaniu)
             //i na froncie przy wyświetlaniu zmieniać. Może kiedyś do zmiany
 
-            request.CurrentEnd = request.CurrentEnd.AddDays(-2); // -2dni
+            request.CurrentEnd = request.CurrentEnd.AddDays(-1); // -1dzien
             request.CurrentEnd = request.CurrentEnd.AddHours(1); // +1h
             List<Employee> employeeList= new List<Employee>();
 

@@ -9,8 +9,72 @@ import Button from '@mui/material/Button';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import axios from 'axios';
 
 const Summary = (props) => {
+
+    const addNewJob = () => {
+        const updatelistEmployeeAddToJob = props.listEmployeeAddToJob.map(x => {
+            const temp = props.dataEmployeeWithSpecialization.find(x2 => x2.specializationId === x.specializationId);
+            x.responsiblePersonName = temp.name;
+            x.responsiblePersonSurname = temp.surname
+            x.responsiblePersonEmployeeId = temp.employeeId
+            x.finishWorkHours = 0;
+
+            return x;
+        })
+        props.setListEmployeeAddToJob(updatelistEmployeeAddToJob)
+
+        axios.post('http://localhost:5000/api/Job', {
+            title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
+            start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork)
+        })
+            .then(props.setModalOpenConfirmAdd(true))
+    }
+
+    const changeSpecialist = (idSpecialistToChange, currentSpecialistUserIdToChange) => {
+
+        props.setIndexSpecialistToChange(props.listEmployeeAddToJob.findIndex(x => x.specializationId === idSpecialistToChange));
+        props.setCurrentSpecialistUserIdToChange(currentSpecialistUserIdToChange);
+        props.setModalOpenChangeSpeclialist(true)
+    }
+
+    const removePerson = (person, specialist) => {
+
+
+        //inne podejście zamiast splice użyte slice. brak mutacji tylko tworzenie nowej tablicy
+        //tu chyba różnicy nie robi bo i tak potem tworzymy nową tablice którą zastępujemy starą
+        const index = specialist.employeeInJobList.findIndex(x => x.employeeId === person.employeeId)
+        const newSpecialistList = specialist.employeeInJobList.slice(0, index).concat(specialist.employeeInJobList.slice(index + 1))
+
+        const removeListEmployeeAddToJob = props.listEmployeeAddToJob.map(x => {
+            if (x.specializationId === specialist.specializationId) {
+                x.employeeInJobList = newSpecialistList
+                x.hours += person.hoursJob
+            }
+            return x;
+        })
+        props.setListEmployeeAddToJob(removeListEmployeeAddToJob)
+
+        axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
+            {
+                listEmployeeInJobDTOList: props.listEmployeeAddToJob, start: dayjs(props.dataStart)
+            },)
+            .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+    }
+    const showAddEmployee = (SpecializationId) => {
+
+        axios.post('http://localhost:5000/api/Job/AddEmployee',
+            {
+                listEmployeeInJobDTOList: props.listEmployeeAddToJob, EmployerId: props.userId, start: dayjs(props.dataStart), end: dayjs(props.dataEnd),
+                SpecializationId: SpecializationId
+            },)
+            .then(response => { props.setListEmployeeToAdd(response.data) })
+
+        props.setModalOpenAddEmployee(true)
+        props.setIdSpecializationToChangeEmployee(SpecializationId)
+    }
+
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -75,7 +139,7 @@ const Summary = (props) => {
                                             <td>{item.nameSurname}</td>
                                             <td>
                                                 <Button
-                                                    onClick={() => props.changeSpecialist(item.specializationId, item.employeeId)}
+                                                    onClick={() => changeSpecialist(item.specializationId, item.employeeId)}
                                                     startIcon={<ManageAccountsIcon />}>Podgląd
                                                 </Button>
                                             </td>
@@ -126,7 +190,7 @@ const Summary = (props) => {
                                                         <td>
                                                             <Button
                                                                 disabled={specialistId === item2.employeeId || item.hours + item2.hoursJob > 0 ? true : false}
-                                                                onClick={() => props.removePerson(item2, item)}
+                                                                onClick={() => removePerson(item2, item)}
                                                                 startIcon={<PersonRemoveIcon />}>Usuń
                                                             </Button>
                                                         </td>
@@ -138,7 +202,7 @@ const Summary = (props) => {
                                     </Table>
                                     < props.ButtonContainer >
                                         <Button
-                                            onClick={() => props.showAddEmployee(item.specializationId)}
+                                            onClick={() => showAddEmployee(item.specializationId)}
                                             startIcon={<PersonAddIcon />}>Dodaj
                                         </Button>
                                     </props.ButtonContainer>
@@ -159,7 +223,7 @@ const Summary = (props) => {
                         type="submit"
                         id="button"
                         value="Dodaj prace"
-                        onClick={() => { props.addNewJob() }}
+                        onClick={() => { addNewJob() }}
                     />
                     <props.ButtonBootstrapBack
                         type="submit"
@@ -176,6 +240,22 @@ const Summary = (props) => {
 
 const ChangeSpecialist = (props) => {
 
+    const changeSpecialistPerson = (item, userIdToChange) => {
+        const updateDataEmployeeWithSpecialization = props.dataEmployeeWithSpecialization.map(x => {
+            if (x.employeeId === userIdToChange) {
+                x.employeeId = item.employeeId
+                x.name = item.name
+                x.surname = item.surname
+                x.nameSurname = item.name + " " + item.surname
+            }
+            return x
+        })
+
+        props.setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
+        props.setModalOpenChangeSpeclialist(false)
+
+    }
+    
     var noData = false;
     var height = 250;
     var width = 600;
@@ -253,7 +333,7 @@ const ChangeSpecialist = (props) => {
                                                     <td>{item.surname}</td>
                                                     <td>{item.experienceName}</td>
                                                     <Button
-                                                        onClick={() => props.changeSpecialistPerson(item, props.currentSpecialistUserIdToChange)}
+                                                        onClick={() => changeSpecialistPerson(item, props.currentSpecialistUserIdToChange)}
                                                         startIcon={<PersonAddIcon />}>Zmień
                                                     </Button>
                                                 </tr>
@@ -281,6 +361,13 @@ const ChangeSpecialist = (props) => {
 
 const AddEmployee = (props) => {
 
+    const viewEmployeeSummaryDetails = (idEmployee) => {
+        axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: idEmployee } })
+            .then(response => {
+                props.setDataEmployee(response.data)
+            })
+        props.setModalOpenSummaryViewEmployee(true)
+    }
 
     return (
         <Modal
@@ -343,7 +430,7 @@ const AddEmployee = (props) => {
                                                 <td>{item.experienceName}</td>
                                                 <td>
                                                     <Button
-                                                        onClick={() => props.viewEmployeeSummaryDetails(item.employeeId)}
+                                                        onClick={() => viewEmployeeSummaryDetails(item.employeeId)}
                                                         startIcon={<VisibilityIcon />}>Podgląd
                                                     </Button>
                                                 </td>
@@ -372,6 +459,28 @@ const AddEmployee = (props) => {
 }
 
 const SummaryViewEmployee = (props) => {
+
+    const addEmployee = (employee) => {
+
+        axios.post('http://localhost:5000/api/Job/UpdateDataNewEmployee',
+            {
+                listEmployeeInJobDTOList: props.listEmployeeAddToJob, EmployerId: props.userId, start: dayjs(props.dataStart), end: dayjs(props.dataEnd),
+                SpecializationId: props.idSpecializationToChangeEmployee, employee: employee[0]
+            },)
+            .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+
+
+        const index = props.listEmployeeToAdd.employeeToAdd.findIndex(x => x.employeeId === employee[0].employeeId)
+        const newListEmployeeToAddt = props.listEmployeeToAdd.employeeToAdd.slice(0, index).concat(props.listEmployeeToAdd.employeeToAdd.slice(index + 1))
+
+        const updateListEmployeeToAdd = props.listEmployeeToAdd;
+        updateListEmployeeToAdd.employeeToAdd = newListEmployeeToAddt
+        props.setListEmployeeToAdd(updateListEmployeeToAdd)
+
+        props.setModalOpenSummaryViewEmployee(false)
+
+    }
+
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -416,7 +525,7 @@ const SummaryViewEmployee = (props) => {
                         type="submit"
                         id="button"
                         value="Dodaj"
-                        onClick={() => props.addEmployee(props.dataEmployee)}
+                        onClick={() => addEmployee(props.dataEmployee)}
                     />
                     <props.ButtonBootstrapBack
                         type="submit"

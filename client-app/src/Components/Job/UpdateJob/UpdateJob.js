@@ -7,7 +7,10 @@ import JobTitle from "../Job/JobTitle";
 import { AddSpecializationAndHours, AddSpecializationButton, ViewSpecializationAndHours } from "../Job/SpecializationAndHours";
 import Form from 'react-bootstrap/Form';
 import * as dayjs from 'dayjs'
-import { SpecializationEmptyList, SpecializationList } from "../Job/SpecializationModal";
+import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "../Job/SpecializationModal";
+import { VerificationEmployeeToJob } from "../Job/JobFunctions";
+import { EmployeeList, NotEnoughEmployee } from "../AddJob/EmployeeModal";
+import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "../AddJob/SummaryModal";
 
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -58,6 +61,24 @@ const UpdateJob = () => {
     const [modalSpecializationListEmpltyOpen, setModalSpecializationListEmpltyOpen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [disableButtonSpecialization, setDisableButtonSpecialization] = useState(true);
+    const [dataEmployee, setDataEmployee] = useState([{ name: '', surname: '', specializationName: '', experienceName: '', employeeId: '' }]);
+    const [viewSpecialist, setViewSpecialist] = useState(false);
+    const [modalOpenViewEmployee, setModalOpenViewEmployee] = useState(false);
+    const [startDayWork, setStartDayWork] = useState('');
+    const [modalOpenSummary, setModalOpenSummary] = useState(false);
+    const [modalOpenEmployeeList, setModalOpenEmployeeList] = useState(false);
+    const [modalOpenNotEnoughEmployee, setModalOpenNotEnoughEmployee] = useState(false);
+    const [searchEmployeeJob, setSearchEmployeeJob] = useState([]);
+    const [disableButtonEmployee, setDisableButtonEmployee] = useState(true);
+    const [modalOpenConfirmAdd, setModalOpenConfirmAdd] = useState(false);
+    const [indexSpecialistToChange, setIndexSpecialistToChange] = useState(0);
+    const [currentSpecialistUserIdToChange, setCurrentSpecialistUserIdToChange] = useState();
+    const [modalOpenChangeSpeclialist, setModalOpenChangeSpeclialist] = useState(false);
+    const [listEmployeeToAdd, setListEmployeeToAdd] = useState({ employeeToAdd: [] })
+    const [modalOpenAddEmployee, setModalOpenAddEmployee] = useState(false);
+    const [idSpecializationToChangeEmployee, setIdSpecializationToChangeEmployee] = useState(-1)
+    const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);
+    const [heightModal, setHeightModal] = useState(700)
 
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
@@ -70,7 +91,7 @@ const UpdateJob = () => {
 
                 axios.get('http://localhost:5000/api/Job/GetJob', { params: { jobId: params.id } })
                     .then(response => {
-                        setDataStart(response.data.start);
+                        setDataStart(dayjs(response.data.start));
                         setDataEnd(response.data.end);
                         setTitle(response.data.title)
                         //console.log(response.data)
@@ -108,6 +129,7 @@ const UpdateJob = () => {
 
         if (needChangeHours) // obliczyć przepracowane gdoziny
         {
+            console.log(needChangeHours)
 
         }
         else  //to co normalnie
@@ -120,16 +142,20 @@ const UpdateJob = () => {
                     //console.log(response.data)
                     setSearchEmployee(response.data.searchEmployee)
                     setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
+                    console.log(response.data.searchEmployee.length)
 
                     if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
                     else if (response.data.searchEmployee.length !== 0) setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
-                    // else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
-                    // {
-                    //     // verificationEmployeeToJob({
-                    //     //     listJobSpecializationEmployeeDTO: response.data.specializationList,
-                    //     //     dataEmployeeWithSpecialization: response.data.specializationList
-                    //     // })
-                    // }
+                    else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
+                    {
+                        VerificationEmployeeToJob({
+                            listJobSpecializationEmployeeDTO: response.data.specializationList, dataEmployeeWithSpecialization: response.data.specializationList,
+                            dataListSpecialization: dataListSpecialization, userId: userId, dataStart: dataStart, setListEmployeeAddToJob: setListEmployeeAddToJob,
+                            dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
+                            setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
+                            setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization
+                        })
+                    }
                 })
 
         }
@@ -201,25 +227,108 @@ const UpdateJob = () => {
         return (
             <SpecializationEmptyList modalSpecializationListEmpltyOpen={modalSpecializationListEmpltyOpen}
                 setModalSpecializationListEmpltyOpen={setModalSpecializationListEmpltyOpen} listEmployeeSpecializationListEmpty={listEmployeeSpecializationListEmpty}
-                ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} /> // uzupełnić listEmployeeSpecializationListEmpty
+                ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} />
         )
     }
-    // const renderModalSpecializationList = () => {
-    //     return (
-    //         <SpecializationList modalOpen={modalOpen} setModalOpen={setModalOpen} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
-    //             searchEmployee={searchEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap}
-    //             disableButtonSpecialization={disableButtonSpecialization} setDisableButtonSpecialization={setDisableButtonSpecialization}
-    //             nextButtonSpecializationList={nextButtonSpecializationList} setDataEmployee={setDataEmployee} setViewSpecialist={setViewSpecialist}
-    //             setModalOpenViewEmployee={setModalOpenViewEmployee}
-
-    //         />
-    //     )
-    // }
+    const renderModalSpecializationList = () => {
+        return (
+            <SpecializationList modalOpen={modalOpen} setModalOpen={setModalOpen} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
+                searchEmployee={searchEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} dataEnd={dataEnd}
+                disableButtonSpecialization={disableButtonSpecialization} setDisableButtonSpecialization={setDisableButtonSpecialization}
+                setDataEmployee={setDataEmployee} setViewSpecialist={setViewSpecialist} setModalOpenViewEmployee={setModalOpenViewEmployee}
+                dataListSpecialization={dataListSpecialization} userId={userId} dataStart={dataStart} setListEmployeeAddToJob={setListEmployeeAddToJob}
+                setEndDayWork={setEndDayWork} setStartDayWork={setStartDayWork} setModalOpenSummary={setModalOpenSummary}
+                setModalOpenEmployeeList={setModalOpenEmployeeList} setModalOpenNotEnoughEmployee={setModalOpenNotEnoughEmployee}
+                setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization} setSearchEmployeeJob={setSearchEmployeeJob}
+            />
+        )
+    }
+    const renderModalViewEmployee = () => {
+        return (
+            <ViewEmployee modalOpenViewEmployee={modalOpenViewEmployee} setModalOpenViewEmployee={setModalOpenViewEmployee}
+                dataEmployee={dataEmployee} ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} ButtonBootstrapBack={ButtonBootstrapBack}
+                viewSpecialist={viewSpecialist} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization} searchEmployee={searchEmployee}
+                setSearchEmployee={setSearchEmployee} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
+                searchEmployeeJob={searchEmployeeJob} setSearchEmployeeJob={setSearchEmployeeJob} listEmployeeAddToJob={listEmployeeAddToJob}
+                setListEmployeeAddToJob={setListEmployeeAddToJob}
+            />
+        )
+    }
+    const renderModalNotEnoughEmployee = () => {
+        return (
+            <NotEnoughEmployee setModalOpenNotEnoughEmployee={setModalOpenNotEnoughEmployee} modalOpenNotEnoughEmployee={modalOpenNotEnoughEmployee}
+                ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} />
+        )
+    }
+    const renderModalEmployeeList = () => {
+        return (
+            <EmployeeList searchEmployeeJob={searchEmployeeJob} modalOpenEmployeeList={modalOpenEmployeeList} setModalOpenEmployeeList={setModalOpenEmployeeList}
+                ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} listEmployeeAddToJob={listEmployeeAddToJob}
+                setDisableButtonEmployee={setDisableButtonEmployee} disableButtonEmployee={disableButtonEmployee} dataStart={dataStart}
+                ButtonBootstrapBack={ButtonBootstrapBack} setEndDayWork={setEndDayWork} setListEmployeeAddToJob={setListEmployeeAddToJob}
+                setModalOpenSummary={setModalOpenSummary} setHeightModal={setHeightModal} heightModal={heightModal}
+            />
+        )
+    }
+    const renderModalSummary = () => {
+        return (
+            <Summary ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} setModalOpenSummary={setModalOpenSummary}
+                modalOpenSummary={modalOpenSummary} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
+                endDayWork={endDayWork} startDayWork={startDayWork} listEmployeeAddToJob={listEmployeeAddToJob} userId={userId}
+                dataEnd={dataEnd} setListEmployeeAddToJob={setListEmployeeAddToJob} title={title} dataStart={dataStart}
+                setModalOpenConfirmAdd={setModalOpenConfirmAdd} setIndexSpecialistToChange={setIndexSpecialistToChange}
+                setCurrentSpecialistUserIdToChange={setCurrentSpecialistUserIdToChange} setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist}
+                setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
+                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee}
+            />
+        )
+    }
+    const renderModalChangeSpecialist = () => {
+        return (
+            <ChangeSpecialist setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist} modalOpenChangeSpeclialist={modalOpenChangeSpeclialist}
+                ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} indexSpecialistToChange={indexSpecialistToChange}
+                listEmployeeAddToJob={listEmployeeAddToJob} currentSpecialistUserIdToChange={currentSpecialistUserIdToChange}
+                dataEmployeeWithSpecialization={dataEmployeeWithSpecialization} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
+            />
+        )
+    }
+    const renderModalAddEmployee = () => {
+        return (
+            <AddEmployee setModalOpenAddEmployee={setModalOpenAddEmployee} modalOpenAddEmployee={modalOpenAddEmployee}
+                ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} listEmployeeToAdd={listEmployeeToAdd}
+                setDataEmployee={setDataEmployee} setModalOpenSummaryViewEmployee={setModalOpenSummaryViewEmployee}
+            />
+        )
+    }
+    const renderModalSummaryViewEmployee = () => {
+        return (
+            <SummaryViewEmployee setModalOpenSummaryViewEmployee={setModalOpenSummaryViewEmployee} modalOpenSummaryViewEmployee={modalOpenSummaryViewEmployee}
+                ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployee={dataEmployee}
+                listEmployeeAddToJob={listEmployeeAddToJob} userId={userId} dataStart={dataStart} dataEnd={dataEnd} setEndDayWork={setEndDayWork}
+                idSpecializationToChangeEmployee={idSpecializationToChangeEmployee} setListEmployeeAddToJob={setListEmployeeAddToJob}
+                listEmployeeToAdd={listEmployeeToAdd} setListEmployeeToAdd={setListEmployeeToAdd}
+            />
+        )
+    }
+    const renderModalConfirmAdd = () => {
+        return (
+            <ConfirmAdd ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap}
+                setModalOpenConfirmAdd={setModalOpenConfirmAdd} modalOpenConfirmAdd={modalOpenConfirmAdd} />
+        )
+    }
 
     return (
         <>
             {renderModalSpecializationEmptyList()}
-            {/* {renderModalSpecializationList()} */}
+            {renderModalSpecializationList()}
+            {renderModalViewEmployee()}
+            {renderModalNotEnoughEmployee()}
+            {renderModalEmployeeList()}
+            {renderModalSummary()}
+            {renderModalChangeSpecialist()}
+            {renderModalAddEmployee()}
+            {renderModalSummaryViewEmployee()}
+            {renderModalConfirmAdd()}
 
 
             <TittleContainer>

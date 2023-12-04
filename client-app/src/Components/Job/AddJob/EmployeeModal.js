@@ -5,6 +5,17 @@ import Typography from '@mui/joy/Typography';
 import Table from '@mui/joy/Table';
 import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import styled from 'styled-components';
+import { ViewEmployeeDetails } from '../Job/JobFunctions';
+import { useState } from 'react';
+import axios from "axios";
+import * as dayjs from 'dayjs'
+
+const ColorRed = styled.div`
+    color: red;
+    display: flex;
+    float: right;
+`
 
 const NotEnoughEmployee = (props) => {
     return (
@@ -54,16 +65,27 @@ const NotEnoughEmployee = (props) => {
 }
 
 const EmployeeList = (props) => {
-    if (props.searchEmployeeJob.length === 0) 
-    {
+    
+
+    if (props.searchEmployeeJob.length === 0) {
         props.setHeightModal(200)
         props.setDisableButtonEmployee(false)
     }
-    else
-    {
+    else {
         props.setHeightModal(700)
         props.setDisableButtonEmployee(true)
-    } 
+    }
+
+    const openSummary = () => {
+
+        axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
+            {
+                listEmployeeInJobDTOList: props.listEmployeeAddToJob, start: dayjs(props.dataStart)
+            },)
+            .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+        props.setModalOpenEmployeeList(false)
+        props.setModalOpenSummary(true)
+    }
 
     return (
         <Modal
@@ -115,7 +137,7 @@ const EmployeeList = (props) => {
                             return (
                                 <>
 
-                                    <td><b>{item.specializationName}</b> - brakująca ilość pracy - <props.ColorRed>{item.hoursStart.toFixed(2)}</props.ColorRed> </td>
+                                    <td><b>{item.specializationName}</b> - brakująca ilość pracy - <ColorRed>{item.hoursStart.toFixed(2)}</ColorRed> </td>
 
 
                                     <Sheet sx={{ height: 200, maxHeight: 400, overflow: 'auto' }}>
@@ -142,7 +164,11 @@ const EmployeeList = (props) => {
                                                             <td>{item2.hoursJob.toFixed(2)}</td>
                                                             <td>
                                                                 <Button
-                                                                    onClick={() => props.viewEmployeeDetails(item2.employeeId, false)}
+                                                                    onClick={() => ViewEmployeeDetails({
+                                                                        idEmployee: item2.employeeId, isViewSpecialist: false,
+                                                                        setDataEmployee: props.setDataEmployee, setViewSpecialist: props.setViewSpecialist,
+                                                                        setModalOpenViewEmployee: props.setModalOpenViewEmployee
+                                                                    })}
                                                                     startIcon={<VisibilityIcon />}>Szczegóły
                                                                 </Button>
                                                             </td>
@@ -169,7 +195,7 @@ const EmployeeList = (props) => {
                         type="submit"
                         id="button"
                         value="Dalej"
-                        onClick={() => { props.openSummary() }}
+                        onClick={() => { openSummary() }}
                     />
                 </props.ButtonContainer >
             </Sheet>

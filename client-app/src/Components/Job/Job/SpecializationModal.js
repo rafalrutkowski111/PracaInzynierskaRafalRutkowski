@@ -5,7 +5,7 @@ import Sheet from '@mui/joy/Sheet';
 import Table from '@mui/joy/Table';
 import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { ViewEmployeeDetails } from './JobFunctions';
+import { VerificationEmployeeToJob, ViewEmployeeDetails } from './JobFunctions';
 
 const SpecializationEmptyList = (props) => {
     return (
@@ -64,6 +64,17 @@ const SpecializationEmptyList = (props) => {
 }
 
 const SpecializationList = (props) => {
+
+    const nextButtonSpecializationList = () => {
+
+        VerificationEmployeeToJob({
+            listJobSpecializationEmployeeDTO: props.dataEmployeeWithSpecialization, dataEmployeeWithSpecialization: props.dataEmployeeWithSpecialization,
+            dataListSpecialization: props.dataListSpecialization, dataStart: props.dataStart, setListEmployeeAddToJob: props.setListEmployeeAddToJob,
+            dataEnd: props.dataEnd, setEndDayWork: props.setEndDayWork, setStartDayWork: props.setStartDayWork, setModalOpenSummary: props.setModalOpenSummary, userId: props.userId,
+            setModalOpen: props.setModalOpen, setSearchEmployeeJob: props.setSearchEmployeeJob, setModalOpenEmployeeList: props.setModalOpenEmployeeList,
+            setModalOpenNotEnoughEmployee: props.setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: props.setDataEmployeeWithSpecialization
+        })
+    }
 
     if (props.searchEmployee.length === 0) props.setDisableButtonSpecialization(false)
     else props.setDisableButtonSpecialization(true)
@@ -140,9 +151,11 @@ const SpecializationList = (props) => {
                                                             <td>{item2.experienceName}</td>
                                                             <td>
                                                                 <Button
-                                                                    onClick={() => ViewEmployeeDetails({idEmployee: item2.employeeId, isViewSpecialist: true,
-                                                                        setDataEmployee: props.setDataEmployee, setViewSpecialist: props.setViewSpecialist, 
-                                                                        setModalOpenViewEmployee :props.setModalOpenViewEmployee})}
+                                                                    onClick={() => ViewEmployeeDetails({
+                                                                        idEmployee: item2.employeeId, isViewSpecialist: true,
+                                                                        setDataEmployee: props.setDataEmployee, setViewSpecialist: props.setViewSpecialist,
+                                                                        setModalOpenViewEmployee: props.setModalOpenViewEmployee
+                                                                    })}
                                                                     startIcon={<VisibilityIcon />}>Szczegóły
                                                                 </Button>
                                                             </td>
@@ -170,7 +183,7 @@ const SpecializationList = (props) => {
                         type="submit"
                         id="button"
                         value="Dalej"
-                        onClick={() => { props.nextButtonSpecializationList() }}
+                        onClick={() => { nextButtonSpecializationList() }}
                     />
                 </props.ButtonContainer >
             </Sheet>
@@ -179,6 +192,83 @@ const SpecializationList = (props) => {
 }
 
 const ViewEmployee = (props) => {
+
+    const addSpecialistEmployees = (employee) => {
+
+        const updateDataEmployeeWithSpecialization = props.dataEmployeeWithSpecialization.map((data) => {
+            if (data.specializationId === employee[0].specializationId) {
+                data.haveSpecialist = true;
+                data.employeeId = employee[0].employeeId
+                data.name = employee[0].name
+                data.surname = employee[0].surname
+
+                const list = [...props.searchEmployee];
+                const i = list.findIndex(x => x.specializationId === data.specializationId)
+                list.splice(i, 1)
+                props.setSearchEmployee(list)
+            }
+            return data
+        })
+        props.setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization);
+        props.setModalOpenViewEmployee(false);
+    }
+
+    const addNewEmployee = (employee) => {
+        var findIndextemp1 = 0;
+        var findIndextemp2 = 0;
+        var findIndex1 = -1;
+        var findIndex2 = -1;
+        var needRemove = false
+        const updatesearchEmployeeJob = props.searchEmployeeJob.map(data => { //szukanie indexów i zmiana brakującej ilości pracy
+            findIndextemp2 = 0;
+            data.employeeInJobList.map(data2 => {
+
+                if (data2.employeeId === employee[0].employeeId) {
+
+                    findIndex1 = findIndextemp1;
+                    findIndex2 = findIndextemp2;
+                    data.hoursStart -= props.searchEmployeeJob[findIndex1].employeeInJobList[findIndex2].hoursJob
+
+                    if (data.hoursStart <= 0) { needRemove = true }
+                }
+                findIndextemp2++
+                return data2
+            })
+            findIndextemp1++
+            return data
+        })
+        props.setSearchEmployeeJob(updatesearchEmployeeJob)
+
+        findIndextemp1 = 0;
+        findIndextemp2 = 0;
+        const addElementListEmployeeAddToJob = props.listEmployeeAddToJob.map((data) => {
+            findIndextemp2 = 0;
+            data.employeeInJobList.map(data2 => {
+                findIndextemp2++
+                return data2
+            })
+            if (findIndextemp1 === findIndex1) {
+                data.employeeInJobList[findIndextemp2] = props.searchEmployeeJob[findIndex1].employeeInJobList[findIndex2]
+            }
+
+            findIndextemp1++
+            return data
+        })
+        props.setListEmployeeAddToJob(addElementListEmployeeAddToJob)
+
+        const list = [...props.searchEmployeeJob];
+        list[findIndex1].employeeInJobList.splice(findIndex2, 1)
+        props.setSearchEmployeeJob(list)
+
+        if (needRemove === true) {
+            const listSearchEmployeeJob = [...props.searchEmployeeJob];
+            listSearchEmployeeJob.splice(findIndex1, 1)
+            props.setSearchEmployeeJob(listSearchEmployeeJob)
+        }
+
+        props.setModalOpenViewEmployee(false)
+    }
+
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -225,8 +315,8 @@ const ViewEmployee = (props) => {
                         value="Dodaj"
                         onClick={() =>
                             props.viewSpecialist == true
-                                ? props.addSpecialistEmployees(props.dataEmployee)
-                                : props.addNewEmployee(props.dataEmployee)}
+                                ? addSpecialistEmployees(props.dataEmployee)
+                                : addNewEmployee(props.dataEmployee)}
                     />
                     <props.ButtonBootstrapBack
                         type="submit"
