@@ -565,7 +565,7 @@ namespace inzRafalRutowski.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost("addJob")]
         public async Task<IActionResult> AddJob([FromBody] JobDTO request)
         {
             //inny system dat, trzeba odjąć 2 dni i dodać 1h dla terminu zakończenia pracy i odjąć 1 dzień i dodać 1h dla każdej spcjalizacji
@@ -655,6 +655,14 @@ namespace inzRafalRutowski.Controllers
 
             _context.JobHistorys.Add(resultJobHistory);
             await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost("editJob")]
+        public async Task<IActionResult> EditJob([FromBody] JobDTO request)
+        {
+
 
             return Ok();
         }

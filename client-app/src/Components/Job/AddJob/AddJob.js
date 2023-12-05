@@ -192,7 +192,7 @@ const AddJob = () => {
                 setModalOpenConfirmAdd={setModalOpenConfirmAdd} setIndexSpecialistToChange={setIndexSpecialistToChange}
                 setCurrentSpecialistUserIdToChange={setCurrentSpecialistUserIdToChange} setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist}
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
-                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee}
+                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"addJob"}
             />
         )
     }

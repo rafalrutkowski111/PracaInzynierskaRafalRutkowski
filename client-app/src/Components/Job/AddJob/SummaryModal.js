@@ -13,6 +13,8 @@ import axios from 'axios';
 
 const Summary = (props) => {
 
+    console.log(props.jobId)
+
     const addNewJob = () => {
         const updatelistEmployeeAddToJob = props.listEmployeeAddToJob.map(x => {
             const temp = props.dataEmployeeWithSpecialization.find(x2 => x2.specializationId === x.specializationId);
@@ -25,9 +27,10 @@ const Summary = (props) => {
         })
         props.setListEmployeeAddToJob(updatelistEmployeeAddToJob)
 
-        axios.post('http://localhost:5000/api/Job', {
+        axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
-            start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork)
+            start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
+            jobId: props.action === 'editJob'? props.jobId : null
         })
             .then(props.setModalOpenConfirmAdd(true))
     }
@@ -222,7 +225,7 @@ const Summary = (props) => {
                     <props.ButtonBootstrap
                         type="submit"
                         id="button"
-                        value="Dodaj prace"
+                        value={props.action === 'addJob' ? "Dodaj prace" : "Edytuj prace"}
                         onClick={() => { addNewJob() }}
                     />
                     <props.ButtonBootstrapBack
@@ -255,7 +258,7 @@ const ChangeSpecialist = (props) => {
         props.setModalOpenChangeSpeclialist(false)
 
     }
-    
+
     var noData = false;
     var height = 250;
     var width = 600;

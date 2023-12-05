@@ -83,8 +83,6 @@ const UpdateJob = () => {
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
-    //console.log(dataStart)
-
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
             .then(response2 => {
@@ -139,7 +137,6 @@ const UpdateJob = () => {
                 { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
                 .then(response => {
                     setDataEmployeeWithSpecialization(response.data.specializationList)
-                    //console.log(response.data)
                     setSearchEmployee(response.data.searchEmployee)
                     setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
                     console.log(response.data.searchEmployee.length)
@@ -160,7 +157,7 @@ const UpdateJob = () => {
 
         }
 
-
+        //  UZUPEŁNIĆ KONTROLER DO EDYCJI PRACY
 
 
 
@@ -279,7 +276,7 @@ const UpdateJob = () => {
                 setModalOpenConfirmAdd={setModalOpenConfirmAdd} setIndexSpecialistToChange={setIndexSpecialistToChange}
                 setCurrentSpecialistUserIdToChange={setCurrentSpecialistUserIdToChange} setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist}
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
-                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee}
+                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"editJob"} jobId={params.id}
             />
         )
     }
