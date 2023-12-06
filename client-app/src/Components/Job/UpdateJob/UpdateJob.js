@@ -127,11 +127,14 @@ const UpdateJob = () => {
 
         if (needChangeHours) // obliczyć przepracowane gdoziny
         {
-            console.log(needChangeHours)
+            //wziąć finish work hours i ostatniego update i wyliczyć nowe finish work hours
+
+            //moze nie robić ifa tylko tu same obliczenia zrobić i niech reszta się robi normalnie
 
         }
         else  //to co normalnie
         {
+            // tu chyba będzie trzeba uwzględnić finisWorkHours
             console.log(dataStart)
             axios.post('http://localhost:5000/api/Job/JobSpecialization',
                 { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
@@ -158,8 +161,6 @@ const UpdateJob = () => {
         }
 
         //  UZUPEŁNIĆ KONTROLER DO EDYCJI PRACY
-
-
 
 
 

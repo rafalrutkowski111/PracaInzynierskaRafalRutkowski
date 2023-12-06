@@ -618,8 +618,6 @@ namespace inzRafalRutowski.Controllers
             var saveNewJob = _context.Jobs.Add(result);
             await _context.SaveChangesAsync();
 
-            var currentJobId = await _context.Jobs.OrderBy(x => x.Id).LastOrDefaultAsync();
-
 
             //request.ListEmployeeAddToJob.ForEach(x =>
             //{
@@ -642,6 +640,8 @@ namespace inzRafalRutowski.Controllers
             //});
 
 
+            var currentJobId = saveNewJob.Entity.Id;
+
 
             var resultJobHistory = _mapper.Map<JobHistory>(request);
 
@@ -650,7 +650,7 @@ namespace inzRafalRutowski.Controllers
             else resultJobHistory.Color = "#388700"; //zielony
             DateTime currentDateTime = DateTime.Now;
             resultJobHistory.TimeAddHistory = currentDateTime;
-            resultJobHistory.Job = _context.Jobs.FirstOrDefault(x => x.Id == saveNewJob.Entity.Id);
+            resultJobHistory.Job = _context.Jobs.FirstOrDefault(x => x.Id == currentJobId);
 
 
             _context.JobHistorys.Add(resultJobHistory);
@@ -662,7 +662,62 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("editJob")]
         public async Task<IActionResult> EditJob([FromBody] JobDTO request)
         {
+            // jak sie potem dokonczy AddJob, tu trzeba dodać to samo(brakuje przypisywania pracowników do pracy)
 
+
+            request.CurrentEnd = request.CurrentEnd.AddDays(-1); // -1dzien
+            request.CurrentEnd = request.CurrentEnd.AddHours(1); // +1h
+            List<Employee> employeeList = new List<Employee>();
+
+            request.ListEmployeeAddToJob.ForEach(x =>
+            {
+                x.End = x.End.AddHours(1); // +1h
+                x.End = x.End.AddDays(-1); // -1dni
+
+                x.EmployeeInJobList.ForEach(x2 =>
+                {
+                    var employee = _context.Employees.FirstOrDefault(x3 => x3.Id == x2.EmployeeId && x3.IsEmployed == false);
+                    if (employee != null) employeeList.Add(employee);
+                });
+
+            });
+
+            TimeSpan resetHours = new TimeSpan(8, 00, 0);
+            request.Start = request.Start.Date + resetHours;
+
+            var result = _mapper.Map<Job>(request);
+
+            if (request.End.Date == request.CurrentEnd.Date) result.Color = "#3174ad"; //niebieski
+            else if (request.End < request.CurrentEnd) result.Color = "#b40000"; //czerwony
+            else result.Color = "#388700"; //zielony
+
+
+
+            var jobEdit = _context.Jobs.First(x => int.Equals(x.Id, request.JobId));
+
+            result.Id = (int)request.JobId;
+
+            _mapper.Map(result, jobEdit);
+
+            await _context.SaveChangesAsync();
+
+
+
+
+            var currentJobId = request.JobId;
+
+            var resultJobHistory = _mapper.Map<JobHistory>(request);
+
+            if (request.End.Date == request.CurrentEnd.Date) resultJobHistory.Color = "#3174ad"; //niebieski
+            else if (request.End < request.CurrentEnd) resultJobHistory.Color = "#b40000"; //czerwony
+            else resultJobHistory.Color = "#388700"; //zielony
+            DateTime currentDateTime = DateTime.Now;
+            resultJobHistory.TimeAddHistory = currentDateTime;
+            resultJobHistory.Job = _context.Jobs.FirstOrDefault(x => x.Id == currentJobId);
+
+
+            _context.JobHistorys.Add(resultJobHistory);
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
