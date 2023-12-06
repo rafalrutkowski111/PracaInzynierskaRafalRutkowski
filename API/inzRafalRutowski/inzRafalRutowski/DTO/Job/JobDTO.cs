@@ -13,6 +13,7 @@ namespace inzRafalRutowski.DTO.Job
         public List<ListEmployeeAddToJob> ListEmployeeAddToJob { get; set; }
         public string Color { get; set; }
         public int? JobId { get; set; }
+        public double? FinishWorkHours { get; set; }
 
     }
 

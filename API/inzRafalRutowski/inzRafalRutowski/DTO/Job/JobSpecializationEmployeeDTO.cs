@@ -8,6 +8,8 @@
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public bool EmployeeWithoutEmployer { get; set; }
+        public bool IsUpdate { get; set; }
+        public List<ListEmployeeAddToJob>? ListEmployeeAddToJob { get; set; }
     }
     public class JobSpecializationEmployeeDTO
     {

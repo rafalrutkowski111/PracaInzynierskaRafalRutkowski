@@ -17,7 +17,7 @@ const VerificationEmployeeToJob = (props) => {
     axios.post('http://localhost:5000/api/Job/JobEmployee',
         {
             listJobSpecializationEmployeeDTO: props.listJobSpecializationEmployeeDTO, JobSpecialization: props.dataListSpecialization, EmployerId: props.userId,
-            start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployeeWithoutEmployer: false
+            start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployeeWithoutEmployer: false, IsUpdate: props.isUpdate, ListEmployeeAddToJob: props.listEmployeeAddToJob
         })
         .then(response2 => {
             props.setListEmployeeAddToJob(response2.data.listEmployeeInJob) //lista pracowników których ostatecznie dodamy

@@ -79,9 +79,12 @@ const UpdateJob = () => {
     const [idSpecializationToChangeEmployee, setIdSpecializationToChangeEmployee] = useState(-1)
     const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);
     const [heightModal, setHeightModal] = useState(700)
+    const [listEmployeeAddToJobEdit, setListEmployeeAddToJobEdit] = useState()
 
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
+
+    console.log(listEmployeeAddToJobEdit)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
@@ -92,6 +95,7 @@ const UpdateJob = () => {
                         setDataStart(dayjs(response.data.start));
                         setDataEnd(response.data.end);
                         setTitle(response.data.title)
+                        setListEmployeeAddToJobEdit(response.data.listEmployeeAddToJob)
                         //console.log(response.data)
 
                         let tempResponseData = response.data.listEmployeeAddToJob
@@ -127,6 +131,10 @@ const UpdateJob = () => {
 
         if (needChangeHours) // obliczyć przepracowane gdoziny
         {
+
+            // zrobić to inaczej. pobrane dane dać do usstate i ewentualnei to edytować, bo teraz to my nowe dane sobie bierzemy xD
+
+            console.log(listEmployeeAddToJob)
             //wziąć finish work hours i ostatniego update i wyliczyć nowe finish work hours
 
             //moze nie robić ifa tylko tu same obliczenia zrobić i niech reszta się robi normalnie
@@ -153,17 +161,13 @@ const UpdateJob = () => {
                             dataListSpecialization: dataListSpecialization, userId: userId, dataStart: dataStart, setListEmployeeAddToJob: setListEmployeeAddToJob,
                             dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
                             setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
-                            setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization
+                            setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
+                            isUpdate:true, listEmployeeAddToJob: listEmployeeAddToJobEdit
                         })
                     }
                 })
 
         }
-
-        //  UZUPEŁNIĆ KONTROLER DO EDYCJI PRACY
-
-
-
 
         // to potem uwzglednić do ifa
         // TRZEBA TU SPRAWDZIĆ CZY ODBYLIŚMY JAKIEŚ DNI PRACY. JEŻELI NIE TO PRZECHODZIMY DALEJ, JEŻELI TAK TO MUSIMY OBLICZYĆ ILE DLA KAŻDEJ SPECJALIZACJI
