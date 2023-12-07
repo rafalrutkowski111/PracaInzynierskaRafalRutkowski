@@ -14,6 +14,7 @@ using System;
 using System.Diagnostics.Eventing.Reader;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Xml.XPath;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -97,6 +98,18 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
+            //zmiana liczby godzin do zrobienia
+
+            if(request.IsUpdate == true)
+            {
+                request.ListEmployeeAddToJob.ForEach(x =>
+                {
+                    var specializationToChange = request.JobSpecialization.First(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
+                    specializationToChange.Hours -= (double)x.FinishWorkHours;
+                });
+            }
+
+
             request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń (wykluczmay weekendy)
             request.End = request.End.AddDays(1);
 
@@ -136,6 +149,8 @@ namespace inzRafalRutowski.Controllers
                     }
                 });
                 copySpecializationsWithHours.Clear();
+
+                //dodać ifa jeśli to edycja
             }
             else
             {
@@ -143,11 +158,11 @@ namespace inzRafalRutowski.Controllers
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
                 && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
                 ).EmployerId == request.EmployerId)
-                ).ToList();
+                ).ToList(); //wolni pracownicy w tym czasie
 
                 request.listJobSpecializationEmployeeDTO.ForEach(e =>
                 {
-                    if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.EmployeeId) == null)
+                    if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.EmployeeId) == null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
                     {
                         var newEmployee = new Employee();
                         newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
@@ -156,6 +171,24 @@ namespace inzRafalRutowski.Controllers
                         listEmployeeFreeInTime.Add(newEmployee);
                     }
                 });
+
+                if (request.IsUpdate == true) //to powinno działać, ale sprawdzić potem jak będziemy zapisywać uzytownikow
+                {
+                    request.ListEmployeeAddToJob.ForEach(e =>
+                    {
+                        e.EmployeeInJobList.ForEach(e2 =>
+                        {
+                            if(listEmployeeFreeInTime.FirstOrDefault(e3=> e3.Id == e2.EmployeeId) == null)
+                            {
+                                var newEmployee = new Employee();
+                                newEmployee.Name = e2.Name;
+                                newEmployee.Surname = e2.Surname;
+                                newEmployee.Id = (Guid)e2.EmployeeId;
+                                listEmployeeFreeInTime.Add(newEmployee);
+                            }
+                        });
+                    });
+                }
             }
             var experianceDescending = _context.Experiences.OrderByDescending(x => x.experienceValue).Where(x => int.Equals(x.EmployerId, request.EmployerId) || int.Equals(x.EmployerId, null)).ToList();
 
