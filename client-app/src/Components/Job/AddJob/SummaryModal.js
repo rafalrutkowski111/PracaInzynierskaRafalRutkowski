@@ -13,8 +13,6 @@ import axios from 'axios';
 
 const Summary = (props) => {
 
-    console.log(props.jobId)
-
     const addNewJob = () => {
         const updatelistEmployeeAddToJob = props.listEmployeeAddToJob.map(x => {
             const temp = props.dataEmployeeWithSpecialization.find(x2 => x2.specializationId === x.specializationId);
@@ -116,7 +114,7 @@ const Summary = (props) => {
                 <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                     <p>Termin rozpoczęcia pracy - {props.startDayWork}</p>
                     <p>Termin zakończenia pracy - {dayjs(props.dataEnd).format('DD/MM/YYYY')}</p>
-                    <p>Czas zakończenia pracy - {dayjs(props.endDayWork).subtract(1, "day").format('DD/MM/YYYY-HH.mm')}</p>
+                    <p>Czas zakończenia pracy - {dayjs(props.endDayWork).format('DD/MM/YYYY-HH.mm')}</p>
 
                     <p>Specjalizacje</p>
 
@@ -164,7 +162,7 @@ const Summary = (props) => {
                         return (
                             <>
 
-                                <td><b>{item.specializationName}</b> - Czas zakończenia pracy - {dayjs(item.end).subtract(1, "day").format('DD/MM/YYYY-HH.mm')} </td>
+                                <td><b>{item.specializationName}</b> - Czas zakończenia pracy - {dayjs(item.end).format('DD/MM/YYYY-HH.mm')} </td>
 
 
                                 <Sheet sx={{ height: 200, maxHeight: 400, overflow: 'auto' }}>

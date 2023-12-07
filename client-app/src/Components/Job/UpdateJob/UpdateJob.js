@@ -80,11 +80,12 @@ const UpdateJob = () => {
     const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);
     const [heightModal, setHeightModal] = useState(700)
     const [listEmployeeAddToJobEdit, setListEmployeeAddToJobEdit] = useState()
+    const [dayToChangeHours, setDayToChangeHours] = useState()
 
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
-    console.log(listEmployeeAddToJobEdit)
+    //console.log(listEmployeeAddToJobEdit)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
@@ -96,7 +97,6 @@ const UpdateJob = () => {
                         setDataEnd(response.data.end);
                         setTitle(response.data.title)
                         setListEmployeeAddToJobEdit(response.data.listEmployeeAddToJob)
-                        //console.log(response.data)
 
                         let tempResponseData = response.data.listEmployeeAddToJob
                         let tempDataListSpecialization = []
@@ -120,6 +120,21 @@ const UpdateJob = () => {
                 if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD')
                     && dayjs(response.data.timeStartJob).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
                     setNeedChangeHours(true)
+
+                console.log(dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
+                console.log(dayjs(response.data.timeStartJob).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
+
+                let day = 0;
+                let date1 = dayjs(response.data.timeAddHistory)
+                let date2 = dayjs(new Date())
+
+                while (date1.format('YYYY/MM/DD') < date2.format('YYYY/MM/DD')) {
+                    if (date1.day() !== 6 && date1.day() !== 7)
+                        day++
+
+                    date1 = date1 = date1.add(1, 'day')
+                }
+                setDayToChangeHours(day)
             })
     }, [])
 
@@ -129,45 +144,42 @@ const UpdateJob = () => {
 
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
-        if (needChangeHours) // obliczyć przepracowane gdoziny
-        {
+        if (needChangeHours) {
+            listEmployeeAddToJobEdit.map(x => {
 
-            // zrobić to inaczej. pobrane dane dać do usstate i ewentualnei to edytować, bo teraz to my nowe dane sobie bierzemy xD
+                let workAllEmployeeInSpecializationIn1h = 0;
 
-            console.log(listEmployeeAddToJob)
-            //wziąć finish work hours i ostatniego update i wyliczyć nowe finish work hours
-
-            //moze nie robić ifa tylko tu same obliczenia zrobić i niech reszta się robi normalnie
-
-        }
-        else  //to co normalnie
-        {
-            // tu chyba będzie trzeba uwzględnić finisWorkHours
-            console.log(dataStart)
-            axios.post('http://localhost:5000/api/Job/JobSpecialization',
-                { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
-                .then(response => {
-                    setDataEmployeeWithSpecialization(response.data.specializationList)
-                    setSearchEmployee(response.data.searchEmployee)
-                    setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
-                    console.log(response.data.searchEmployee.length)
-
-                    if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
-                    else if (response.data.searchEmployee.length !== 0) setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
-                    else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
-                    {
-                        VerificationEmployeeToJob({
-                            listJobSpecializationEmployeeDTO: response.data.specializationList, dataEmployeeWithSpecialization: response.data.specializationList,
-                            dataListSpecialization: dataListSpecialization, userId: userId, dataStart: dataStart, setListEmployeeAddToJob: setListEmployeeAddToJob,
-                            dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
-                            setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
-                            setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
-                            isUpdate:true, listEmployeeAddToJob: listEmployeeAddToJobEdit
-                        })
-                    }
+                x.employeeInJobList.map(x => {
+                    workAllEmployeeInSpecializationIn1h += (x.experienceValue / 100)
                 })
 
+                x.finishWorkHours += (workAllEmployeeInSpecializationIn1h * 8 * dayToChangeHours)
+            })
         }
+
+        // zrobić to inaczej. wysłać dane(juz to mamy) i je dodać do listy przy obliczeniach
+        // tu będzie trzeba uwzględnić finisWorkHours
+        axios.post('http://localhost:5000/api/Job/JobSpecialization',
+            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
+            .then(response => {
+                setDataEmployeeWithSpecialization(response.data.specializationList)
+                setSearchEmployee(response.data.searchEmployee)
+                setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
+
+                if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
+                else if (response.data.searchEmployee.length !== 0) setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
+                else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
+                {
+                    VerificationEmployeeToJob({
+                        listJobSpecializationEmployeeDTO: response.data.specializationList, dataEmployeeWithSpecialization: response.data.specializationList,
+                        dataListSpecialization: dataListSpecialization, userId: userId, dataStart: dataStart, setListEmployeeAddToJob: setListEmployeeAddToJob,
+                        dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
+                        setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
+                        setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
+                        isUpdate: true, listEmployeeAddToJob: listEmployeeAddToJobEdit
+                    })
+                }
+            })
 
         // to potem uwzglednić do ifa
         // TRZEBA TU SPRAWDZIĆ CZY ODBYLIŚMY JAKIEŚ DNI PRACY. JEŻELI NIE TO PRZECHODZIMY DALEJ, JEŻELI TAK TO MUSIMY OBLICZYĆ ILE DLA KAŻDEJ SPECJALIZACJI
@@ -177,15 +189,6 @@ const UpdateJob = () => {
         // np mamy 300h do zrobienia- 1 zapis to początek 0 i np oblcizyliśmy że przerobiliśmy 100 godzin. Kolejny zapis będzie początek 100 i uobliczamy ile przerobiliśmy np 150
         // oznacza to że obliczamy w 1 przypadaku (300-100 = 200h do zrobienia) w drugim przypadku (300-150 = 150h do zrobienia)
     }
-
-
-
-
-
-
-
-
-
 
     const renderJobDates = () => {
         return (

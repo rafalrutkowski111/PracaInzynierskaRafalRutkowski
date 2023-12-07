@@ -75,11 +75,11 @@ namespace inzRafalRutowski.Class
 
         public DateTime NewDateEnd(DateTime start, int numberOfDays)
         {
-            int workDays = 0;
+            int workDays = 1;
 
             DateTime end = start;
 
-            while (workDays<= numberOfDays)
+            while (workDays< numberOfDays)
             {
                 if (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday)
                 {
@@ -87,6 +87,8 @@ namespace inzRafalRutowski.Class
                 }
                 end = end.AddDays(1);
             }
+
+            if(end.DayOfWeek == DayOfWeek.Saturday) end = end.AddDays(2);
 
             return end;
         }

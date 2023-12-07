@@ -97,6 +97,9 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
+            request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń (wykluczmay weekendy)
+            request.End = request.End.AddDays(1);
+
             DateTime EndWorkDay = request.Start;
             bool CanStartWork = false;
             var listEmployeeSpecialization = new List<EmployeeSpecialization>();
@@ -568,19 +571,15 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("addJob")]
         public async Task<IActionResult> AddJob([FromBody] JobDTO request)
         {
-            //inny system dat, trzeba odjąć 2 dni i dodać 1h dla terminu zakończenia pracy i odjąć 1 dzień i dodać 1h dla każdej spcjalizacji
-            //wynika to z różnego odczytywanaia dat. Najlepiej byłoby przechowywać w naszej strefie czasowej(różnica godziń) i aktualny dzień(zmienia sie przy przesyłaniu)
-            //i na froncie przy wyświetlaniu zmieniać. Może kiedyś do zmiany
 
-            request.CurrentEnd = request.CurrentEnd.AddDays(-1); // -1dzien
-            request.CurrentEnd = request.CurrentEnd.AddHours(1); // +1h
+            request.Start = request.Start.AddDays(1); // dwa różne systemy dat i trzeba je przekonwertować
+            request.End = request.End.AddDays(1);
+            request.CurrentEnd = request.CurrentEnd.AddHours(1);
+
             List<Employee> employeeList= new List<Employee>();
 
             request.ListEmployeeAddToJob.ForEach(x =>
             {
-                x.End = x.End.AddHours(1); // +1h
-                x.End = x.End.AddDays(-1); // -1dni
-
                 x.EmployeeInJobList.ForEach(x2 =>
                 {
                     var employee = _context.Employees.FirstOrDefault(x3 => x3.Id == x2.EmployeeId && x3.IsEmployed == false);
@@ -606,7 +605,7 @@ namespace inzRafalRutowski.Controllers
 
 
 
-            TimeSpan resetHours = new TimeSpan(8, 00, 0);
+            TimeSpan resetHours = new TimeSpan(8, 0, 0);
             request.Start = request.Start.Date + resetHours;
 
             var result = _mapper.Map<Job>(request);
@@ -664,16 +663,14 @@ namespace inzRafalRutowski.Controllers
         {
             // jak sie potem dokonczy AddJob, tu trzeba dodać to samo(brakuje przypisywania pracowników do pracy)
 
+            request.Start = request.Start.AddDays(1); // dwa różne systemy dat i trzeba je przekonwertować
+            request.End = request.End.AddDays(1);
+            request.CurrentEnd = request.CurrentEnd.AddHours(1);
 
-            request.CurrentEnd = request.CurrentEnd.AddDays(-1); // -1dzien
-            request.CurrentEnd = request.CurrentEnd.AddHours(1); // +1h
             List<Employee> employeeList = new List<Employee>();
 
             request.ListEmployeeAddToJob.ForEach(x =>
             {
-                x.End = x.End.AddHours(1); // +1h
-                x.End = x.End.AddDays(-1); // -1dni
-
                 x.EmployeeInJobList.ForEach(x2 =>
                 {
                     var employee = _context.Employees.FirstOrDefault(x3 => x3.Id == x2.EmployeeId && x3.IsEmployed == false);
@@ -725,7 +722,7 @@ namespace inzRafalRutowski.Controllers
         [HttpGet("GetLastUpdate")]
         public ActionResult<JobHistory> GetLastUpdate([FromQuery] int jobId)
         {
-            var result = _context.JobHistorys.FirstOrDefault(x => int.Equals(x.JobId, jobId));
+            var result = _context.JobHistorys.OrderByDescending(x => x.TimeAddHistory).Where(x => int.Equals(x.JobId, jobId)).First();
             var resultDTO = _mapper.Map<JobHistory>(result);
             return Ok(resultDTO);
         }
