@@ -121,12 +121,12 @@ namespace inzRafalRutowski.Controllers
             List<Employee> listEmployeeFreeInTime;
 
 
-            if (request.EmployeeWithoutEmployer == true)
+            if (request.EmployeeWithoutEmployer == true) //chcemy znaleść wolnych praconików których nie dodaliśmy(jako specjaliste)
             {
                 listEmployeeFreeInTime = _context.Employees.Where(e => e.EmployerId == null).ToList();
 
                 List<Employee> listEmployeeFreeInTimeTemp = _context.Employees.Where(e => e.EmployerId == null).ToList(); //zamiast robić głęboką kopie pobrałem to samo
-                request.listJobSpecializationEmployeeDTO.ForEach(e => //usunięcie (o ile są) dodani nowi wyspecjalizowani pracownicy
+                request.listJobSpecializationEmployeeDTO.ForEach(e => //usunięcie (o ile są) dodani nowi wyspecjalizowani pracownicy, aby ponownie ich n ie dodać
                 {
                     listEmployeeFreeInTimeTemp.ForEach(e2 =>
                     {
@@ -143,14 +143,12 @@ namespace inzRafalRutowski.Controllers
 
                 copySpecializationsWithHours.ForEach(x =>
                 {
-                    if (x.Hours < 0)
+                    if (x.Hours < 0) //uwzględniamy poprzednie oblcizenia, daltego może sie zdażyć że jakaś specjalizacja jest obliczony i pomojamy go
                     {
                         specializationsWithHours.Remove(specializationsWithHours.Find(x2 => x2.SpecializationId == x.SpecializationId));
                     }
                 });
                 copySpecializationsWithHours.Clear();
-
-                //dodać ifa jeśli to edycja
             }
             else
             {

@@ -117,7 +117,7 @@ const AddJob = () => {
                         dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
                         setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
                         setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
-                        isUpdate:false, listEmployeeAddToJob: null
+                        isUpdate: false, listEmployeeAddToJob: null
                     })
                 }
             })
@@ -180,7 +180,8 @@ const AddJob = () => {
                 ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} listEmployeeAddToJob={listEmployeeAddToJob}
                 setDisableButtonEmployee={setDisableButtonEmployee} disableButtonEmployee={disableButtonEmployee} dataStart={dataStart}
                 ButtonBootstrapBack={ButtonBootstrapBack} setEndDayWork={setEndDayWork} setListEmployeeAddToJob={setListEmployeeAddToJob}
-                setModalOpenSummary={setModalOpenSummary} setHeightModal={setHeightModal} heightModal={heightModal}
+                setModalOpenSummary={setModalOpenSummary} setHeightModal={setHeightModal} heightModal={heightModal} setViewSpecialist={setViewSpecialist}
+                setModalOpenViewEmployee={setModalOpenViewEmployee} setDataEmployee={setDataEmployee}
             />
         )
     }

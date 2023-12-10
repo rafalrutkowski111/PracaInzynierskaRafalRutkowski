@@ -271,7 +271,8 @@ const UpdateJob = () => {
                 ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} listEmployeeAddToJob={listEmployeeAddToJob}
                 setDisableButtonEmployee={setDisableButtonEmployee} disableButtonEmployee={disableButtonEmployee} dataStart={dataStart}
                 ButtonBootstrapBack={ButtonBootstrapBack} setEndDayWork={setEndDayWork} setListEmployeeAddToJob={setListEmployeeAddToJob}
-                setModalOpenSummary={setModalOpenSummary} setHeightModal={setHeightModal} heightModal={heightModal}
+                setModalOpenSummary={setModalOpenSummary} setHeightModal={setHeightModal} heightModal={heightModal} setViewSpecialist={setViewSpecialist}
+                setModalOpenViewEmployee={setModalOpenViewEmployee} setDataEmployee={setDataEmployee}
             />
         )
     }
