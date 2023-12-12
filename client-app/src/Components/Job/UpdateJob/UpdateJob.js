@@ -156,7 +156,7 @@ const UpdateJob = () => {
 
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
-        if (needChangeHours) { //zrobić jeszcze jak ogólnie jest coś zmienione
+        if (needChangeHours) {
             const updateListEmployeeAddToJobEdit =  listEmployeeAddToJobEdit.map(x => {
 
                 let workAllEmployeeInSpecializationIn1h = 0;
@@ -196,11 +196,6 @@ const UpdateJob = () => {
     }
 
     const nextEdit = () => {
-
-        //będzie trzeba poprawić żeby mogło się kończyć ostatniego dnia (moze dzień przed)
-
-
-
 
 
         // tu do zmiany, żeby dało się zedytowac wszystko na tych samych pracownikach

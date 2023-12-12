@@ -110,12 +110,12 @@ namespace inzRafalRutowski.Controllers
                     }
                     
                 });
-
+                request.End = request.End.AddDays(1); //dodajemy dzień bo wlicza się włącznie ostatni a zrobiłem obliczenia nie uwzlędniajac go
             }
             else
             {
                 request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń (wykluczmay weekendy)
-                request.End = request.End.AddDays(1);
+                request.End = request.End.AddDays(2);
             }
 
 
@@ -479,8 +479,9 @@ namespace inzRafalRutowski.Controllers
                             }
 
                             specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
-                            if (specializationMostHours.Hours < 0)
-                                CanStartWork = true;
+
+                            //if (specializationMostHours.Hours < 0)
+                            //    CanStartWork = true;
 
                         }
                     });
@@ -488,6 +489,9 @@ namespace inzRafalRutowski.Controllers
             });
 
             EndWorkDay = listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
+
+            if(EndWorkDay.Date < request.End.Date)
+                CanStartWork = true;
 
             if (request.IsUpdate == true)
             {
