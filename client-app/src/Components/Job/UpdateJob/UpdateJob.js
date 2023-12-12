@@ -127,8 +127,11 @@ const UpdateJob = () => {
 
                 let day = 0;
                 let date1 = dayjs(response.data.timeAddHistory)
-                if (response.data.timeAddHistory < response.data.timeStartJob)
+
+                if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') <= dayjs(response.data.timeStartJob).format('YYYY/MM/DD') && 
+                    dayjs(response.data.timeStartJob).format('YYYY/MM/DD') <= dayjs(new Date()).format('YYYY/MM/DD'))
                 {
+                    console.log("jest")
                     date1 = dayjs(response.data.timeStartJob)
                     setStartDataInUpdate(dayjs(new Date()).add(1, "day"))
                 }
@@ -153,7 +156,7 @@ const UpdateJob = () => {
 
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
-        if (needChangeHours) {
+        if (needChangeHours) { //zrobić jeszcze jak ogólnie jest coś zmienione
             const updateListEmployeeAddToJobEdit =  listEmployeeAddToJobEdit.map(x => {
 
                 let workAllEmployeeInSpecializationIn1h = 0;
@@ -193,6 +196,12 @@ const UpdateJob = () => {
     }
 
     const nextEdit = () => {
+
+        //będzie trzeba poprawić żeby mogło się kończyć ostatniego dnia (moze dzień przed)
+
+
+
+
 
         // tu do zmiany, żeby dało się zedytowac wszystko na tych samych pracownikach
 
@@ -329,7 +338,8 @@ const UpdateJob = () => {
                 setModalOpenConfirmAdd={setModalOpenConfirmAdd} setIndexSpecialistToChange={setIndexSpecialistToChange}
                 setCurrentSpecialistUserIdToChange={setCurrentSpecialistUserIdToChange} setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist}
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
-                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"editJob"} jobId={params.id}
+                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"editJob"} jobId={params.id} isUpdate={true}
+                listEmployeeAddToJobEdit={listEmployeeAddToJobEdit}
             />
         )
     }

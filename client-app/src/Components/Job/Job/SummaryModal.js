@@ -19,11 +19,20 @@ const Summary = (props) => {
             x.responsiblePersonName = temp.name;
             x.responsiblePersonSurname = temp.surname
             x.responsiblePersonEmployeeId = temp.employeeId
-            x.finishWorkHours = 0; // tu zmienić ble ble ble
+            if(props.isUpdate === true)
+            {
+                let listWithFinishWorkHours = props.listEmployeeAddToJobEdit.find(x2=> x2.specializationId === x.specializationId)
 
+                if(listWithFinishWorkHours != undefined)
+                    x.finishWorkHours = listWithFinishWorkHours.finishWorkHours
+                else x.finishWorkHours = 0;
+            } else x.finishWorkHours = 0;
+            
             return x;
         })
         props.setListEmployeeAddToJob(updatelistEmployeeAddToJob)
+
+        console.log(props.listEmployeeAddToJob)
 
         axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",

@@ -103,8 +103,12 @@ namespace inzRafalRutowski.Controllers
             {
                 request.ListEmployeeAddToJob.ForEach(x =>
                 {
-                    var specializationToChange = request.JobSpecialization.First(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
-                    specializationToChange.Hours -= (double)x.FinishWorkHours;
+                    var specializationToChange = request.JobSpecialization.FirstOrDefault(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
+                    if (specializationToChange != null)
+                    {
+                        specializationToChange.Hours -= (double)x.FinishWorkHours;
+                    }
+                    
                 });
 
             }
@@ -485,12 +489,24 @@ namespace inzRafalRutowski.Controllers
 
             EndWorkDay = listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
 
-            //żeby algorytm był dokładniejszy można ciagle te same dane do niego dawać, zmieniając czas zakończenia o ile ten sie zmienił, wtedy istnieje możliwość,
-            // że bęzie dostępnych więcej pracowników. Problem byłby przy usuwaniu pracowników w podsumowaniu (o ile dodam taką opcję), bo za każdym razem będzie
-            // bo musielibyśmy sprawdzać czy przy usuwaniu pracownika a dalej pracownik b będzie dostępny jeżei zmieni się czas zakończenia, bo jeżeli nie to 
-            // wtedy również pracownik b musiałby być usunięty i wtedy byłoby trzeba sprawdzać czy czasowo praca będzie mogła się odbyć, wypadałboby też dać komunikat o
-            // zmianach
-            return Ok(new
+            if (request.IsUpdate == true)
+            {
+                request.ListEmployeeAddToJob.ForEach(x=>
+                {
+                    var updateList = listEmployeeInJobDTOList.FirstOrDefault(x2 => x2.SpecializationId == x.SpecializationId);
+                    if (updateList != null)
+                    {
+                        updateList.HoursStart = x.HoursStart;
+                    }
+                });
+            }
+
+                //żeby algorytm był dokładniejszy można ciagle te same dane do niego dawać, zmieniając czas zakończenia o ile ten sie zmienił, wtedy istnieje możliwość,
+                // że bęzie dostępnych więcej pracowników. Problem byłby przy usuwaniu pracowników w podsumowaniu (o ile dodam taką opcję), bo za każdym razem będzie
+                // bo musielibyśmy sprawdzać czy przy usuwaniu pracownika a dalej pracownik b będzie dostępny jeżei zmieni się czas zakończenia, bo jeżeli nie to 
+                // wtedy również pracownik b musiałby być usunięty i wtedy byłoby trzeba sprawdzać czy czasowo praca będzie mogła się odbyć, wypadałboby też dać komunikat o
+                // zmianach
+                return Ok(new
             {
                 ListEmployeeInJob = listEmployeeInJobDTOList,
                 CanStartWork = CanStartWork,
@@ -698,8 +714,8 @@ namespace inzRafalRutowski.Controllers
         {
             // jak sie potem dokonczy AddJob, tu trzeba dodać to samo(brakuje przypisywania pracowników do pracy)
 
-            request.Start = request.Start.AddDays(1); // dwa różne systemy dat i trzeba je przekonwertować
-            request.End = request.End.AddDays(1);
+            //request.Start = request.Start.AddDays(1); // dwa różne systemy dat i trzeba je przekonwertować
+            //request.End = request.End.AddDays(1);
             request.CurrentEnd = request.CurrentEnd.AddHours(1);
 
             List<Employee> employeeList = new List<Employee>();
