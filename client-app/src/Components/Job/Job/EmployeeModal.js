@@ -6,7 +6,7 @@ import Table from '@mui/joy/Table';
 import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import styled from 'styled-components';
-import { ViewEmployeeDetails } from '../Job/JobFunctions';
+import { ViewEmployeeDetails } from './JobFunctions';
 import { useState } from 'react';
 import axios from "axios";
 import * as dayjs from 'dayjs'

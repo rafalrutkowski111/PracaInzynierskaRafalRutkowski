@@ -98,20 +98,24 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
-            //zmiana liczby godzin do zrobienia
 
-            if(request.IsUpdate == true)
+            if (request.IsUpdate == true)
             {
                 request.ListEmployeeAddToJob.ForEach(x =>
                 {
                     var specializationToChange = request.JobSpecialization.First(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
                     specializationToChange.Hours -= (double)x.FinishWorkHours;
                 });
+
+            }
+            else
+            {
+                request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń (wykluczmay weekendy)
+                request.End = request.End.AddDays(1);
             }
 
 
-            request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń (wykluczmay weekendy)
-            request.End = request.End.AddDays(1);
+
 
             DateTime EndWorkDay = request.Start;
             bool CanStartWork = false;

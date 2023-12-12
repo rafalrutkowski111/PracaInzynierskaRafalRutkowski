@@ -19,7 +19,7 @@ const Summary = (props) => {
             x.responsiblePersonName = temp.name;
             x.responsiblePersonSurname = temp.surname
             x.responsiblePersonEmployeeId = temp.employeeId
-            x.finishWorkHours = 0;
+            x.finishWorkHours = 0; // tu zmienić ble ble ble
 
             return x;
         })

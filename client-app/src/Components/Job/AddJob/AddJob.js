@@ -3,12 +3,13 @@ import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import { SpecializationEmptyList, SpecializationList, ViewEmployee } from "../Job/SpecializationModal";
-import { EmployeeList, NotEnoughEmployee } from "./EmployeeModal";
-import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "./SummaryModal";
+import { EmployeeList, NotEnoughEmployee } from "../Job/EmployeeModal";
+import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "../Job/SummaryModal";
 import { ViewSpecializationAndHours, AddSpecializationAndHours, AddSpecializationButton } from "../Job/SpecializationAndHours";
 import JobDate from "../Job/JobDates";
 import JobTitle from "../Job/JobTitle";
 import { VerificationEmployeeToJob } from "../Job/JobFunctions";
+import * as dayjs from 'dayjs'
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -100,7 +101,7 @@ const AddJob = () => {
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
-            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dataStart.add(1, "day"), end: dataEnd.add(1, "day") })
+            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
                 //console.log(response.data)
