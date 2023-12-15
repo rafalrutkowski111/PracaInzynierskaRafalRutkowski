@@ -201,6 +201,9 @@ const UpdateJob = () => {
 
     const nextEdit = () => {
 
+        //  zrobić możliwą zmiane godzin w liście spcjalizacji i brak możliwości usunięcia już wykonanych częściowo specjalizacji
+        // zrobić walidacje żeby nie dało się zrobić mniejszej liczby godzin niż ta która została wykonana i obok podać ile zostało wykonanej
+
         // zrobić warunek w summarymodal, że jeżeli update to mozna all usuwać
 
         //zrobić w podsumowaniu przy dodawaniu tabele z naszymi pracownikami (na razie jest z naszymi i zewnętrznymi)

@@ -93,6 +93,21 @@ const ViewSpecializationAndHours = (props) => {
         props.setDataListSpecialization(list)
     }
 
+    const changeHoursInList = (e, itemId) => {
+        if (e.target.value === '') {
+            e.target.value = 1;
+        }
+
+        const updateDataListSpecialization = props.dataListSpecialization.map((item) => {
+            if (item.SpecializationId === itemId)
+                item.Hours = e.target.value;
+
+            return item
+        })
+
+        props.setDataListSpecialization(updateDataListSpecialization)
+    }
+
     return (
         <Container>
             <H1Container>Lista dodanych specjalizacji</H1Container>
@@ -113,7 +128,17 @@ const ViewSpecializationAndHours = (props) => {
                         {props.dataListSpecialization.map((item) => (
                             <tr>
                                 <td>{item.SpecializationName}</td>
-                                <td>{item.Hours}</td>
+                                <td>
+                                    <TextField
+                                        value={item.Hours}
+                                        onChange={(e) => changeHoursInList(e, item.SpecializationId)}
+                                        type="number"
+                                        id="outlined-basic"
+                                        variant="outlined"
+                                        inputProps={{ min: 1 }}
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </td>
                                 <td>
                                     <Button
                                         onClick={() => removeSpecializationAndHours(item.SpecializationId)}
