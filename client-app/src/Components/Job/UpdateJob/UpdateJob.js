@@ -82,11 +82,13 @@ const UpdateJob = () => {
     const [listEmployeeAddToJobEdit, setListEmployeeAddToJobEdit] = useState()
     const [dayToChangeHours, setDayToChangeHours] = useState()
     const [startDataInUpdate, setStartDataInUpdate] = useState()
+    const [justEdit, setJustEdit] = useState(false)
 
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
-    //console.log(listEmployeeAddToJobEdit)
+    console.log(listEmployeeAddToJobEdit)
+    //console.log(listEmployeeAddToJob)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
@@ -119,8 +121,14 @@ const UpdateJob = () => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
             .then(response => {
                 if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD')
-                    && dayjs(response.data.timeStartJob).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
+                    && dayjs(response.data.timeStartJob).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD')) // sprawdzanie czy obliczać przerobione godziny
                     setNeedChangeHours(true)
+
+
+
+                if (dayjs(response.data.timeStartJob).format('YYYY/MM/DD') <= dayjs(new Date()).format('YYYY/MM/DD')) // sprawdzanie czy zmienic date rozpoczećia algorytmu
+                    setStartDataInUpdate(dayjs(new Date()).add(1, "day"))
+                else setStartDataInUpdate(dayjs(response.data.timeStartJob))
 
                 console.log(dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
                 console.log(dayjs(response.data.timeStartJob).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
@@ -128,21 +136,17 @@ const UpdateJob = () => {
                 let day = 0;
                 let date1 = dayjs(response.data.timeAddHistory)
 
-                if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') <= dayjs(response.data.timeStartJob).format('YYYY/MM/DD') && 
-                    dayjs(response.data.timeStartJob).format('YYYY/MM/DD') <= dayjs(new Date()).format('YYYY/MM/DD'))
-                {
-                    console.log("jest")
+                if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') <= dayjs(response.data.timeStartJob).format('YYYY/MM/DD')) // sprawdzanie od którego czasu obliczać godziny
                     date1 = dayjs(response.data.timeStartJob)
-                    setStartDataInUpdate(dayjs(new Date()).add(1, "day"))
-                }
-                else setStartDataInUpdate(dayjs(response.data.timeStartJob))
+
+
                 let date2 = dayjs(new Date())
 
                 while (date1.format('YYYY/MM/DD') <= date2.format('YYYY/MM/DD')) {
 
                     if (date1.day() !== 6 && date1.day() !== 0)
                         day++
-                       
+
                     date1 = date1.add(1, 'day')
                 }
 
@@ -189,7 +193,7 @@ const UpdateJob = () => {
                         dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
                         setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
                         setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
-                        isUpdate: true, listEmployeeAddToJob: listEmployeeAddToJobEdit
+                        isUpdate: true, listEmployeeAddToJob: listEmployeeAddToJobEdit, justEdit: false, realStart: dataStart
                     })
                 }
             })
@@ -197,22 +201,29 @@ const UpdateJob = () => {
 
     const nextEdit = () => {
 
+        // zrobić warunek w summarymodal, że jeżeli update to mozna all usuwać
 
-        // tu do zmiany, żeby dało się zedytowac wszystko na tych samych pracownikach
+        //zrobić w podsumowaniu przy dodawaniu tabele z naszymi pracownikami (na razie jest z naszymi i zewnętrznymi)
+
+        // tu do zmiany, żeby dało się zedytowac wszystko na tych samych pracownikach (już to mamy, 
+        // ogarnąć podsumowanie żeby dało się każdego usunąć i kolory przy zakończeniu (czarny i czerwony dodać, moze i zielony i niebieski))
 
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         if (needChangeHours) {
-            listEmployeeAddToJobEdit.map(x => {
+            const updateListEmployeeAddToJobEdit = listEmployeeAddToJobEdit.map(x => {
 
                 let workAllEmployeeInSpecializationIn1h = 0;
 
                 x.employeeInJobList.map(x => {
                     workAllEmployeeInSpecializationIn1h += (x.experienceValue / 100)
                 })
-
                 x.finishWorkHours += (workAllEmployeeInSpecializationIn1h * 8 * dayToChangeHours)
+
+                return x
             })
+            setListEmployeeAddToJobEdit(updateListEmployeeAddToJobEdit)
+
         }
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
@@ -223,7 +234,10 @@ const UpdateJob = () => {
                 setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
 
                 if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
-                else if (response.data.searchEmployee.length !== 0) setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
+                else if (response.data.searchEmployee.length !== 0) {
+                    setJustEdit(true)
+                    setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
+                }
                 else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
                 {
                     VerificationEmployeeToJob({
@@ -232,7 +246,7 @@ const UpdateJob = () => {
                         dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
                         setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
                         setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
-                        isUpdate: true, listEmployeeAddToJob: listEmployeeAddToJobEdit
+                        isUpdate: true, listEmployeeAddToJob: listEmployeeAddToJobEdit, justEdit: true,  realStart: dataStart
                     })
                 }
             })
@@ -292,7 +306,8 @@ const UpdateJob = () => {
                 dataListSpecialization={dataListSpecialization} userId={userId} dataStart={startDataInUpdate} setListEmployeeAddToJob={setListEmployeeAddToJob}
                 setEndDayWork={setEndDayWork} setStartDayWork={setStartDayWork} setModalOpenSummary={setModalOpenSummary}
                 setModalOpenEmployeeList={setModalOpenEmployeeList} setModalOpenNotEnoughEmployee={setModalOpenNotEnoughEmployee}
-                setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization} setSearchEmployeeJob={setSearchEmployeeJob}
+                setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization} setSearchEmployeeJob={setSearchEmployeeJob} justEdit={justEdit}
+                isUpdate={true} listEmployeeAddToJob={listEmployeeAddToJobEdit} realStart={dataStart}
             />
         )
     }

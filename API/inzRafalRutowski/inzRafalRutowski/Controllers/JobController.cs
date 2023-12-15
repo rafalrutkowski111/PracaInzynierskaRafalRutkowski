@@ -128,8 +128,36 @@ namespace inzRafalRutowski.Controllers
             var specializationsWithHours = request.JobSpecialization;
             List<Employee> listEmployeeFreeInTime;
 
+            if (request.JustEdit == true) // tylko edycja czyli uwzględniamy tylko tych pracowników którzy byli wcześniej
+            {
 
-            if (request.EmployeeWithoutEmployer == true) //chcemy znaleść wolnych praconików których nie dodaliśmy(jako specjaliste)
+                listEmployeeFreeInTime = new List<Employee>();
+
+                request.ListEmployeeAddToJob.ForEach(e =>
+                {
+                    e.EmployeeInJobList.ForEach(e2 =>
+                    {
+                            var newEmployee = new Employee();
+                            newEmployee.Name = e2.Name;
+                            newEmployee.Surname = e2.Surname;
+                            newEmployee.Id = (Guid)e2.EmployeeId;
+                        listEmployeeFreeInTime.Add(newEmployee);
+                    });
+                });
+
+                request.listJobSpecializationEmployeeDTO.ForEach(e =>
+                {
+                    if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.EmployeeId) == null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
+                    {
+                        var newEmployee = new Employee();
+                        newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
+                        newEmployee.Surname = _context.Employees.First(x => x.Id == e.EmployeeId).Surname;
+                        newEmployee.Id = (Guid)e.EmployeeId;
+                        listEmployeeFreeInTime.Add(newEmployee);
+                    }
+                });
+            }
+            else if (request.EmployeeWithoutEmployer == true) //chcemy znaleść wolnych praconików których nie dodaliśmy(jako specjaliste)
             {
                 listEmployeeFreeInTime = _context.Employees.Where(e => e.EmployerId == null).ToList();
 
@@ -479,10 +507,6 @@ namespace inzRafalRutowski.Controllers
                             }
 
                             specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
-
-                            //if (specializationMostHours.Hours < 0)
-                            //    CanStartWork = true;
-
                         }
                     });
                 });
@@ -505,6 +529,12 @@ namespace inzRafalRutowski.Controllers
                 });
             }
 
+            if (request.JustEdit == true)
+                CanStartWork = true;
+
+            if (request.IsUpdate == true)
+                request.Start = (DateTime)request.RealStart;
+
                 //żeby algorytm był dokładniejszy można ciagle te same dane do niego dawać, zmieniając czas zakończenia o ile ten sie zmienił, wtedy istnieje możliwość,
                 // że bęzie dostępnych więcej pracowników. Problem byłby przy usuwaniu pracowników w podsumowaniu (o ile dodam taką opcję), bo za każdym razem będzie
                 // bo musielibyśmy sprawdzać czy przy usuwaniu pracownika a dalej pracownik b będzie dostępny jeżei zmieni się czas zakończenia, bo jeżeli nie to 
@@ -512,6 +542,7 @@ namespace inzRafalRutowski.Controllers
                 // zmianach
                 return Ok(new
             {
+                start = request.Start,
                 ListEmployeeInJob = listEmployeeInJobDTOList,
                 CanStartWork = CanStartWork,
                 EndWorkDay = EndWorkDay,

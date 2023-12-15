@@ -17,7 +17,9 @@ const VerificationEmployeeToJob = (props) => {
     axios.post('http://localhost:5000/api/Job/JobEmployee',
         {
             listJobSpecializationEmployeeDTO: props.listJobSpecializationEmployeeDTO, JobSpecialization: props.dataListSpecialization, EmployerId: props.userId,
-            start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployeeWithoutEmployer: false, IsUpdate: props.isUpdate, ListEmployeeAddToJob: props.listEmployeeAddToJob
+            start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployeeWithoutEmployer: false, IsUpdate: props.isUpdate,
+             ListEmployeeAddToJob: props.listEmployeeAddToJob, justEdit: props.justEdit, realStart: props.realStart
+
         })
         .then(response2 => {
             props.setListEmployeeAddToJob(response2.data.listEmployeeInJob) //lista pracowników których ostatecznie dodamy
@@ -28,7 +30,9 @@ const VerificationEmployeeToJob = (props) => {
             }); // aktualizacja specjalistów, też dane do rozpoczecia pracy
 
             props.setEndDayWork(response2.data.endWorkDay)
-            props.setStartDayWork(props.dataStart.format('DD/MM/YYYY'))
+            if(props.isUpdate === true)
+            props.setStartDayWork(dayjs(response2.data.start).format('DD/MM/YYYY'))
+            else  props.setStartDayWork(props.dataStart.format('DD/MM/YYYY'))
 
             if (response2.data.canStartWork === true) {
                 props.setModalOpenSummary(true) //podsumowanie

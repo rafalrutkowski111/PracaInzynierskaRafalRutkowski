@@ -117,7 +117,7 @@ const AddJob = () => {
                         dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
                         setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
                         setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
-                        isUpdate: false, listEmployeeAddToJob: null
+                        isUpdate: false, listEmployeeAddToJob: null, justEdit: false
                     })
                 }
             })

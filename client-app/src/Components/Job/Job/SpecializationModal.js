@@ -72,7 +72,8 @@ const SpecializationList = (props) => {
             dataListSpecialization: props.dataListSpecialization, dataStart: props.dataStart, setListEmployeeAddToJob: props.setListEmployeeAddToJob,
             dataEnd: props.dataEnd, setEndDayWork: props.setEndDayWork, setStartDayWork: props.setStartDayWork, setModalOpenSummary: props.setModalOpenSummary, userId: props.userId,
             setModalOpen: props.setModalOpen, setSearchEmployeeJob: props.setSearchEmployeeJob, setModalOpenEmployeeList: props.setModalOpenEmployeeList,
-            setModalOpenNotEnoughEmployee: props.setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: props.setDataEmployeeWithSpecialization
+            setModalOpenNotEnoughEmployee: props.setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: props.setDataEmployeeWithSpecialization,
+            justEdit: props.justEdit, isUpdate: props.isUpdate, listEmployeeAddToJob: props.listEmployeeAddToJob, realStart: props.realStart
         })
     }
 

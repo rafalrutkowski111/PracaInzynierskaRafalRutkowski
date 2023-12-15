@@ -10,6 +10,8 @@
         public bool EmployeeWithoutEmployer { get; set; }
         public bool IsUpdate { get; set; }
         public List<ListEmployeeAddToJob>? ListEmployeeAddToJob { get; set; }
+        public bool JustEdit { get; set; }
+        public DateTime? RealStart { get; set; }
     }
     public class JobSpecializationEmployeeDTO
     {
