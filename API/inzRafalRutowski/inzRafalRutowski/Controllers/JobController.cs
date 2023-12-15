@@ -809,7 +809,7 @@ namespace inzRafalRutowski.Controllers
         public ActionResult<JobHistory> GetLastUpdate([FromQuery] int jobId)
         {
             var result = _context.JobHistorys.OrderByDescending(x => x.TimeAddHistory).Where(x => int.Equals(x.JobId, jobId)).First();
-            var resultDTO = _mapper.Map<JobHistory>(result);
+            var resultDTO = _mapper.Map<JobDTO>(result);
             return Ok(resultDTO);
         }
     }

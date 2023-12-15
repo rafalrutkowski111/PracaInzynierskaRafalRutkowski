@@ -14,6 +14,8 @@ namespace inzRafalRutowski.DTO.Job
         public string Color { get; set; }
         public int? JobId { get; set; }
         public double? FinishWorkHours { get; set; }
+        public DateTime? TimeAddHistory { get; set; }
+        
 
     }
 
