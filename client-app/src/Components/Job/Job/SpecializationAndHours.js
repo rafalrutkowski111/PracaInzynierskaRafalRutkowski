@@ -155,7 +155,9 @@ const ViewSpecializationAndHours = (props) => {
                             </tr>
                         ))}
                     </tbody>
-                </Table>Liczba po * oznacza liczbę wykonanej pracy (licząc z dniem dzisiejszym)
+                </Table>
+                {props.isUpdate === true ? "Liczba po * oznacza liczbę wykonanej pracy (licząc z dniem dzisiejszym)" : null}
+                
             </Sheet>
         </Container>
     )

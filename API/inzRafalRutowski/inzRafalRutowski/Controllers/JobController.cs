@@ -118,12 +118,18 @@ namespace inzRafalRutowski.Controllers
                 request.End = request.End.AddDays(2);
             }
 
+            List<ListJobSpecialization> updateJobSpecialization = new List<ListJobSpecialization>();
 
+            request.JobSpecialization.ForEach(x => //wykluczanie przerobionej specjalizajci
+            {
+                if (x.Hours > 0.5)
+                    updateJobSpecialization.Add(x);
+            });
 
+            request.JobSpecialization = updateJobSpecialization;
 
             DateTime EndWorkDay = request.Start;
             bool CanStartWork = false;
-            var listEmployeeSpecialization = new List<EmployeeSpecialization>();
 
             var specializationsWithHours = request.JobSpecialization;
             List<Employee> listEmployeeFreeInTime;
@@ -288,16 +294,17 @@ namespace inzRafalRutowski.Controllers
                         {
                             var specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
 
-                            if (specializationMostHours.Hours < 0)
+                            if (specializationMostHours.Hours < 0) //czy praca sie wykona w terminie
                             {
+                                var lastFinishSpecialization = listEmployeeInJobDTOList.OrderByDescending(x => x.End).First(); // najdłuższa praca
+
                                 employeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(e5 => e5.EmployeeId == e.Id
-                               && e5.SpecializationId == specializationMostHours.SpecializationId);
+                               && e5.SpecializationId == lastFinishSpecialization.SpecializationId);
                                 if (employeeSpecialization != null)
                                 {
                                     var experienceValue = _context.Experiences.FirstOrDefault(x => x.Id == employeeSpecialization.ExperienceId).experienceValue;
-                                    var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, specializationMostHours.SpecializationId));
+                                    var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, lastFinishSpecialization.SpecializationId));
                                     specializationsWithHours[FindIndex].Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)experienceValue / 100);
-                                    listEmployeeSpecialization.Add(employeeSpecialization);
 
                                     var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecialization.SpecializationId);
                                     var employeeInJobDTO = new EmployeeInJobDTO();
@@ -344,13 +351,12 @@ namespace inzRafalRutowski.Controllers
                                 }
                                 else
                                 {
-                                    var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, specializationMostHours.SpecializationId));
+                                    var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, lastFinishSpecialization.SpecializationId));
                                     specializationsWithHours[FindIndex].Hours -= (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
 
                                     var employeeSpecializationNew = new EmployeeSpecialization();
-                                    employeeSpecializationNew.SpecializationId = specializationMostHours.SpecializationId;
+                                    employeeSpecializationNew.SpecializationId = lastFinishSpecialization.SpecializationId;
                                     employeeSpecializationNew.EmployeeId = e.Id;
-                                    listEmployeeSpecialization.Add(employeeSpecializationNew);
 
                                     var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecializationNew.SpecializationId);
                                     var employeeInJobDTO = new EmployeeInJobDTO();
@@ -404,7 +410,6 @@ namespace inzRafalRutowski.Controllers
                                 else
                                 {
                                     e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)e2.experienceValue / 100);
-                                    listEmployeeSpecialization.Add(employeeSpecialization);
 
                                     var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecialization.SpecializationId);
                                     var employeeInJobDTO = new EmployeeInJobDTO();
@@ -459,7 +464,6 @@ namespace inzRafalRutowski.Controllers
                                 var employeeSpecializationNew = new EmployeeSpecialization();
                                 employeeSpecializationNew.SpecializationId = specializationsWithHours[FindIndex].SpecializationId;
                                 employeeSpecializationNew.EmployeeId = e.Id;
-                                listEmployeeSpecialization.Add(employeeSpecializationNew);
 
                                 var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecializationNew.SpecializationId);
                                 var employeeInJobDTO = new EmployeeInJobDTO();

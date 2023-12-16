@@ -213,6 +213,8 @@ const UpdateJob = () => {
 
     const nextEdit = () => {
 
+        //zrobić żeby najpierw dodawały się specjalisci
+
         // zrobić żeby usuneło praconików jeżeli przepracowaliśmy godziny
 
         // zrobić warunek w summarymodal, że jeżeli update to mozna all usuwać
@@ -285,7 +287,7 @@ const UpdateJob = () => {
         return (
             <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization} setOpenAddEmployee={setOpenAddEmployee}
                 setDataSpecialization={setDataSpecialization} setDataListSpecialization={setDataListSpecialization}
-                listEmployeeAddToJobEdit={listEmployeeAddToJobEdit}
+                listEmployeeAddToJobEdit={listEmployeeAddToJobEdit} isUpdate={true}
             />
         )
     }
