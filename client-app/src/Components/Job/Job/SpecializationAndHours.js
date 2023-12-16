@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 import Container from '@mui/material/Container';
+import { useEffect } from "react";
 
 const SelectContainer = styled.div`
     margin-top: 1%;
@@ -93,13 +94,17 @@ const ViewSpecializationAndHours = (props) => {
         props.setDataListSpecialization(list)
     }
 
-    const changeHoursInList = (e, itemId) => {
-        if (e.target.value === '') {
+    const changeHoursInList = (e, itemChange) => {
+        if (itemChange.finishWorkHours !== undefined) {
+            if (e.target.value === '' || e.target.value < itemChange.finishWorkHours)
+            e.target.value = itemChange.finishWorkHours.toFixed(0)
+        }
+        else if (e.target.value === '') {
             e.target.value = 1;
         }
 
         const updateDataListSpecialization = props.dataListSpecialization.map((item) => {
-            if (item.SpecializationId === itemId)
+            if (item.SpecializationId === itemChange.SpecializationId)
                 item.Hours = e.target.value;
 
             return item
@@ -107,7 +112,6 @@ const ViewSpecializationAndHours = (props) => {
 
         props.setDataListSpecialization(updateDataListSpecialization)
     }
-
     return (
         <Container>
             <H1Container>Lista dodanych specjalizacji</H1Container>
@@ -131,16 +135,19 @@ const ViewSpecializationAndHours = (props) => {
                                 <td>
                                     <TextField
                                         value={item.Hours}
-                                        onChange={(e) => changeHoursInList(e, item.SpecializationId)}
+                                        onChange={(e) => changeHoursInList(e, item)}
                                         type="number"
                                         id="outlined-basic"
                                         variant="outlined"
-                                        inputProps={{ min: 1 }}
-                                        InputLabelProps={{ shrink: true }}
+                                        size="small"
+                                        inputProps={{ min: 1, style: { textAlign: 'center' } }}
+                                        style={{ width: 150 }}
                                     />
+                                    {item.finishWorkHours === undefined ? null : " *" + item.finishWorkHours.toFixed(0)}
                                 </td>
                                 <td>
                                     <Button
+                                        disabled={item.disableUpdate}
                                         onClick={() => removeSpecializationAndHours(item.SpecializationId)}
                                         startIcon={<DeleteIcon />}>Usuń
                                     </Button>
@@ -148,7 +155,7 @@ const ViewSpecializationAndHours = (props) => {
                             </tr>
                         ))}
                     </tbody>
-                </Table>
+                </Table>Liczba po * oznacza liczbę wykonanej pracy (licząc z dniem dzisiejszym)
             </Sheet>
         </Container>
     )

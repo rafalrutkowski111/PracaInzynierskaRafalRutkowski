@@ -82,39 +82,11 @@ const UpdateJob = () => {
     const [startDataInUpdate, setStartDataInUpdate] = useState()
     const [justEdit, setJustEdit] = useState(false)
 
-    const [test111, setTest111] = useState(false)
-
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
     //console.log(listEmployeeAddToJobEdit)
     //console.log(listEmployeeAddToJob)
-
-    useEffect(() => {
-        axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
-            .then(response2 => {
-
-                axios.get('http://localhost:5000/api/Job/GetJob', { params: { jobId: params.id } })
-                    .then(response => {
-                        setDataStart(dayjs(response.data.start));
-                        setDataEnd(dayjs(response.data.end));
-                        setTitle(response.data.title)
-
-                        let tempResponseData = response.data.listEmployeeAddToJob
-                        let tempDataListSpecialization = []
-                        tempResponseData.map(data => {
-                            tempDataListSpecialization.push({ SpecializationId: data.specializationId, Hours: data.hoursStart, SpecializationName: data.specializationName })
-
-                            const i = response2.data.findIndex(x => x.id === data.specializationId)
-                            response2.data.splice(i, 1)
-                            setDataSpecialization(response2.data)
-                        })
-                        setDataListSpecialization(tempDataListSpecialization)
-                    })
-            })
-
-        setOpenAddEmployee(false)
-    }, [])
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
@@ -158,8 +130,9 @@ const UpdateJob = () => {
                     date1 = date1.add(1, 'day')
                 }
 
+                var updateListEmployeeAddToJobEdit = response.data.listEmployeeAddToJob
                 if (needChangeHours) {
-                    const updateListEmployeeAddToJobEdit = response.data.listEmployeeAddToJob.map(x => {
+                    updateListEmployeeAddToJobEdit = response.data.listEmployeeAddToJob.map(x => {
 
                         let workAllEmployeeInSpecializationIn1h = 0;
 
@@ -167,6 +140,7 @@ const UpdateJob = () => {
                             workAllEmployeeInSpecializationIn1h += (x.experienceValue / 100)
                         })
                         x.finishWorkHours += (workAllEmployeeInSpecializationIn1h * 8 * day)
+                        console.log(x.finishWorkHours)
 
                         return x
                     })
@@ -174,6 +148,34 @@ const UpdateJob = () => {
                 }
                 else setListEmployeeAddToJobEdit(response.data.listEmployeeAddToJob)
 
+                axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
+                    .then(response2 => {
+
+                        axios.get('http://localhost:5000/api/Job/GetJob', { params: { jobId: params.id } })
+                            .then(response3 => {
+                                setDataStart(dayjs(response3.data.start));
+                                setDataEnd(dayjs(response3.data.end));
+                                setTitle(response3.data.title)
+
+                                let tempResponseData = response3.data.listEmployeeAddToJob
+                                let tempDataListSpecialization = []
+                                tempResponseData.map(data => {
+                                    tempDataListSpecialization.push({
+                                        SpecializationId: data.specializationId, Hours: data.hoursStart,
+                                        SpecializationName: data.specializationName, disableUpdate: true,
+                                        finishWorkHours: updateListEmployeeAddToJobEdit.find(x => x.specializationId === data.specializationId).finishWorkHours
+                                    })
+
+                                    const i = response2.data.findIndex(x => x.id === data.specializationId)
+                                    response2.data.splice(i, 1)
+                                    setDataSpecialization(response2.data)
+                                })
+                                console.log(tempDataListSpecialization)
+                                setDataListSpecialization(tempDataListSpecialization)
+                            })
+                    })
+
+                setOpenAddEmployee(false)
 
             })
     }, [])
@@ -185,6 +187,7 @@ const UpdateJob = () => {
 
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
+        console.log(dataListSpecialization)
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
             .then(response => {
@@ -210,8 +213,7 @@ const UpdateJob = () => {
 
     const nextEdit = () => {
 
-        //  zrobić możliwą zmiane godzin w liście spcjalizacji i brak możliwości usunięcia już wykonanych częściowo specjalizacji
-        // zrobić walidacje żeby nie dało się zrobić mniejszej liczby godzin niż ta która została wykonana i obok podać ile zostało wykonanej
+        // zrobić żeby usuneło praconików jeżeli przepracowaliśmy godziny
 
         // zrobić warunek w summarymodal, że jeżeli update to mozna all usuwać
 
@@ -283,6 +285,7 @@ const UpdateJob = () => {
         return (
             <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization} setOpenAddEmployee={setOpenAddEmployee}
                 setDataSpecialization={setDataSpecialization} setDataListSpecialization={setDataListSpecialization}
+                listEmployeeAddToJobEdit={listEmployeeAddToJobEdit}
             />
         )
     }
