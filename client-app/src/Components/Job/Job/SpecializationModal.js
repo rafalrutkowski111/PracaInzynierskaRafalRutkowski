@@ -215,18 +215,18 @@ const ViewEmployee = (props) => {
     }
 
     const addNewEmployee = (employee) => {
-        var findIndextemp1 = 0;
         var findIndextemp2 = 0;
         var findIndex1 = -1;
         var findIndex2 = -1;
+        var idSpecialization = -1
         var needRemove = false
         const updatesearchEmployeeJob = props.searchEmployeeJob.map(data => { //szukanie indexów i zmiana brakującej ilości pracy
             findIndextemp2 = 0;
             data.employeeInJobList.map(data2 => {
-
                 if (data2.employeeId === employee[0].employeeId) {
+                    idSpecialization = data.specializationId;
 
-                    findIndex1 = findIndextemp1;
+                    findIndex1 = props.searchEmployeeJob.findIndex(x=> x.specializationId === data.specializationId)
                     findIndex2 = findIndextemp2;
                     data.hoursStart -= props.searchEmployeeJob[findIndex1].employeeInJobList[findIndex2].hoursJob
 
@@ -235,12 +235,10 @@ const ViewEmployee = (props) => {
                 findIndextemp2++
                 return data2
             })
-            findIndextemp1++
             return data
         })
         props.setSearchEmployeeJob(updatesearchEmployeeJob)
 
-        findIndextemp1 = 0;
         findIndextemp2 = 0;
         const addElementListEmployeeAddToJob = props.listEmployeeAddToJob.map((data) => {
             findIndextemp2 = 0;
@@ -248,11 +246,10 @@ const ViewEmployee = (props) => {
                 findIndextemp2++
                 return data2
             })
-            if (findIndextemp1 === findIndex1) {
+            if (data.specializationId === idSpecialization) {
                 data.employeeInJobList[findIndextemp2] = props.searchEmployeeJob[findIndex1].employeeInJobList[findIndex2]
             }
 
-            findIndextemp1++
             return data
         })
         props.setListEmployeeAddToJob(addElementListEmployeeAddToJob)

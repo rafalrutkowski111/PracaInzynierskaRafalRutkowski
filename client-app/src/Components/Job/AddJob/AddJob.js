@@ -84,8 +84,8 @@ const AddJob = () => {
 
     const userId = sessionStorage.getItem("userId");
 
-    console.log("aa")
-    console.log(listEmployeeAddToJob)
+    //console.log("aa")
+    //console.log(listEmployeeAddToJob)
     
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })

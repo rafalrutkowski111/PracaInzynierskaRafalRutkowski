@@ -139,28 +139,31 @@ namespace inzRafalRutowski.Controllers
 
                 listEmployeeFreeInTime = new List<Employee>();
 
-                request.ListEmployeeAddToJob.ForEach(e =>
-                {
-                    e.EmployeeInJobList.ForEach(e2 =>
-                    {
-                            var newEmployee = new Employee();
-                            newEmployee.Name = e2.Name;
-                            newEmployee.Surname = e2.Surname;
-                            newEmployee.Id = (Guid)e2.EmployeeId;
-                        listEmployeeFreeInTime.Add(newEmployee);
-                    });
-                });
+
 
                 request.listJobSpecializationEmployeeDTO.ForEach(e =>
                 {
-                    if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.EmployeeId) == null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
-                    {
                         var newEmployee = new Employee();
                         newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
                         newEmployee.Surname = _context.Employees.First(x => x.Id == e.EmployeeId).Surname;
                         newEmployee.Id = (Guid)e.EmployeeId;
                         listEmployeeFreeInTime.Add(newEmployee);
-                    }
+                });
+
+                request.ListEmployeeAddToJob.ForEach(e =>
+                {
+                    e.EmployeeInJobList.ForEach(e2 =>
+                    {
+                        if (listEmployeeFreeInTime.FirstOrDefault(e3 => e3.Id == e2.EmployeeId) == null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
+                        {
+                            var newEmployee = new Employee();
+                            newEmployee.Name = e2.Name;
+                            newEmployee.Surname = e2.Surname;
+                            newEmployee.Id = (Guid)e2.EmployeeId;
+                            listEmployeeFreeInTime.Add(newEmployee);
+                        }
+
+                    });
                 });
             }
             else if (request.EmployeeWithoutEmployer == true) //chcemy znaleść wolnych praconików których nie dodaliśmy(jako specjaliste)
@@ -194,7 +197,9 @@ namespace inzRafalRutowski.Controllers
             }
             else
             {
-                listEmployeeFreeInTime = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
+                listEmployeeFreeInTime = new List<Employee>();
+
+                var freeEmployeeFromDB = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
                 && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
                 ).EmployerId == request.EmployerId)
@@ -202,13 +207,18 @@ namespace inzRafalRutowski.Controllers
 
                 request.listJobSpecializationEmployeeDTO.ForEach(e =>
                 {
-                    if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.EmployeeId) == null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
+                    var newEmployee = new Employee();
+                    newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
+                    newEmployee.Surname = _context.Employees.First(x => x.Id == e.EmployeeId).Surname;
+                    newEmployee.Id = (Guid)e.EmployeeId;
+                    listEmployeeFreeInTime.Add(newEmployee);
+                });
+
+                freeEmployeeFromDB.ForEach(e =>
+                {
+                    if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.Id) == null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
                     {
-                        var newEmployee = new Employee();
-                        newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
-                        newEmployee.Surname = _context.Employees.First(x => x.Id == e.EmployeeId).Surname;
-                        newEmployee.Id = (Guid)e.EmployeeId;
-                        listEmployeeFreeInTime.Add(newEmployee);
+                        listEmployeeFreeInTime.Add(e);
                     }
                 });
 

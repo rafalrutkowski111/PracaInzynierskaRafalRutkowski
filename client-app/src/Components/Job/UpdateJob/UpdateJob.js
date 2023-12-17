@@ -113,6 +113,7 @@ const UpdateJob = () => {
                 response.data.listEmployeeAddToJob.map(x => {
                     if (x.finishWorkHours != 0)
                         wasUpdate = true
+                    else needChangeHours = true
                 })
 
                 if (!wasUpdate) date1 = dayjs(response.data.start) //sprawdzanie czy choć raz był update
@@ -213,7 +214,7 @@ const UpdateJob = () => {
 
     const nextEdit = () => {
 
-        //zrobić żeby najpierw dodawały się specjalisci
+        // dodać start od poneidizałku( jeżel isobota dodać 2 dni ejżeli niedziela 1)
 
         // zrobić żeby usuneło praconików jeżeli przepracowaliśmy godziny
 
