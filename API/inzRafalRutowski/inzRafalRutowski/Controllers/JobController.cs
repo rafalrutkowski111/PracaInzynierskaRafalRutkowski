@@ -99,9 +99,14 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobEmployee")]
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
-
+            
             if (request.IsUpdate == true)
             {
+                request.ListEmployeeAddToJob.ForEach(x => // zmiana pobranych wartościu hours na te które zmieniliśmy
+                {
+                    x.HoursStart = (int)request.JobSpecialization.Find(x2 => x2.SpecializationId == x.SpecializationId).Hours;
+                });
+
                 request.ListEmployeeAddToJob.ForEach(x =>
                 {
                     var specializationToChange = request.JobSpecialization.FirstOrDefault(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
@@ -570,7 +575,7 @@ namespace inzRafalRutowski.Controllers
 
 
         [HttpPost("UpdateTimeJob")]
-        public IActionResult UpdateTimeJob([FromBody] ListEmployeeInJobDTOList request)
+        public IActionResult UpdateTimeJob([FromBody] ListEmployeeInJobDTOList request) // ilość godzin do przerobienia jest zła
         {
             JobFunctions jobFunctions = new JobFunctions();
             var result = jobFunctions.UpdateDateInJob(request);

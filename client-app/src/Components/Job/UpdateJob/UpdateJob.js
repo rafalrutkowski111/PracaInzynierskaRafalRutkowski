@@ -214,10 +214,6 @@ const UpdateJob = () => {
 
     const nextEdit = () => {
 
-        // jak będzie mi się chciało to naprawić w UpdateTimeJob czas po dodaniu nowych
-
-        // zrobić żeby usuneło praconików jeżeli przepracowaliśmy godziny
-
         // zrobić warunek w summarymodal, że jeżeli update to mozna all usuwać
 
         //zrobić w podsumowaniu przy dodawaniu tabele z naszymi pracownikami (na razie jest z naszymi i zewnętrznymi)
