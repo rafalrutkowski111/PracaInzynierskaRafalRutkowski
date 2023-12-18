@@ -15,6 +15,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Xml.XPath;
+using Azure.Core;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -110,6 +111,9 @@ namespace inzRafalRutowski.Controllers
                     }
                     
                 });
+                if (request.Start.DayOfWeek == DayOfWeek.Saturday) request.Start.AddDays(2); //jeżeli edytujemy w weekend zmieniamy start na poneidizałek
+                if (request.Start.DayOfWeek == DayOfWeek.Sunday) request.Start.AddDays(1);
+
                 request.End = request.End.AddDays(1); //dodajemy dzień bo wlicza się włącznie ostatni a zrobiłem obliczenia nie uwzlędniajac go
             }
             else

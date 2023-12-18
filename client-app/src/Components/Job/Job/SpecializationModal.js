@@ -220,6 +220,8 @@ const ViewEmployee = (props) => {
         var findIndex2 = -1;
         var idSpecialization = -1
         var needRemove = false
+        //console.log("props.searchEmployeeJob")
+        //console.log(props.searchEmployeeJob)
         const updatesearchEmployeeJob = props.searchEmployeeJob.map(data => { //szukanie indexów i zmiana brakującej ilości pracy
             findIndextemp2 = 0;
             data.employeeInJobList.map(data2 => {
@@ -254,6 +256,8 @@ const ViewEmployee = (props) => {
         })
         props.setListEmployeeAddToJob(addElementListEmployeeAddToJob)
 
+
+
         const list = [...props.searchEmployeeJob];
         list[findIndex1].employeeInJobList.splice(findIndex2, 1)
         props.setSearchEmployeeJob(list)
@@ -265,6 +269,8 @@ const ViewEmployee = (props) => {
         }
 
         props.setModalOpenViewEmployee(false)
+        console.log("props.listEmployeeAddToJob")
+        console.log(props.listEmployeeAddToJob)
     }
 
     return (

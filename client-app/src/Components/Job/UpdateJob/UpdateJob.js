@@ -85,8 +85,8 @@ const UpdateJob = () => {
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
-    //console.log(listEmployeeAddToJobEdit)
-    //console.log(listEmployeeAddToJob)
+    console.log("listEmployeeAddToJob")
+    console.log(listEmployeeAddToJob)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
@@ -214,7 +214,7 @@ const UpdateJob = () => {
 
     const nextEdit = () => {
 
-        // dodać start od poneidizałku( jeżel isobota dodać 2 dni ejżeli niedziela 1)
+        // jak będzie mi się chciało to naprawić w UpdateTimeJob czas po dodaniu nowych
 
         // zrobić żeby usuneło praconików jeżeli przepracowaliśmy godziny
 
