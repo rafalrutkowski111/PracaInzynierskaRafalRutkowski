@@ -19,15 +19,14 @@ const Summary = (props) => {
             x.responsiblePersonName = temp.name;
             x.responsiblePersonSurname = temp.surname
             x.responsiblePersonEmployeeId = temp.employeeId
-            if(props.isUpdate === true)
-            {
-                let listWithFinishWorkHours = props.listEmployeeAddToJobEdit.find(x2=> x2.specializationId === x.specializationId)
+            if (props.isUpdate === true) {
+                let listWithFinishWorkHours = props.listEmployeeAddToJobEdit.find(x2 => x2.specializationId === x.specializationId)
 
-                if(listWithFinishWorkHours != undefined)
+                if (listWithFinishWorkHours != undefined)
                     x.finishWorkHours = listWithFinishWorkHours.finishWorkHours
                 else x.finishWorkHours = 0;
             } else x.finishWorkHours = 0;
-            
+
             return x;
         })
         props.setListEmployeeAddToJob(updatelistEmployeeAddToJob)
@@ -37,7 +36,7 @@ const Summary = (props) => {
         axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
-            jobId: props.action === 'editJob'? props.jobId : null
+            jobId: props.action === 'editJob' ? props.jobId : null
         })
             .then(props.setModalOpenConfirmAdd(true))
     }
@@ -50,7 +49,20 @@ const Summary = (props) => {
     }
 
     const removePerson = (person, specialist) => {
-
+        console.log(props.dataEmployeeWithSpecialization)
+        if (props.dataEmployeeWithSpecialization.find(x => x.employeeId === person.employeeId) !== undefined) {
+            const updateDataEmployeeWithSpecialization = props.dataEmployeeWithSpecialization.map(x => {
+                if (x.employeeId === person.employeeId) {
+                    x.name = ""
+                    x.surname = ""
+                    x.nameSurname = "Brak"
+                    x.employeeId = null;
+                    x.haveSpecialist = false
+                }
+                return x
+            })
+            props.setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
+        }
 
         //inne podejście zamiast splice użyte slice. brak mutacji tylko tworzenie nowej tablicy
         //tu chyba różnicy nie robi bo i tak potem tworzymy nową tablice którą zastępujemy starą
@@ -68,9 +80,10 @@ const Summary = (props) => {
 
         axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
             {
-                listEmployeeInJobDTOList: props.listEmployeeAddToJob, start: dayjs(props.dataStart)
-            },)
+                listEmployeeInJobDTOList: props.listEmployeeAddToJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+            })
             .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+
     }
     const showAddEmployee = (SpecializationId) => {
 
@@ -123,7 +136,7 @@ const Summary = (props) => {
                 <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                     <p>Termin rozpoczęcia pracy - {props.startDayWork}</p>
                     <p>Termin zakończenia pracy - {dayjs(props.dataEnd).format('DD/MM/YYYY')}</p>
-                    <p>Czas zakończenia pracy - {dayjs(props.endDayWork).format('DD/MM/YYYY-HH.mm')}</p>
+                    <p>Czas zakończenia pracy -  {dayjs(props.endDayWork).year() === 2100? "Praca się nie zakończy" : dayjs(props.endDayWork).format('DD/MM/YYYY-HH.mm')} </p>
 
                     <p>Specjalizacje</p>
 
@@ -171,7 +184,7 @@ const Summary = (props) => {
                         return (
                             <>
 
-                                <td><b>{item.specializationName}</b> - Czas zakończenia pracy - {dayjs(item.end).format('DD/MM/YYYY-HH.mm')} </td>
+                                <td><b>{item.specializationName}</b> - Czas zakończenia pracy - {dayjs(item.end).year() === 2100? "Praca się nie zakończy" : dayjs(item.end).format('DD/MM/YYYY-HH.mm')} </td>
 
 
                                 <Sheet sx={{ height: 200, maxHeight: 400, overflow: 'auto' }}>
@@ -199,7 +212,7 @@ const Summary = (props) => {
                                                         <td>{item2.experienceName}</td>
                                                         <td>
                                                             <Button
-                                                                disabled={specialistId === item2.employeeId || item.hours + item2.hoursJob > 0 ? true : false}
+                                                                disabled={((specialistId === item2.employeeId || item.hours + item2.hoursJob > 0) && props.justEdit !== true) ? true : false}
                                                                 onClick={() => removePerson(item2, item)}
                                                                 startIcon={<PersonRemoveIcon />}>Usuń
                                                             </Button>
@@ -212,7 +225,7 @@ const Summary = (props) => {
                                     </Table>
                                     < props.ButtonContainer >
                                         <Button
-                                            onClick={() => showAddEmployee(item.specializationId)}
+                                            onClick={() => showAddEmployee(item.specializationId, props.dataEmployeeWithSpecialization)}
                                             startIcon={<PersonAddIcon />}>Dodaj
                                         </Button>
                                     </props.ButtonContainer>
@@ -257,12 +270,19 @@ const ChangeSpecialist = (props) => {
                 x.name = item.name
                 x.surname = item.surname
                 x.nameSurname = item.name + " " + item.surname
+                x.haveSpecialist = true
             }
             return x
         })
 
         props.setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
         props.setModalOpenChangeSpeclialist(false)
+
+        axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
+        {
+            listEmployeeInJobDTOList: props.listEmployeeAddToJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+        })
+        .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
     }
 
@@ -475,7 +495,8 @@ const SummaryViewEmployee = (props) => {
         axios.post('http://localhost:5000/api/Job/UpdateDataNewEmployee',
             {
                 listEmployeeInJobDTOList: props.listEmployeeAddToJob, EmployerId: props.userId, start: dayjs(props.dataStart), end: dayjs(props.dataEnd),
-                SpecializationId: props.idSpecializationToChangeEmployee, employee: employee[0]
+                SpecializationId: props.idSpecializationToChangeEmployee, employee: employee[0],
+                listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
             },)
             .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 

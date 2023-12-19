@@ -85,8 +85,8 @@ const UpdateJob = () => {
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
-    console.log("listEmployeeAddToJob")
-    console.log(listEmployeeAddToJob)
+    //console.log("listEmployeeAddToJob")
+    //console.log(listEmployeeAddToJob)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
@@ -141,8 +141,6 @@ const UpdateJob = () => {
                             workAllEmployeeInSpecializationIn1h += (x.experienceValue / 100)
                         })
                         x.finishWorkHours += (workAllEmployeeInSpecializationIn1h * 8 * day)
-                        console.log(x.finishWorkHours)
-
                         return x
                     })
                     setListEmployeeAddToJobEdit(updateListEmployeeAddToJobEdit)
@@ -188,7 +186,6 @@ const UpdateJob = () => {
 
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
-        console.log(dataListSpecialization)
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
             .then(response => {
@@ -213,14 +210,14 @@ const UpdateJob = () => {
     }
 
     const nextEdit = () => {
-
-        // zrobić warunek w summarymodal, że jeżeli update to mozna all usuwać
+        
+        //jest błąd przy dodawaniu przy. Ustawiamy enpoyeid na null a nie moze być nulowalny
 
         //zrobić w podsumowaniu przy dodawaniu tabele z naszymi pracownikami (na razie jest z naszymi i zewnętrznymi)
 
-        // tu do zmiany, żeby dało się zedytowac wszystko na tych samych pracownikach (już to mamy, 
-        // ogarnąć podsumowanie żeby dało się każdego usunąć i kolory przy zakończeniu (czarny i czerwony dodać, moze i zielony i niebieski))
+        // ogarnąć podsumowanie kolory
 
+        setJustEdit(true)
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
@@ -232,7 +229,6 @@ const UpdateJob = () => {
 
                 if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
                 else if (response.data.searchEmployee.length !== 0) {
-                    setJustEdit(true)
                     setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
                 }
                 else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
@@ -347,7 +343,7 @@ const UpdateJob = () => {
                 setCurrentSpecialistUserIdToChange={setCurrentSpecialistUserIdToChange} setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist}
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"editJob"} jobId={params.id} isUpdate={true}
-                listEmployeeAddToJobEdit={listEmployeeAddToJobEdit}
+                listEmployeeAddToJobEdit={listEmployeeAddToJobEdit} justEdit={justEdit} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
             />
         )
     }
@@ -357,6 +353,7 @@ const UpdateJob = () => {
                 ButtonContainer={ButtonContainer} ButtonBootstrapBack={ButtonBootstrapBack} indexSpecialistToChange={indexSpecialistToChange}
                 listEmployeeAddToJob={listEmployeeAddToJob} currentSpecialistUserIdToChange={currentSpecialistUserIdToChange}
                 dataEmployeeWithSpecialization={dataEmployeeWithSpecialization} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
+                dataStart={dataStart} setEndDayWork={setEndDayWork} setListEmployeeAddToJob={setListEmployeeAddToJob}
             />
         )
     }
@@ -374,7 +371,7 @@ const UpdateJob = () => {
                 ButtonContainer={ButtonContainer} ButtonBootstrap={ButtonBootstrap} ButtonBootstrapBack={ButtonBootstrapBack} dataEmployee={dataEmployee}
                 listEmployeeAddToJob={listEmployeeAddToJob} userId={userId} dataStart={dataStart} dataEnd={dataEnd} setEndDayWork={setEndDayWork}
                 idSpecializationToChangeEmployee={idSpecializationToChangeEmployee} setListEmployeeAddToJob={setListEmployeeAddToJob}
-                listEmployeeToAdd={listEmployeeToAdd} setListEmployeeToAdd={setListEmployeeToAdd}
+                listEmployeeToAdd={listEmployeeToAdd} setListEmployeeToAdd={setListEmployeeToAdd} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization}
             />
         )
     }

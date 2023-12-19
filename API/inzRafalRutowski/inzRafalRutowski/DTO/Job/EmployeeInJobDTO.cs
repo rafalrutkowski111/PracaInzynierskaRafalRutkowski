@@ -4,6 +4,7 @@
     {
         public List<EmployeeInJobDTOList> listEmployeeInJobDTOList { get; set; }
         public DateTime Start { get; set; }
+        public List<SpecialisationListEmployeeRemoveDTO>? listSpecialisationListEmployeeRemoveDTO { get; set; }
     }
     public class ListEmployeeInJobWithEmployerIdDTOList
     {
@@ -49,6 +50,19 @@
         public string Surname { get; set; }
         public int SpecializationId { get; set; }
         public string specializationName { get; set; }
+    }
+
+    public class SpecialisationListEmployeeRemoveDTO
+    {
+        public Guid? EmployeeId { get; set; }
+        public bool HaveSpecialist { get; set; }
+        public double Hours { get; set; }
+        public string? Name { get; set; }
+        public string? Surname { get; set; }
+        public string NameSurname { get; set; }
+        public int SpecializationId { get; set; }
+        public string specializationName { get; set; }
+
 
     }
 }

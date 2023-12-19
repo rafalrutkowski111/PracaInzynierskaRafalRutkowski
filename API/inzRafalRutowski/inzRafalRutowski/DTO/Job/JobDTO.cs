@@ -24,7 +24,7 @@ namespace inzRafalRutowski.DTO.Job
         public List<EmployeeInJobDTO> EmployeeInJobList { get; set; }
         public DateTime End { get; set; }
         public int HoursStart { get; set; }
-        public Guid ResponsiblePersonEmployeeId { get; set; }
+        public Guid? ResponsiblePersonEmployeeId { get; set; }
         public string ResponsiblePersonName { get; set; }
         public string ResponsiblePersonSurname { get; set; }
         public int SpecializationId { get; set; }

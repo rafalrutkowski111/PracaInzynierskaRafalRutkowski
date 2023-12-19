@@ -11,12 +11,12 @@ namespace inzRafalRutowski.Class
     public class JobFunctions
     {
         public Tuple<List<EmployeeSpecializationListDTO>, List<string>> AddEmployeeWithoutEmployerToList(
-            ListJobSpecialization e, JobSpecializationEmployeeDTO jobSpecializationEmployee, 
+            ListJobSpecialization e, JobSpecializationEmployeeDTO jobSpecializationEmployee,
             List<EmployeeSpecializationListDTO> employeeDTOListInList, DataContext _context,
              List<string> listEmployeeSpecializationListEmplty)
         {
             var employeeSpecializationListDTO = new EmployeeSpecializationListDTO();
-            
+
             var employees = _context.Employees.Where(e => int.Equals(e.IsEmployed, false)).ToList();
 
             var employeeDTOList = new List<EmployeeDTO>();
@@ -79,7 +79,7 @@ namespace inzRafalRutowski.Class
 
             DateTime end = start;
 
-            while (workDays< numberOfDays)
+            while (workDays < numberOfDays)
             {
                 if (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday)
                 {
@@ -88,47 +88,60 @@ namespace inzRafalRutowski.Class
                 end = end.AddDays(1);
             }
 
-            if(end.DayOfWeek == DayOfWeek.Saturday) end = end.AddDays(2);
+            if (end.DayOfWeek == DayOfWeek.Saturday) end = end.AddDays(2);
 
             return end;
         }
 
         public Tuple<List<EmployeeInJobDTOList>, DateTime> UpdateDateInJob(ListEmployeeInJobDTOList request)
         {
+            bool needChangeEnd = false;
             request.listEmployeeInJobDTOList.ForEach(x =>
             {
-                double workAllEmployeeInSpecializationIn1h = 0;
-                x.EmployeeInJobList.ForEach(e =>
-                {
-                    workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
-                });
 
-                double allHours = 0;
-                double sumWorkAllEmployeeInSpecializationIn1h = 0;
-
-                while (sumWorkAllEmployeeInSpecializationIn1h < x.HoursStart)
+                if (request.listSpecialisationListEmployeeRemoveDTO.First(x2 => x2.SpecializationId == x.SpecializationId).HaveSpecialist == false)
                 {
-                    allHours++; //zaokrąglamy powyzej potrzebnego czau
-                    sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
+                    needChangeEnd = true;
+                    x.End = new DateTime(2100, 1, 1, 1, 0, 0);
+                }
+                else
+                {
+                    double workAllEmployeeInSpecializationIn1h = 0;
+                    x.EmployeeInJobList.ForEach(e =>
+                    {
+                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
+                    });
+
+                    double allHours = 0;
+                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
+
+                    while (sumWorkAllEmployeeInSpecializationIn1h < x.HoursStart)
+                    {
+                        allHours++; //zaokrąglamy powyzej potrzebnego czau
+                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
+                    }
+
+                    int days = (int)allHours / 8;
+                    int leftHours = (int)allHours % 8;
+                    if (leftHours != 0) days++; // jeżeli mamy reszte to dodajemy dzień i to ilość godzin pracy w kolejnym dniu
+
+                    var jobFunctions = new JobFunctions();
+                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days); //coś tu jest nie tak
+                    TimeSpan hours = new TimeSpan(0, 0, 0);
+                    if (leftHours != 0)
+                    {
+                        hours = new TimeSpan(7 + leftHours, 0, 0); //dodanie godzin
+                    }
+                    else hours = new TimeSpan(15, 0, 0);
+
+                    newDateEnd = newDateEnd.Date + hours;
+                    x.End = newDateEnd;
                 }
 
-                int days = (int)allHours / 8;
-                int leftHours = (int)allHours % 8;
-                if (leftHours != 0) days++; // jeżeli mamy reszte to dodajemy dzień i to ilość godzin pracy w kolejnym dniu
-
-                var jobFunctions = new JobFunctions();
-                var newDateEnd = jobFunctions.NewDateEnd(request.Start, days); //coś tu jest nie tak
-                TimeSpan hours = new TimeSpan(0, 0, 0);
-                if (leftHours != 0)
-                {
-                    hours = new TimeSpan(7 + leftHours, 0, 0); //dodanie godzin
-                }
-                else hours = new TimeSpan(15, 0, 0);
-
-                newDateEnd = newDateEnd.Date + hours;
-                x.End = newDateEnd;
             });
             var EndWorkDay = request.listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
+
+            if (needChangeEnd == true) EndWorkDay = new DateTime(2100, 1, 1, 1, 0, 0);
 
             return Tuple.Create(request.listEmployeeInJobDTOList, EndWorkDay);
         }
