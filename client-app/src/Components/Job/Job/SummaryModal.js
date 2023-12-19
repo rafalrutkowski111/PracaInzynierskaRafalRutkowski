@@ -50,7 +50,7 @@ const Summary = (props) => {
         if (props.dataEmployeeWithSpecialization.find(x => x.employeeId === person.employeeId) !== undefined) {
             const updateDataEmployeeWithSpecialization = props.dataEmployeeWithSpecialization.map(x => {
                 if (x.employeeId === person.employeeId) {
-                    x.name = ""
+                    x.name = "Brak"
                     x.surname = ""
                     x.nameSurname = "Brak"
                     x.employeeId = null;
