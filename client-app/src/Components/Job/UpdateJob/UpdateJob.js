@@ -92,9 +92,6 @@ const UpdateJob = () => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
             .then(response => {
 
-                console.log("response")
-                console.log(response)
-
                 let needChangeHours = false
 
                 if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD')
@@ -110,7 +107,7 @@ const UpdateJob = () => {
 
                 let wasUpdate = false
 
-                if(response.data.listEmployeeAddToJob.find(x => x.finishWorkHours !== 0) !== undefined)
+                if (response.data.listEmployeeAddToJob.find(x => x.finishWorkHours !== 0) !== undefined)
                     wasUpdate = true
                 else needChangeHours = true
 
@@ -207,18 +204,12 @@ const UpdateJob = () => {
     }
 
     const nextEdit = () => {
-        
-        //zrobić w podsumowaniu przy dodawaniu tabele z naszymi pracownikami (na razie jest z naszymi i zewnętrznymi)
 
         // możliwy czarny kolor przy zapisie
 
         // kolory w podsumowaniu
 
         //w terminażu dodać brak zakońćzenia pracy
-
-        // przy edycji bierze poprzednią liste?
-
-        //tam niżej napisane co poprawić
 
         setJustEdit(true)
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
@@ -230,19 +221,31 @@ const UpdateJob = () => {
                 setSearchEmployee(response.data.searchEmployee)
                 setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
 
-                let updateDataEmployeeWithSpecialization = response.data.specializationList
+                let updateDataEmployeeWithSpecialization = response.data.specializationList.map(x => {
+                    let updateSpecialist = listEmployeeAddToJobEdit.find(x2 => x2.specializationId === x.specializationId)
 
-                //tu zrobić pobranie specjalistów z pracy i zamienienie ich z response.data.specializationList (to wyżej usunąć bo bedzie problem)
-                //w sensie podstawić za response.data.specializationList jakiegoś let i pozamieniać i na końcu update zrobić w setDataEmployeeWithSpecialization()
+                    if (updateSpecialist !== undefined) {
+                        x.name = updateSpecialist.responsiblePersonName
+                        x.surname = updateSpecialist.responsiblePersonSurname
+                        x.employeeId = updateSpecialist.responsiblePersonEmployeeId
 
-                    VerificationEmployeeToJob({
-                        listJobSpecializationEmployeeDTO: response.data.specializationList, dataEmployeeWithSpecialization: response.data.specializationList,
-                        dataListSpecialization: dataListSpecialization, userId: userId, dataStart: startDataInUpdate, setListEmployeeAddToJob: setListEmployeeAddToJob,
-                        dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
-                        setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
-                        setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
-                        isUpdate: true, listEmployeeAddToJob: listEmployeeAddToJobEdit, justEdit: true, realStart: dataStart
-                    })
+                        if (updateSpecialist.responsiblePersonEmployeeId === null) {
+                            x.haveSpecialist = false
+                            x.name = "Brak"
+                        }
+                    }
+                    return x
+                })
+                setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
+
+                VerificationEmployeeToJob({
+                    listJobSpecializationEmployeeDTO: response.data.specializationList, dataEmployeeWithSpecialization: response.data.specializationList,
+                    dataListSpecialization: dataListSpecialization, userId: userId, dataStart: startDataInUpdate, setListEmployeeAddToJob: setListEmployeeAddToJob,
+                    dataEnd: dataEnd, setEndDayWork: setEndDayWork, setStartDayWork: setStartDayWork, setModalOpenSummary: setModalOpenSummary,
+                    setModalOpen: setModalOpen, setSearchEmployeeJob: setSearchEmployeeJob, setModalOpenEmployeeList: setModalOpenEmployeeList,
+                    setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
+                    isUpdate: true, listEmployeeAddToJob: listEmployeeAddToJobEdit, justEdit: true, realStart: dataStart
+                })
             })
     }
 
