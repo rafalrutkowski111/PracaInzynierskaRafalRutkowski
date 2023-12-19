@@ -77,6 +77,12 @@ namespace inzRafalRutowski.Controllers
                     jobSpecializationEmployee.Name = _context.Employees.FirstOrDefault(x => x.Id == EmployeeSpecialization.EmployeeId).Name;
                     jobSpecializationEmployee.Surname = _context.Employees.FirstOrDefault(x => x.Id == EmployeeSpecialization.EmployeeId).Surname;
                 }
+                else
+                {
+                    jobSpecializationEmployee.Name = "Brak";
+                    jobSpecializationEmployee.Surname = "";
+
+                }
                 if (EmployeeSpecialization != null) jobSpecializationEmployee.HaveSpecialist = true;
                 else jobSpecializationEmployee.HaveSpecialist = false;
                 if (EmployeeSpecialization != null) jobSpecializationEmployee.EmployeeId = EmployeeSpecialization.EmployeeId;
@@ -152,11 +158,14 @@ namespace inzRafalRutowski.Controllers
 
                 request.listJobSpecializationEmployeeDTO.ForEach(e =>
                 {
+                    if(e.EmployeeId != null)
+                    {
                         var newEmployee = new Employee();
                         newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
                         newEmployee.Surname = _context.Employees.First(x => x.Id == e.EmployeeId).Surname;
                         newEmployee.Id = (Guid)e.EmployeeId;
                         listEmployeeFreeInTime.Add(newEmployee);
+                    }
                 });
 
                 request.ListEmployeeAddToJob.ForEach(e =>

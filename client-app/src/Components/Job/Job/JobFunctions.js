@@ -29,7 +29,14 @@ const VerificationEmployeeToJob = (props) => {
                 setDataEmployeeWithSpecialization: props.setDataEmployeeWithSpecialization
             }); // aktualizacja specjalistów, też dane do rozpoczecia pracy
 
-            props.setEndDayWork(response2.data.endWorkDay)
+            axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
+            {
+                listEmployeeInJobDTOList: response2.data.listEmployeeInJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+            })
+            .then(response => { console.log(response.data); props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+
+            //tu zrobić ponowne wyliczenie czasu zakończenia i po 2 obiczeniu (else nizej)
+
             if(props.isUpdate === true)
             props.setStartDayWork(dayjs(response2.data.start).format('DD/MM/YYYY'))
             else  props.setStartDayWork(props.dataStart.format('DD/MM/YYYY'))

@@ -211,11 +211,17 @@ const UpdateJob = () => {
 
     const nextEdit = () => {
         
-        //jest błąd przy dodawaniu przy. Ustawiamy enpoyeid na null a nie moze być nulowalny
-
         //zrobić w podsumowaniu przy dodawaniu tabele z naszymi pracownikami (na razie jest z naszymi i zewnętrznymi)
 
-        // ogarnąć podsumowanie kolory
+        // możliwy czarny kolor przy zapisie
+
+        // kolory w podsumowaniu
+
+        //w terminażu dodać brak zakońćzenia pracy
+
+        // przy edycji bierze poprzednią liste?
+
+        //tam niżej napisane co poprawić
 
         setJustEdit(true)
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
@@ -223,16 +229,14 @@ const UpdateJob = () => {
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
             .then(response => {
+                console.log(response)
                 setDataEmployeeWithSpecialization(response.data.specializationList)
                 setSearchEmployee(response.data.searchEmployee)
                 setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
 
-                if (response.data.listEmployeeSpecializationListEmplty.length !== 0) setModalSpecializationListEmpltyOpen(true) // 1 warunek jeśli brak specjalistów i brak do dodania
-                else if (response.data.searchEmployee.length !== 0) {
-                    setModalOpen(true) // 2 wartunek jeśli brak specjalistów, ale jest możliwość dodania
-                }
-                else // wysyłanie specjalistów i sprawdzanie czy jest odpowiednia ilość pracowników
-                {
+                //tu zrobić pobranie specjalistów z pracy i zamienienie ich z response.data.specializationList (to wyżej usunąć bo bedzie problem)
+                //w sensie podstawić za response.data.specializationList jakiegoś let i pozamieniać i na końcu update zrobić w setDataEmployeeWithSpecialization()
+
                     VerificationEmployeeToJob({
                         listJobSpecializationEmployeeDTO: response.data.specializationList, dataEmployeeWithSpecialization: response.data.specializationList,
                         dataListSpecialization: dataListSpecialization, userId: userId, dataStart: startDataInUpdate, setListEmployeeAddToJob: setListEmployeeAddToJob,
@@ -241,7 +245,6 @@ const UpdateJob = () => {
                         setModalOpenNotEnoughEmployee: setModalOpenNotEnoughEmployee, setDataEmployeeWithSpecialization: setDataEmployeeWithSpecialization,
                         isUpdate: true, listEmployeeAddToJob: listEmployeeAddToJobEdit, justEdit: true, realStart: dataStart
                     })
-                }
             })
     }
 
