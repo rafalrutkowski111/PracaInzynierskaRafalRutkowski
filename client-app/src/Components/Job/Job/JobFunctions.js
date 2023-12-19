@@ -33,7 +33,7 @@ const VerificationEmployeeToJob = (props) => {
             {
                 listEmployeeInJobDTOList: response2.data.listEmployeeInJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
             })
-            .then(response => { console.log(response.data); props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+            .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
             //tu zrobić ponowne wyliczenie czasu zakończenia i po 2 obiczeniu (else nizej)
 

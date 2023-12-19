@@ -31,8 +31,6 @@ const Summary = (props) => {
         })
         props.setListEmployeeAddToJob(updatelistEmployeeAddToJob)
 
-        console.log(props.listEmployeeAddToJob)
-
         axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
@@ -49,7 +47,6 @@ const Summary = (props) => {
     }
 
     const removePerson = (person, specialist) => {
-        console.log(props.dataEmployeeWithSpecialization)
         if (props.dataEmployeeWithSpecialization.find(x => x.employeeId === person.employeeId) !== undefined) {
             const updateDataEmployeeWithSpecialization = props.dataEmployeeWithSpecialization.map(x => {
                 if (x.employeeId === person.employeeId) {

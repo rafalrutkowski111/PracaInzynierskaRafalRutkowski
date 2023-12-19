@@ -85,12 +85,15 @@ const UpdateJob = () => {
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
-    //console.log("listEmployeeAddToJob")
-    //console.log(listEmployeeAddToJob)
+    //console.log("listEmployeeAddToJobEdit")
+    //console.log(listEmployeeAddToJobEdit)
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
             .then(response => {
+
+                console.log("response")
+                console.log(response)
 
                 let needChangeHours = false
 
@@ -102,19 +105,14 @@ const UpdateJob = () => {
                     setStartDataInUpdate(dayjs(new Date()).add(1, "day"))
                 else setStartDataInUpdate(dayjs(response.data.start))
 
-                //console.log(dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
-                //console.log(dayjs(response.data.start).format('YYYY/MM/DD') < dayjs(new Date()).format('YYYY/MM/DD'))
-
                 let day = 0;
                 let date1 = dayjs(response.data.timeAddHistory)
 
                 let wasUpdate = false
 
-                response.data.listEmployeeAddToJob.map(x => {
-                    if (x.finishWorkHours != 0)
-                        wasUpdate = true
-                    else needChangeHours = true
-                })
+                if(response.data.listEmployeeAddToJob.find(x => x.finishWorkHours !== 0) !== undefined)
+                    wasUpdate = true
+                else needChangeHours = true
 
                 if (!wasUpdate) date1 = dayjs(response.data.start) //sprawdzanie czy choć raz był update
                 else if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') <= dayjs(response.data.start).format('YYYY/MM/DD')) // sprawdzanie od którego czasu obliczać godziny
@@ -169,7 +167,6 @@ const UpdateJob = () => {
                                     response2.data.splice(i, 1)
                                     setDataSpecialization(response2.data)
                                 })
-                                console.log(tempDataListSpecialization)
                                 setDataListSpecialization(tempDataListSpecialization)
                             })
                     })
@@ -229,10 +226,11 @@ const UpdateJob = () => {
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
             .then(response => {
-                console.log(response)
                 setDataEmployeeWithSpecialization(response.data.specializationList)
                 setSearchEmployee(response.data.searchEmployee)
                 setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
+
+                let updateDataEmployeeWithSpecialization = response.data.specializationList
 
                 //tu zrobić pobranie specjalistów z pracy i zamienienie ich z response.data.specializationList (to wyżej usunąć bo bedzie problem)
                 //w sensie podstawić za response.data.specializationList jakiegoś let i pozamieniać i na końcu update zrobić w setDataEmployeeWithSpecialization()
