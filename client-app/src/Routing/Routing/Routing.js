@@ -14,6 +14,7 @@ import AddExperience from "../../Components/Experience/AddExperience";
 import SearchEmployee from "../../Components/Employee/SearchEmployee";
 import AddJob from "../../Components/Job/AddJob/AddJob";
 import UpdateJob from "../../Components/Job/UpdateJob/UpdateJob";
+import StoryJob from "../../Components/Job/StoryJob/StoryJob";
 
 const Router = () => {
 
@@ -47,6 +48,7 @@ const Router = () => {
           <Route path="/calendar" element={<Home />}></Route>
           <Route path="/calendar/addJob" element={<AddJob/>}></Route>
           <Route path="/calendar/updateJob/:id" element={<UpdateJob/>}></Route>
+          <Route path="/calendar/storyJob/:id" element={<StoryJob/>}></Route> 
           <Route path="/employee" element={<Employee />}></Route>
           <Route path="/employee/addEmployee" element={<AddEmployee />}></Route>
           <Route path="/employee/searchEmployee" element={<SearchEmployee />}></Route>

@@ -46,7 +46,7 @@ const MyCalendar = () => {
   const [events, setEvents] = useState([]);
   const userId = sessionStorage.getItem("userId");
   const [selectJob, setSelectJob] = useState("Nie wybrano pracy");
-  const [disableButtonUpdateJob, setisableButtonUpdateJob] = useState(true);
+  const [disableButtonUpdateJobAndStory, setisableButtonUpdateJobAndStory] = useState(true);
   const [eventData, setEventData] = useState();
   const localizer = momentLocalizer(moment)
 
@@ -63,14 +63,17 @@ const MyCalendar = () => {
   const updateJob = () => {
     window.location.pathname = '/inzRafalRutkowski/calendar/updateJob/' + eventData.id;
   }
+  const storyJob = () =>{
+    window.location.pathname = '/inzRafalRutkowski/calendar/storyJob/' + eventData.id;
+  }
 
   const eventSelect = useCallback(
     (event) => {
       console.log(event)
       if (dayjs(event.currentEnd).format('YYYY/MM/DD') > dayjs(new Date()).format('YYYY/MM/DD')) {
-        setisableButtonUpdateJob(false)
+        setisableButtonUpdateJobAndStory(false)
       }
-      else setisableButtonUpdateJob(true)
+      else setisableButtonUpdateJobAndStory(true)
       setEventData(event)
       setSelectJob(event.title)
     }
@@ -101,7 +104,14 @@ const MyCalendar = () => {
           onClick={() => { addNewJob(); }}
         />
         <Button
-          disabled={disableButtonUpdateJob}
+          disabled={disableButtonUpdateJobAndStory}
+          type="submit"
+          id="button"
+          value="Historia"
+          onClick={() => { storyJob(); }}
+        />
+        <Button
+          disabled={disableButtonUpdateJobAndStory}
           type="submit"
           id="button"
           value="Edytuj pracę"

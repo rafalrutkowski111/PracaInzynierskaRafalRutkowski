@@ -825,6 +825,7 @@ namespace inzRafalRutowski.Controllers
             var resultJobHistory = _mapper.Map<JobHistory>(request);
 
             if (request.End.Date == request.CurrentEnd.Date) resultJobHistory.Color = "#3174ad"; //niebieski
+            else if (request.CurrentEnd.Date.Year == 2100) result.Color = "#000000"; // czarny
             else if (request.End < request.CurrentEnd) resultJobHistory.Color = "#b40000"; //czerwony
             else resultJobHistory.Color = "#388700"; //zielony
             DateTime currentDateTime = DateTime.Now;
@@ -843,6 +844,19 @@ namespace inzRafalRutowski.Controllers
         {
             var result = _context.JobHistorys.OrderByDescending(x => x.TimeAddHistory).Where(x => int.Equals(x.JobId, jobId)).First();
             var resultDTO = _mapper.Map<JobDTO>(result);
+            return Ok(resultDTO);
+        }
+
+        [HttpGet("GetAllUpdate")]
+        public ActionResult<List<JobHistory>> GetAllUpdate([FromQuery] int jobId)
+        {
+            var result = _context.JobHistorys.Where(x => int.Equals(x.JobId, jobId)).ToList();
+
+            var resultDTO = new List<JobDTO>();
+            result.ForEach(x =>
+            {
+                resultDTO.Add(_mapper.Map<JobDTO>(x));
+            });
             return Ok(resultDTO);
         }
     }
