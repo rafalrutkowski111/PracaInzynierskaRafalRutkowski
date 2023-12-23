@@ -41,7 +41,7 @@ const AddSpecialization = () => {
             return
         }
 
-        axios.post('http://localhost:5000/api/Specialization', { name: name, employerId: userId })
+        axios.put('http://localhost:5000/api/Specialization', { name: name, employerId: userId })
             .then(window.location.pathname = '/inzRafalRutkowski/Specialization')
     }
     const back = () => {

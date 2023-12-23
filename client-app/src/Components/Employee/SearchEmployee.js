@@ -179,15 +179,15 @@ const SearchEmployee = () => {
                                 .filter((item) => {
                                     return searchSurname.toLowerCase() === ''
                                         ? item
-                                        : item.surname.toLowerCase().includes(searchSurname)
+                                        : item.surname.toLowerCase().includes(searchSurname) || item.surname.includes(searchSurname)
                                 }).filter((item) => {
                                     return searchSpecialization.toLowerCase() === ''
                                         ? item
-                                        : item.specializationName.toLowerCase().includes(searchSpecialization)
+                                        : item.specializationName.toLowerCase().includes(searchSpecialization) || item.specializationName.includes(searchSpecialization)
                                 }).filter((item) => {
                                     return searchExperience.toLowerCase() === ''
                                         ? item
-                                        : item.experienceName.toLowerCase().includes(searchExperience)
+                                        : item.experienceName.toLowerCase().includes(searchExperience) || item.experienceName.includes(searchExperience)
                                 }).map((item) => (
                                     <tr>
                                         <td>{item.name}</td>

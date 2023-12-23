@@ -91,6 +91,7 @@ const UpdateJob = () => {
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
             .then(response => {
+                console.log(response)
 
                 let needChangeHours = false
 
@@ -115,10 +116,14 @@ const UpdateJob = () => {
                 else if (dayjs(response.data.timeAddHistory).format('YYYY/MM/DD') <= dayjs(response.data.start).format('YYYY/MM/DD')) // sprawdzanie od którego czasu obliczać godziny
                     date1 = dayjs(response.data.start)
 
-
                 let date2 = dayjs(new Date())
 
-                while (date1.format('YYYY/MM/DD') <= date2.format('YYYY/MM/DD')) {
+                if (date1.day() === 5 && // jeżeli w piatek zmienilismy i jest weekend
+                    (date1.add(1, 'day').format('YYYY/MM/DD') === date2.format('YYYY/MM/DD')
+                        || date1.format('YYYY/MM/DD').add(2, 'day') === date2.format('YYYY/MM/DD')))
+                    needChangeHours = false
+
+                while (date1.format('YYYY/MM/DD') < date2.format('YYYY/MM/DD')) {
 
                     if (date1.day() !== 6 && date1.day() !== 0)
                         day++

@@ -27,7 +27,7 @@ namespace inzRafalRutowski.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPut]
         public IActionResult AddSpecialization([FromBody] Specialization request)
         {
             _context.Specializations.Add(request);

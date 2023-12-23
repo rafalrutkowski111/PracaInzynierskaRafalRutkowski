@@ -13,7 +13,7 @@ const JobTitle = (props) => {
     const changeTitle = (e) => {
         const currentDate = new Date();
         if (e.target.value === '') {
-            e.target.value = "Praca-" + dayjs(currentDate).format('DD/MM/YYYY-HH.mm');
+            e.target.value = "Praca-" + dayjs(currentDate).format('DD/MM/YYYY-HH:mm');
         }
         props.setTitle(e.target.value)
 
