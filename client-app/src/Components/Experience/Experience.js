@@ -10,6 +10,7 @@ import { Button } from "@mui/material";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import * as dayjs from 'dayjs'
+import { InformationModal } from './InformationModal';
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -44,11 +45,13 @@ const Experience = () => {
     const [listExperiances, setListExperiances] = useState([])
     const [searchName, setSearchName] = useState('');
     const [searchValue, setSearchValue] = useState('');
+    const [informationModal, setInformationModal] = useState(false)
+    const [canModify, setCanModify] = useState(false)
 
     const userId = sessionStorage.getItem("userId");
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/experience', { params: { EmployerId: userId } })
+        axios.get('http://localhost:5000/api/experience', { params: { employerId: userId } })
             .then(response => {
                 setListExperiances(response.data)
                 console.log(response.data)
@@ -60,7 +63,21 @@ const Experience = () => {
     }
 
     const editExperiance = (name, value, experianceId) => {
+        axios.get('http://localhost:5000/api/experience/checkCanModify', { params: { experianceId: experianceId, employerId: userId, value: value } })
+            .then(response => {
 
+                if (response.data === true) {
+                    axios.post('http://localhost:5000/api/experience', { name: name, value: value, experianceId: experianceId })
+                        .then(
+                            setInformationModal(true),
+                            setCanModify(true)
+                        )
+                }
+                else {
+                    setInformationModal(true)
+                    setCanModify(false)
+                }
+            })
     }
 
     const removeExperiance = (name, value, experianceId) => {
@@ -94,8 +111,17 @@ const Experience = () => {
         setListExperiances(updateListExperiances)
     }
 
+    const renderInformationModal = () => {
+        return (
+            <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} canModify={canModify} />
+        )
+    }
+
     return (
         <>
+
+            {renderInformationModal()}
+
             <TittleContainer>
                 <h1>Poziomy doświaczenia</h1>
             </TittleContainer>

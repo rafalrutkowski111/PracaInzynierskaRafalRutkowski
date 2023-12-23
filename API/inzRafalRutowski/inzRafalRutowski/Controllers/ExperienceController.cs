@@ -1,4 +1,5 @@
 ﻿using inzRafalRutowski.Data;
+using inzRafalRutowski.DTO.Experiance;
 using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,16 +28,16 @@ namespace inzRafalRutowski.Controllers
         [HttpGet]
         public ActionResult<List<Experience>> GetExperience([FromQuery] int employerId)
         {
-            var result = _context.Experiences.Where(x => int.Equals(x.EmployerId, employerId) || int.Equals(x.EmployerId, null));
+            var result = _context.Experiences.Where(x => int.Equals(x.EmployerId, employerId) || int.Equals(x.EmployerId, null)).ToList();
 
             return Ok(result);
         }
 
         [HttpGet("checkCanModify")]
-        public ActionResult<Experience> CheckCanModify([FromQuery] int experianceId, int employerId)
+        public ActionResult<Experience> CheckCanModify([FromQuery] int experianceId, int employerId, int value)
         {
             var canModify = true;
-            var listEmployees = _context.Employees.Where(x=> int.Equals(x.EmployerId, employerId)).ToList();
+            var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
 
             listEmployees.ForEach(x =>
             {
@@ -45,7 +46,23 @@ namespace inzRafalRutowski.Controllers
                     canModify = false;
 
             });
+
+            if (_context.Experiences.First(x => int.Equals(x.Id, experianceId)).experienceValue == value)
+                canModify = true;
             return Ok(canModify);
+        }
+
+        [HttpPost]
+        public ActionResult Edit([FromBody] EditExperianceDTO request)
+        {
+            var experianceItem = _context.Experiences.First(x => int.Equals(x.Id, request.ExperianceId));
+
+            experianceItem.experienceName = request.Name;
+            experianceItem.experienceValue = request.Value;
+
+            _context.SaveChanges();
+
+            return Ok();
         }
     }
 }
