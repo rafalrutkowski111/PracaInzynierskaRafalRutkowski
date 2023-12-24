@@ -47,7 +47,7 @@ const Experience = () => {
     const [searchValue, setSearchValue] = useState('');
     const [informationModal, setInformationModal] = useState(false)
     const [canModify, setCanModify] = useState(false)
-    const [isDelete , setIdDelete] = useState(false)
+    const [isDelete, setIdDelete] = useState(false)
 
     const userId = sessionStorage.getItem("userId");
 
@@ -93,6 +93,9 @@ const Experience = () => {
                             setCanModify(true),
                             setIdDelete(true)
                         )
+                        let index = listExperiances.findIndex(x => x.id === experianceId);
+                        let updateListExperiances = listExperiances.slice(0, index).concat(listExperiances.slice(index + 1))
+                        setListExperiances(updateListExperiances)
                 }
                 else {
                     setInformationModal(true)
@@ -131,7 +134,7 @@ const Experience = () => {
     const renderInformationModal = () => {
         return (
             <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} canModify={canModify}
-            isDelete={isDelete} />
+                isDelete={isDelete} />
         )
     }
 
