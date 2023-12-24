@@ -47,6 +47,7 @@ const Experience = () => {
     const [searchValue, setSearchValue] = useState('');
     const [informationModal, setInformationModal] = useState(false)
     const [canModify, setCanModify] = useState(false)
+    const [isDelete , setIdDelete] = useState(false)
 
     const userId = sessionStorage.getItem("userId");
 
@@ -63,14 +64,15 @@ const Experience = () => {
     }
 
     const editExperiance = (name, value, experianceId) => {
-        axios.get('http://localhost:5000/api/experience/checkCanModify', { params: { experianceId: experianceId, employerId: userId, value: value } })
+        axios.get('http://localhost:5000/api/experience/checkCanModify', { params: { experianceId: experianceId, employerId: userId, value: value, edit: true } })
             .then(response => {
 
                 if (response.data === true) {
                     axios.post('http://localhost:5000/api/experience', { name: name, value: value, experianceId: experianceId })
                         .then(
                             setInformationModal(true),
-                            setCanModify(true)
+                            setCanModify(true),
+                            setIdDelete(false)
                         )
                 }
                 else {
@@ -80,8 +82,23 @@ const Experience = () => {
             })
     }
 
-    const removeExperiance = (name, value, experianceId) => {
+    const removeExperiance = (experianceId) => {
+        axios.get('http://localhost:5000/api/experience/checkCanModify', { params: { experianceId: experianceId, employerId: userId, value: 0, edit: false } })
+            .then(response => {
 
+                if (response.data === true) {
+                    axios.delete('http://localhost:5000/api/experience', { params: { experianceId: experianceId } })
+                        .then(
+                            setInformationModal(true),
+                            setCanModify(true),
+                            setIdDelete(true)
+                        )
+                }
+                else {
+                    setInformationModal(true)
+                    setCanModify(false)
+                }
+            })
     }
 
     const changeName = (e, itemChange) => {
@@ -113,7 +130,8 @@ const Experience = () => {
 
     const renderInformationModal = () => {
         return (
-            <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} canModify={canModify} />
+            <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} canModify={canModify}
+            isDelete={isDelete} />
         )
     }
 
@@ -195,16 +213,13 @@ const Experience = () => {
                                             <Button
                                                 disabled={item.employerId === null ? true : false}
                                                 onClick={() => editExperiance(item.experienceName, item.experienceValue, item.id)}
-                                                // jeżeli choć jeden pracownik posiada ten poziom doświadczenia nie można usunąć i dać okno z informacją o tym
-                                                // okno modalne z potwierdzeniem
                                                 startIcon={<ManageAccountsIcon />}>Edycja
                                             </Button>
                                         </td>
                                         <td>
                                             <Button
                                                 disabled={item.employerId === null ? true : false}
-                                                onClick={() => removeExperiance(item.experienceName, item.experienceValue, item.id)}
-                                                // jeżeli choć jeden pracownik posiada ten poziom doświadczenia nie można usunąć i dać okno z informacją o tym
+                                                onClick={() => removeExperiance(item.id)}
                                                 startIcon={<PersonRemoveIcon />}>Usuń
                                             </Button>
                                         </td>

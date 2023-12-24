@@ -48,11 +48,18 @@ const InformationModal = (props) => {
                 >
                     Poziom doświadczenia
                 </Typography>
+
                 {props.canModify === true
                     ?
-                    <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                        <p>Zmiany zostały poprawanie dodane do systemu.</p>
-                    </Typography>
+                    props.isDelete
+                        ?
+                        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                            <p>Element został poprawnie usunięty.</p>
+                        </Typography>
+                        :
+                        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                            <p>Zmiany zostały poprawanie dodane do systemu.</p>
+                        </Typography>
                     :
                     <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                         <p>Przynajmniej jeden z pracowników ma ustawiony ten poziom doświadczenia.</p>

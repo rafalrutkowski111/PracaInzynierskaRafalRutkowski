@@ -34,7 +34,7 @@ namespace inzRafalRutowski.Controllers
         }
 
         [HttpGet("checkCanModify")]
-        public ActionResult<Experience> CheckCanModify([FromQuery] int experianceId, int employerId, int value)
+        public ActionResult<Experience> CheckCanModify([FromQuery] int experianceId, int employerId, int value, bool edit)
         {
             var canModify = true;
             var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
@@ -47,13 +47,13 @@ namespace inzRafalRutowski.Controllers
 
             });
 
-            if (_context.Experiences.First(x => int.Equals(x.Id, experianceId)).experienceValue == value)
+            if (edit && (_context.Experiences.First(x => int.Equals(x.Id, experianceId)).experienceValue == value))
                 canModify = true;
             return Ok(canModify);
         }
 
         [HttpPost]
-        public ActionResult Edit([FromBody] EditExperianceDTO request)
+        public ActionResult<Experience> Edit([FromBody] EditExperianceDTO request)
         {
             var experianceItem = _context.Experiences.First(x => int.Equals(x.Id, request.ExperianceId));
 
@@ -61,6 +61,13 @@ namespace inzRafalRutowski.Controllers
             experianceItem.experienceValue = request.Value;
 
             _context.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        public ActionResult<Experience> Delete(int experianceId)
+        {
 
             return Ok();
         }
