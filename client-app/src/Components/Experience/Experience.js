@@ -76,6 +76,7 @@ const Experience = () => {
         axios.get('http://localhost:5000/api/experience', { params: { employerId: userId } })
             .then(response => {
                 setListExperiances(response.data)
+                console.log(response.data)
             })
     }, [])
 
@@ -84,6 +85,10 @@ const Experience = () => {
     }
 
     const editExperiance = (name, value, experianceId) => {
+
+        let item = listExperiances.find(x => x.id === experianceId)
+        if (item.errorValue === true || item.errorName === true) return
+
         axios.get('http://localhost:5000/api/experience/checkCanModify', { params: { experianceId: experianceId, employerId: userId, value: value, edit: true } })
             .then(response => {
 
@@ -123,27 +128,38 @@ const Experience = () => {
     }
 
     const changeName = (e, itemChange) => {
-        const currentDate = new Date();
-        if (e.target.value === '') {
-            e.target.value = "Doświadczenie-" + dayjs(currentDate).format('DD/MM/YYYY-HH:mm');
-        }
-
         const updateListExperiances = listExperiances.map(item => {
-            if (item.id === itemChange.id)
+            if (item.id === itemChange.id) {
                 item.experienceName = e.target.value
+                if (e.target.value === '') {
+                    item.errorName = true
+                    item.helperTextName = "Nazwa nie może być pusta"
+                }
+                else {
+                    item.errorName = false
+                    item.helperTextName = ""
+                }
+            }
+
             return item
         })
         setListExperiances(updateListExperiances)
     }
 
     const changeValue = (e, itemChange) => {
-        if (e.target.value === '' || e.target.value < 31) {
-            e.target.value = 31
-        }
-
         const updateListExperiances = listExperiances.map(item => {
-            if (item.id === itemChange.id)
+            if (item.id === itemChange.id) {
                 item.experienceValue = e.target.value
+                if (e.target.value === '' || e.target.value < 31) {
+                    item.errorValue = true
+                    item.helperTextValue = "Liczba większa od 30"
+                }
+                else {
+                    item.errorValue = false
+                    item.helperTextValue = ""
+                }
+            }
+
             return item
         })
         setListExperiances(updateListExperiances)
@@ -205,6 +221,8 @@ const Experience = () => {
                                     <tr>
                                         <td>
                                             <TextField
+                                                error={item.errorName}
+                                                helperText={item.helperTextName}
                                                 disabled={item.employerId === null ? true : false}
                                                 value={item.experienceName}
                                                 onChange={(e) => changeName(e, item)}
@@ -217,6 +235,8 @@ const Experience = () => {
                                         </td>
                                         <td>
                                             <TextField
+                                                error={item.errorValue}
+                                                helperText={item.helperTextValue}
                                                 disabled={item.employerId === null ? true : false}
                                                 value={item.experienceValue}
                                                 onChange={(e) => changeValue(e, item)}
@@ -224,8 +244,8 @@ const Experience = () => {
                                                 type='number'
                                                 variant="outlined"
                                                 size="small"
-                                                inputProps={{ min: 1, style: { textAlign: 'center' } }}
-                                                style={{ width: 150 }}
+                                                inputProps={{ min: 31, style: { textAlign: 'center' } }}
+                                                style={{ width: 200 }}
                                             />
                                         </td>
                                         <td>
