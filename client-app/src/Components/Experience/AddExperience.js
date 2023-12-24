@@ -29,6 +29,12 @@ const ButtonBootstrapBack = styled(Form.Control)`
 const TextContainer = styled.div`
     margin-left: 5%;
 `
+const TittleContainer = styled.div`
+    margin-top:2%;
+    display: flex;
+    justify-content: center;
+    margin-bottom:4%;
+`
 const addText = () => {
     return (
         <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
@@ -105,8 +111,11 @@ const AddExperience = () => {
         <>
             {renderConfirmModal()}
 
+            <TittleContainer>
+                <h1>Nowy poziom doświaczenia</h1>
+            </TittleContainer>
+
             <TextContainer>
-                <br />
                 Użytkownik może dodać spersonalizowany rodzaj doświadczenia. <br />
                 System doświadczenia opiera się na wagach, które pomagają obliczyć czas potrzebny na wykonie zlecenia.<br />
                 Przy nowym zleceniu podajmy czas, który jest wyliczany względem zaawansowango doświaczenia.<br />
