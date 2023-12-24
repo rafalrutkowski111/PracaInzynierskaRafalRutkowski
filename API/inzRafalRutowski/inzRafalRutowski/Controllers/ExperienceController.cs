@@ -68,7 +68,9 @@ namespace inzRafalRutowski.Controllers
         [HttpDelete]
         public ActionResult<Experience> Delete(int experianceId)
         {
-
+            var result = _context.Experiences.First(x => int.Equals(x.Id, experianceId));
+            _context.Experiences.Remove(result);
+            _context.SaveChanges();
             return Ok();
         }
     }
