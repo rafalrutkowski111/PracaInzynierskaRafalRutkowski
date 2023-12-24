@@ -10,7 +10,7 @@ import { Button } from "@mui/material";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import * as dayjs from 'dayjs'
-import { InformationModal } from './InformationModal';
+import { ConfirmModal } from '../Global/ConfirmModal';
 import Typography from '@mui/joy/Typography';
 
 const ButtonContainer = styled.div`
@@ -67,7 +67,7 @@ const Experience = () => {
     const [listExperiances, setListExperiances] = useState([])
     const [searchName, setSearchName] = useState('');
     const [searchValue, setSearchValue] = useState('');
-    const [informationModal, setInformationModal] = useState(false)
+    const [confirmModal, setConfirmModal] = useState(false)
     const [message, setMessage] = useState();
 
     const userId = sessionStorage.getItem("userId");
@@ -95,12 +95,12 @@ const Experience = () => {
                 if (response.data === true) {
                     axios.post('http://localhost:5000/api/experience', { name: name, value: value, experianceId: experianceId })
                         .then(
-                            setInformationModal(true),
+                            setConfirmModal(true),
                             setMessage(editText)
                         )
                 }
                 else {
-                    setInformationModal(true)
+                    setConfirmModal(true)
                     setMessage(errotText)
                 }
             })
@@ -113,7 +113,7 @@ const Experience = () => {
                 if (response.data === true) {
                     axios.delete('http://localhost:5000/api/experience', { params: { experianceId: experianceId } })
                         .then(
-                            setInformationModal(true),
+                            setConfirmModal(true),
                             setMessage(removeText)
                         )
                     let index = listExperiances.findIndex(x => x.id === experianceId);
@@ -121,7 +121,7 @@ const Experience = () => {
                     setListExperiances(updateListExperiances)
                 }
                 else {
-                    setInformationModal(true)
+                    setConfirmModal(true)
                     setMessage(errotText)
                 }
             })
@@ -165,16 +165,18 @@ const Experience = () => {
         setListExperiances(updateListExperiances)
     }
 
-    const renderInformationModal = () => {
+    const renderConfirmModal = () => {
         return (
-            <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} message={message} />
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message}
+                nameTitle={"Poziom doświadczenia"}
+            />
         )
     }
 
     return (
         <>
 
-            {renderInformationModal()}
+            {renderConfirmModal()}
 
             <TittleContainer>
                 <h1>Poziomy doświaczenia</h1>

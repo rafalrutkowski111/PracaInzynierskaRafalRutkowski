@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
 import axios from 'axios';
-import { InformationModal } from './InformationModal';
+import { ConfirmModal } from '../Global/ConfirmModal';
 import Typography from '@mui/joy/Typography';
 
 const TextFieldContainer = styled.div`
@@ -45,7 +45,7 @@ const AddExperience = () => {
     const [errorValueLabel, setErrorValueLabel] = useState("");
     const [errorName, setErrorName] = useState(false)
     const [errorNameLabel, setErrorNameLabel] = useState("")
-    const [informationModal, setInformationModal] = useState(false)
+    const [confirmModal, setConfirmModal] = useState(false)
     const [message, setMessage] = useState();
 
     const userId = sessionStorage.getItem("userId");
@@ -63,7 +63,7 @@ const AddExperience = () => {
 
         axios.put('http://localhost:5000/api/Experience', { experienceName: name, experienceValue: value, employerId: userId })
             .then(
-                setInformationModal(true),
+                setConfirmModal(true),
                 setMessage(addText)
             )
     }
@@ -94,16 +94,16 @@ const AddExperience = () => {
         }
     }
 
-    const renderInformationModal = () => {
+    const renderConfirmModal = () => {
         return (
-            <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} message={message}
-                addExperiance={true} />
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message}
+                nameTitle={"Poziom doświadczenia"} changePath={true} endPath={"/Experience"} />
         )
     }
 
     return (
         <>
-            {renderInformationModal()}
+            {renderConfirmModal()}
 
             <TextContainer>
                 <br />

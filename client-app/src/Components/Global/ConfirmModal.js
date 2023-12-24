@@ -17,13 +17,13 @@ const ButtonBootstrap = styled(Form.Control)`
     color: white;
 `
 
-const InformationModal = (props) => {
+const ConfirmModal = (props) => {
     return (
         <Modal
             aria-labelledby="modal-title"
             aria-describedby="modal-desc"
-            open={props.informationModal}
-            onClose={() => props.setInformationModal(false)}
+            open={props.confirmModal}
+            onClose={() => props.setConfirmModal(false)}
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
             <Sheet
@@ -45,7 +45,7 @@ const InformationModal = (props) => {
                     fontWeight="lg"
                     mb={3}
                 >
-                    Poziom doświadczenia
+                    {props.nameTitle}
                 </Typography>
 
                 {props.message}
@@ -55,9 +55,9 @@ const InformationModal = (props) => {
                         type="submit"
                         id="button"
                         value="Potwierdź"
-                        onClick={props.addExperiance === true ?
-                            () => { props.setInformationModal(false); window.location.pathname = '/inzRafalRutkowski/Experience' }
-                            : () => { props.setInformationModal(false) }
+                        onClick={props.changePath === true ?
+                            () => { props.setConfirmModal(false); window.location.pathname = '/inzRafalRutkowski' + props.endPath }
+                            : () => { props.setConfirmModal(false) }
                         }
                     />
                 </ButtonContainer >
@@ -66,4 +66,4 @@ const InformationModal = (props) => {
     )
 }
 
-export { InformationModal };
+export { ConfirmModal };
