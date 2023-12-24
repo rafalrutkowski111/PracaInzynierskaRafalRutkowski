@@ -3,28 +3,39 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
 import axios from 'axios';
+import { InformationModal } from './InformationModal';
+import Typography from '@mui/joy/Typography';
 
 const TextFieldContainer = styled.div`
     display: flex;
     justify-content: center;
 `
-
 const ButtonContainer = styled.div`
-  widht:60%;
-  margin-top: 2%;
-  display: flex;
-  justify-content: center;
+    widht:60%;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
 `
 const Button = styled(Form.Control)`
-  width:250px;
-  background-color: green;
-  color: white;
+    width:150px;
+    background-color: green;
+    color: white;
 `
 const ButtonBootstrapBack = styled(Form.Control)`
     width:150px;
     background-color: red;
     color: white;
 `
+const TextContainer = styled.div`
+    margin-left: 5%;
+`
+const addText = () => {
+    return (
+        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+            <p>Dodano poprawnie nowy poziom doświadczenia.</p>
+        </Typography>
+    )
+}
 
 const AddExperience = () => {
 
@@ -34,6 +45,8 @@ const AddExperience = () => {
     const [errorValueLabel, setErrorValueLabel] = useState("");
     const [errorName, setErrorName] = useState(false)
     const [errorNameLabel, setErrorNameLabel] = useState("")
+    const [informationModal, setInformationModal] = useState(false)
+    const [message, setMessage] = useState();
 
     const userId = sessionStorage.getItem("userId");
 
@@ -46,10 +59,13 @@ const AddExperience = () => {
             setErrorValueLabel("Podana wartość musi być liczbą większa od 30");
             setErrorValue(true);
         }
-        if (errorValue === true || errorValueLabel === true) return
+        if (errorValue === true || errorName === true || name === "" || value === "") return
 
         axios.put('http://localhost:5000/api/Experience', { experienceName: name, experienceValue: value, employerId: userId })
-            .then(window.location.pathname = '/inzRafalRutkowski/Experience')
+            .then(
+                setInformationModal(true),
+                setMessage(addText)
+            )
     }
     const back = () => {
         window.location.pathname = '/inzRafalRutkowski/Experience'
@@ -78,18 +94,31 @@ const AddExperience = () => {
         }
     }
 
-    return (
-        <>            <p>Użytkownik może dodać spersonalizowany rodzaj doświadczenia.</p>
-                        <p>System doświadczenia opiera się na wagach, które pomagają obliczyć czas potrzebny na wykonie zlecenia.</p>
-                        <p> Przy nowym zleceniu podajmy czas, który jest wyliczany względem zaawansowango doświaczenia.</p>
-                        <p>Waga nie moze być mniejsza niz waga osoby nie posiadajacej doświadczenia.</p>
+    const renderInformationModal = () => {
+        return (
+            <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} message={message}
+                addExperiance={true} />
+        )
+    }
 
-                        <p> Domyślny system wag</p>
-                        <p> Ososba Zaawansowana - 100</p>
-                        <p>Oosba Średnio-zaawansowana - 70</p>
-                        <p> Osoba Początkujaca - 40</p>
-                        <p>Osoba nie posiadająca doświadczenia(brak specjalizacji) - 30</p>
-                        
+    return (
+        <>
+            {renderInformationModal()}
+
+            <TextContainer>
+                <br />
+                Użytkownik może dodać spersonalizowany rodzaj doświadczenia. <br />
+                System doświadczenia opiera się na wagach, które pomagają obliczyć czas potrzebny na wykonie zlecenia.<br />
+                Przy nowym zleceniu podajmy czas, który jest wyliczany względem zaawansowango doświaczenia.<br />
+                Waga nie moze być mniejsza niz waga osoby nie posiadajacej doświadczenia.<br /><br />
+
+                Domyślny system wag:<br />
+                Zaawansowany - 100 <br />
+                Średnio-zaawansowany - 70<br />
+                Początkujacy - 40 <br />
+                Brak doświadczenia - 30<br /><br />
+            </TextContainer>
+
 
             <TextFieldContainer>
                 <TextField
@@ -115,14 +144,14 @@ const AddExperience = () => {
                 <Button
                     type="submit"
                     id="button"
-                    value="Dodaj poziom doświadczenia"
-                    onClick={() => { add(); }}
+                    value="Dodaj"
+                    onClick={() => { add() }}
                 />
                 <ButtonBootstrapBack
                     type="submit"
                     id="button"
                     value="Powrót"
-                    onClick={() => { back(); }}
+                    onClick={() => { back() }}
                 />
             </ButtonContainer >
         </>

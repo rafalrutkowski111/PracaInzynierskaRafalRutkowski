@@ -1,5 +1,4 @@
 import Sheet from '@mui/joy/Sheet';
-import Table from '@mui/joy/Table';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
@@ -7,10 +6,10 @@ import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
 
 const ButtonContainer = styled.div`
-  widht:60%;
-  margin-top: 2%;
-  display: flex;
-  justify-content: center;
+    widht:60%;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
 `
 const ButtonBootstrap = styled(Form.Control)`
     width:150px;
@@ -49,32 +48,17 @@ const InformationModal = (props) => {
                     Poziom doświadczenia
                 </Typography>
 
-                {props.canModify === true
-                    ?
-                    props.isDelete
-                        ?
-                        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                            <p>Element został poprawnie usunięty.</p>
-                        </Typography>
-                        :
-                        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                            <p>Zmiany zostały poprawanie dodane do systemu.</p>
-                        </Typography>
-                    :
-                    <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                        <p>Przynajmniej jeden z pracowników ma ustawiony ten poziom doświadczenia.</p>
-                        <p>W przypadku chęci zmiany wartości należy poszukać go wśród pracowników oraz go zmienić, aby nikt nie.</p>
-                    </Typography>
-                }
-
-
+                {props.message}
 
                 < ButtonContainer >
                     <ButtonBootstrap
                         type="submit"
                         id="button"
                         value="Potwierdź"
-                        onClick={() => { props.setInformationModal(false) }}
+                        onClick={props.addExperiance === true ?
+                            () => { props.setInformationModal(false); window.location.pathname = '/inzRafalRutkowski/Experience' }
+                            : () => { props.setInformationModal(false) }
+                        }
                     />
                 </ButtonContainer >
             </Sheet>

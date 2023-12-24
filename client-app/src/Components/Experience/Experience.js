@@ -11,17 +11,18 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import * as dayjs from 'dayjs'
 import { InformationModal } from './InformationModal';
+import Typography from '@mui/joy/Typography';
 
 const ButtonContainer = styled.div`
-  widht:60%;
-  margin-top: 2%;
-  display: flex;
-  justify-content: center;
+    widht:60%;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
 `
 const ButtonBootstrap = styled(Form.Control)`
-  width:250px;
-  background-color: green;
-  color: white;
+    width:250px;
+    background-color: green;
+    color: white;
 `
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -38,7 +39,28 @@ const TextFieldContaioner = styled.div`
     margin-top: 5%;
     margin-bottom: 1%;
 `
-
+const removeText = () => {
+    return (
+        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+            <p>Element został poprawnie usunięty.</p>
+        </Typography>
+    )
+}
+const editText = () => {
+    return (
+        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+            <p>Zmiany zostały poprawanie dodane do systemu.</p>
+        </Typography>
+    )
+}
+const errotText = () => {
+    return (
+        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+            <p>Przynajmniej jeden z pracowników ma ustawiony ten poziom doświadczenia.</p>
+            <p>W przypadku chęci zmiany wartości należy poszukać go wśród pracowników oraz go zmienić, aby nikt nie.</p>
+        </Typography>
+    )
+}
 
 const Experience = () => {
 
@@ -46,8 +68,7 @@ const Experience = () => {
     const [searchName, setSearchName] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const [informationModal, setInformationModal] = useState(false)
-    const [canModify, setCanModify] = useState(false)
-    const [isDelete, setIdDelete] = useState(false)
+    const [message, setMessage] = useState();
 
     const userId = sessionStorage.getItem("userId");
 
@@ -55,7 +76,6 @@ const Experience = () => {
         axios.get('http://localhost:5000/api/experience', { params: { employerId: userId } })
             .then(response => {
                 setListExperiances(response.data)
-                console.log(response.data)
             })
     }, [])
 
@@ -71,13 +91,12 @@ const Experience = () => {
                     axios.post('http://localhost:5000/api/experience', { name: name, value: value, experianceId: experianceId })
                         .then(
                             setInformationModal(true),
-                            setCanModify(true),
-                            setIdDelete(false)
+                            setMessage(editText)
                         )
                 }
                 else {
                     setInformationModal(true)
-                    setCanModify(false)
+                    setMessage(errotText)
                 }
             })
     }
@@ -90,16 +109,15 @@ const Experience = () => {
                     axios.delete('http://localhost:5000/api/experience', { params: { experianceId: experianceId } })
                         .then(
                             setInformationModal(true),
-                            setCanModify(true),
-                            setIdDelete(true)
+                            setMessage(removeText)
                         )
-                        let index = listExperiances.findIndex(x => x.id === experianceId);
-                        let updateListExperiances = listExperiances.slice(0, index).concat(listExperiances.slice(index + 1))
-                        setListExperiances(updateListExperiances)
+                    let index = listExperiances.findIndex(x => x.id === experianceId);
+                    let updateListExperiances = listExperiances.slice(0, index).concat(listExperiances.slice(index + 1))
+                    setListExperiances(updateListExperiances)
                 }
                 else {
                     setInformationModal(true)
-                    setCanModify(false)
+                    setMessage(errotText)
                 }
             })
     }
@@ -133,8 +151,7 @@ const Experience = () => {
 
     const renderInformationModal = () => {
         return (
-            <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} canModify={canModify}
-                isDelete={isDelete} />
+            <InformationModal setInformationModal={setInformationModal} informationModal={informationModal} message={message} />
         )
     }
 
@@ -148,7 +165,6 @@ const Experience = () => {
             </TittleContainer>
 
             <Container>
-
                 <TextFieldContaioner>
                     <TextField
                         onChange={(e) => setSearchName(e.target.value)}
