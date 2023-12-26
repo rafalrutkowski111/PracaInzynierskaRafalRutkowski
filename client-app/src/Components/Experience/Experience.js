@@ -9,7 +9,6 @@ import Sheet from '@mui/joy/Sheet';
 import { Button } from "@mui/material";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import * as dayjs from 'dayjs'
 import { ConfirmModal } from '../Global/ConfirmModal';
 import Typography from '@mui/joy/Typography';
 
@@ -53,7 +52,7 @@ const editText = () => {
         </Typography>
     )
 }
-const errotText = () => {
+const errorText = () => {
     return (
         <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
             <p>Przynajmniej jeden z pracowników ma ustawiony ten poziom doświadczenia.</p>
@@ -63,7 +62,6 @@ const errotText = () => {
 }
 
 const Experience = () => {
-
     const [listExperiances, setListExperiances] = useState([])
     const [searchName, setSearchName] = useState('');
     const [searchValue, setSearchValue] = useState('');
@@ -76,7 +74,6 @@ const Experience = () => {
         axios.get('http://localhost:5000/api/experience', { params: { employerId: userId } })
             .then(response => {
                 setListExperiances(response.data)
-                console.log(response.data)
             })
     }, [])
 
@@ -101,7 +98,7 @@ const Experience = () => {
                 }
                 else {
                     setConfirmModal(true)
-                    setMessage(errotText)
+                    setMessage(errorText)
                 }
             })
     }
@@ -122,7 +119,7 @@ const Experience = () => {
                 }
                 else {
                     setConfirmModal(true)
-                    setMessage(errotText)
+                    setMessage(errorText)
                 }
             })
     }
@@ -167,9 +164,7 @@ const Experience = () => {
 
     const renderConfirmModal = () => {
         return (
-            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message}
-                nameTitle={"Poziom doświadczenia"}
-            />
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message} nameTitle={"Poziom doświadczenia"} />
         )
     }
 

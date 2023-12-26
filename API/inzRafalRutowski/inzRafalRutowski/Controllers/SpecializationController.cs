@@ -35,5 +35,38 @@ namespace inzRafalRutowski.Controllers
 
             return Ok();
         }
+
+        [HttpPost]
+        public ActionResult<Specialization> Edit([FromBody] Specialization request)
+        {
+            _context.Specializations.First(x=> int.Equals(x.Id, request.Id)).Name = request.Name;
+            _context.SaveChanges();
+            return Ok();
+        }
+
+        [HttpGet("checkCanModify")]
+        public ActionResult<Specialization> CheckCanModify([FromQuery] int specializationId, int employerId)
+        {
+            var canModify = true;
+            var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
+
+            listEmployees.ForEach(x =>
+            {
+                if (_context.EmployeeSpecializations.FirstOrDefault(x2 => Guid.Equals(x2.EmployeeId, x.Id) &&
+                int.Equals(x2.SpecializationId, specializationId)) != null)
+                    canModify = false;
+            });
+
+            return Ok(canModify);
+        }
+
+        [HttpDelete]
+        public ActionResult<Specialization> Delete([FromQuery] int specializationId)
+        {
+            _context.Specializations.Remove(_context.Specializations.First(x => int.Equals(x.Id, specializationId)));
+            _context.SaveChanges();
+            return Ok();
+        }
+
     }
 }
