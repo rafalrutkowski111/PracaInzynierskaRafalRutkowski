@@ -1,0 +1,46 @@
+import TextField from '@mui/material/TextField';
+import styled from "styled-components";
+
+const TextFieldContainer = styled.div`
+    margin-top:2%;
+    display: flex;
+    justify-content: center;
+`
+
+const AddName = (props) => {
+
+    const changeName = (e) => {
+        props.setName(e.target.value)
+    }
+    return (
+        <TextFieldContainer>
+            <TextField
+                value={props.name}
+                onChange={(e) => changeName(e)}
+                id="outlined-basic"
+                label="Podaj imie"
+                variant="outlined" />
+        </TextFieldContainer>
+    )
+}
+
+const AddSurname = (props) => {
+
+    const changeSurname = (e) => {
+        props.setSurname(e.target.value)
+    }
+
+    return (
+        <TextFieldContainer>
+            <TextField
+                value={props.surname}
+                onChange={(e) => changeSurname(e)}
+                id="outlined-basic"
+                label="Podaj nazwisko "
+                variant="outlined" />
+        </TextFieldContainer>
+    )
+}
+
+export { AddName }
+export { AddSurname }
