@@ -65,7 +65,7 @@ const AddExperience = () => {
             setErrorValueLabel("Podana wartość musi być liczbą większa od 30");
             setErrorValue(true);
         }
-        if (errorValue === true || errorName === true || name === "" || value === "") return
+        if (name === "" || value === "") return
 
         axios.put('http://localhost:5000/api/Experience', { experienceName: name, experienceValue: value, employerId: userId })
             .then(

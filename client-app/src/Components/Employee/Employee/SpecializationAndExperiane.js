@@ -8,7 +8,6 @@ import Container from '@mui/material/Container';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
-import TextField from '@mui/material/TextField';
 
 const SelectContainer = styled.div`
     margin-top: 1%;
@@ -42,7 +41,7 @@ const AddSpecializationAndExperiance = (props) => {
 
     return (
         <SelectContainer>
-            <FormControl sx={{ minWidth: 300 }}>
+            <FormControl sx={{ minWidth: 300 }} >
                 <InputLabel>Specjazlizacja</InputLabel>
                 <Select
                     label="Specjazlizacja"
@@ -124,8 +123,8 @@ const ViewSpecializationAndExperiance = (props) => {
         list.splice(i, 1)
         props.setDataListSpecializationAndExperience(list)
 
-        props.setSpecializationValue(id) //??
-        props.setOpenAddSpecialization(false) //??
+        props.setSpecializationValue(id)
+        props.setOpenAddSpecialization(false)
     }
 
     const changeSpecialization = (value, id) => {
@@ -146,7 +145,6 @@ const ViewSpecializationAndExperiance = (props) => {
 
             <Sheet sx={{ height: 200, overflow: 'auto' }}>
                 <Table
-                    stickyHeader
                     stripe="odd"
                     variant="outlined">
                     <thead>

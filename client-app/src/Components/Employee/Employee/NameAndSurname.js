@@ -11,10 +11,20 @@ const AddName = (props) => {
 
     const changeName = (e) => {
         props.setName(e)
+        if (e === '') {
+            props.setErrorName(true)
+            props.setErrorNameLabel("Imie nie może być puste")
+        }
+        else {
+            props.setErrorName(false)
+            props.setErrorNameLabel("")
+        }
     }
     return (
         <TextFieldContainer>
             <TextField
+                error={props.errorName}
+                helperText={props.errorNameLabel}
                 value={props.name}
                 onChange={(e) => changeName(e.target.value)}
                 id="outlined-basic"
@@ -28,11 +38,21 @@ const AddSurname = (props) => {
 
     const changeSurname = (e) => {
         props.setSurname(e)
+        if (e === '') {
+            props.setErrorSurname(true)
+            props.setErrorSurnameLabel("Nazwisko nie może być puste")
+        }
+        else {
+            props.setErrorSurname(false)
+            props.setErrorSurnameLabel("")
+        }
     }
 
     return (
         <TextFieldContainer>
             <TextField
+                error={props.errorSurname}
+                helperText={props.errorSurnameLabel}
                 value={props.surname}
                 onChange={(e) => changeSurname(e.target.value)}
                 id="outlined-basic"
