@@ -120,7 +120,7 @@ const UpdateJob = () => {
 
                 if (date1.day() === 5 && // jeżeli w piatek zmienilismy i jest weekend
                     (date1.add(1, 'day').format('YYYY/MM/DD') === date2.format('YYYY/MM/DD')
-                        || date1.format('YYYY/MM/DD').add(2, 'day') === date2.format('YYYY/MM/DD')))
+                        || date1.add(2, 'day').format('YYYY/MM/DD') === date2.format('YYYY/MM/DD')))
                     needChangeHours = false
 
                 while (date1.format('YYYY/MM/DD') < date2.format('YYYY/MM/DD')) {

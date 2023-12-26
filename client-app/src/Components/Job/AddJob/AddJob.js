@@ -134,6 +134,7 @@ const AddJob = () => {
         return (
             <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization} setOpenAddEmployee={setOpenAddEmployee}
                 setDataSpecialization={setDataSpecialization} setDataListSpecialization={setDataListSpecialization}
+                setSpecializationValue={setSpecializationValue}
             />
         )
     }

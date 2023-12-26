@@ -1,32 +1,11 @@
 import { useState, useEffect } from "react"
-import TextField from '@mui/material/TextField';
 import styled from 'styled-components';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import axios from 'axios';
-import Button from '@mui/material/Button';
 import Form from 'react-bootstrap/Form';
 import { AddName, AddSurname } from "../Employee/NameAndSurname";
+import { AddSpecializationAndExperiance, ButtonSpecializationAndExperiance, ViewSpecializationAndExperiance } from "../Employee/SpecializationAndExperiane";
 
-const TextFieldContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-top: 1%;
-`
-const SelectContainer = styled.div`
-    margin-top: 1%;
-    display: flex;
-    justify-content: center;
-`
 const ButtonBootstrapContainer = styled.div`
-    widht:60%;
-    margin-top: 2%;
-    display: flex;
-    justify-content: center;
-`
-const ButtonContainer = styled.div`
     widht:60%;
     margin-top: 2%;
     display: flex;
@@ -46,7 +25,7 @@ const TittleContainer = styled.div`
     margin-top:2%;
     display: flex;
     justify-content: center;
-    margin-bottom:5%;
+    margin-bottom:2%;
 `
 
 const AddEmployee = () => {
@@ -56,21 +35,23 @@ const AddEmployee = () => {
     const [dataExperience, setDataExperience] = useState([]);
     const [dataListSpecializationAndExperience, setDataListSpecializationAndExperience] = useState([]);
     const [openAddSpecialization, setOpenAddSpecialization] = useState(true);
-    const [openAddEmployee, setOpenAddEmployee] = useState(true);
-    const [openRemoveSpecialization, setOpenRemoveSpecialization] = useState(true);
+    const [specializationValue, setSpecializationValue] = useState('');
+    const [experianceValue, setExperianceValue] = useState('');
 
     const userId = sessionStorage.getItem("userId");
 
+    console.log("dataExperience")
+    console.log(dataListSpecializationAndExperience)
+
     useEffect(() => {
-        axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
+        axios.get('http://localhost:5000/api/Specialization', { params: { employerId: userId } })
             .then(response => {
                 setDataSpecialization(response.data);
-                // addSpecializationAndExperience();
             })
     }, [])
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/Experience', { params: { EmployerId: userId } })
+        axios.get('http://localhost:5000/api/Experience', { params: { employerId: userId } })
             .then(response => {
                 setDataExperience(response.data);
             })
@@ -87,77 +68,6 @@ const AddEmployee = () => {
         //     .then(window.location.pathname = '/inzRafalRutkowski/Employee')
     }
 
-    const addSpecializationAndExperience = () => {
-        setDataListSpecializationAndExperience([...dataListSpecializationAndExperience, []])
-        setOpenAddSpecialization(true)
-        setOpenAddEmployee(true)
-        if (dataListSpecializationAndExperience.length > 0)
-            setOpenRemoveSpecialization(false)
-
-
-        dataSpecialization.map((date, index) => {
-            if (date.id === dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 1].SpecializationId)
-                date.Disabled = true
-        })
-
-        if (dataListSpecializationAndExperience.length > 0)
-            dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 1].Disabled = true
-    }
-
-    const changeSpecialization = (e, index) => {
-        const list = [...dataListSpecializationAndExperience];
-        list[index] = { SpecializationId: e, ExperienceId: list[index].ExperienceId };
-        setDataListSpecializationAndExperience(list);
-
-        if (dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 1].ExperienceId !== undefined)
-            setOpenAddSpecialization(false)
-
-        if (dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 1].ExperienceId !== undefined
-            && name !== "" && surname !== "")
-            setOpenAddEmployee(false)
-        else setOpenAddEmployee(true)
-
-    }
-    const changeExperience = (e, index) => {
-        const list = [...dataListSpecializationAndExperience];
-        list[index] = { ExperienceId: e.target.value, SpecializationId: list[index].SpecializationId, Disabled: list[index].Disabled }
-        setDataListSpecializationAndExperience(list);
-
-        if (dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 1].SpecializationId !== undefined)
-            setOpenAddSpecialization(false)
-
-        if (dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 1].SpecializationId !== undefined
-            && name !== "" && surname !== "")
-            setOpenAddEmployee(false)
-        else setOpenAddEmployee(true)
-    }
-    const removeLast = () => {
-
-        if (dataListSpecializationAndExperience.length < 3)
-            setOpenRemoveSpecialization(true)
-
-        if (dataListSpecializationAndExperience.length < 2) return
-
-        dataSpecialization.map((date, index) => {
-            if (date.id === dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 2].SpecializationId)
-                date.Disabled = false
-        })
-
-        dataListSpecializationAndExperience[dataListSpecializationAndExperience.length - 2].Disabled = false
-
-        const list = [...dataListSpecializationAndExperience];
-        list.splice(dataListSpecializationAndExperience.length - 1, 1)
-        setDataListSpecializationAndExperience(list)
-
-        setOpenAddSpecialization(false)
-        if (name !== "" && surname !== "")
-            setOpenAddEmployee(false)
-        else setOpenAddEmployee(true)
-
-        if (dataListSpecializationAndExperience.length <= 1)
-            setOpenAddEmployee(true)
-    }
-
     const renderAddName = () => {
         return (
             <AddName setName={setName} name={name} />
@@ -166,6 +76,30 @@ const AddEmployee = () => {
     const renderAddSurname = () => {
         return (
             <AddSurname setSurname={setSurname} surname={surname} />
+        )
+    }
+    const renderAddSpecializationAndExperiance = () => {
+        return (
+            <AddSpecializationAndExperiance dataSpecialization={dataSpecialization} dataExperience={dataExperience}
+                setSpecializationValue={setSpecializationValue} setExperianceValue={setExperianceValue}
+                specializationValue={specializationValue} experianceValue={experianceValue} setOpenAddSpecialization={setOpenAddSpecialization} />
+        )
+    }
+    const renderButtonSpecializationAndExperiance = () => {
+        return (
+            <ButtonSpecializationAndExperiance openAddSpecialization={openAddSpecialization} setSpecializationValue={setSpecializationValue}
+                setExperianceValue={setExperianceValue} dataSpecialization={dataSpecialization} specializationValue={specializationValue}
+                setDataSpecialization={setDataSpecialization} setDataListSpecializationAndExperience={setDataListSpecializationAndExperience}
+                dataListSpecializationAndExperience={dataListSpecializationAndExperience} setOpenAddSpecialization={setOpenAddSpecialization}
+                dataExperience={dataExperience} experianceValue={experianceValue} />
+        )
+    }
+    const renderViewSpecializationAndExperiance = () => {
+        return (
+            <ViewSpecializationAndExperiance dataListSpecializationAndExperience={dataListSpecializationAndExperience}
+                setDataListSpecializationAndExperience={setDataListSpecializationAndExperience}
+                setDataSpecialization={setDataSpecialization} setSpecializationValue={setSpecializationValue} dataExperience={dataExperience}
+                setOpenAddSpecialization={setOpenAddSpecialization} />
         )
     }
 
@@ -177,57 +111,12 @@ const AddEmployee = () => {
 
         {renderAddName()}
         {renderAddSurname()}
+        {renderAddSpecializationAndExperiance()}
+        {renderButtonSpecializationAndExperiance()}
+        {renderViewSpecializationAndExperiance()}
 
-        {dataListSpecializationAndExperience.map((data, index) => {
-            return (
-                <SelectContainer key={index}>
-                    <FormControl sx={{ minWidth: 300, mr: 1 }}>
-                        <InputLabel>Specjazlizacja</InputLabel>
-                        <Select label="Specjazlizacja"
-                            disabled={data.Disabled}
-                        // onChange={(e) => changeSpecialization(e.target.value, index)}
-                        >
-                            {dataSpecialization.map((choice) => (
-                                <MenuItem
-                                    disabled={choice.Disabled}
-                                    key={choice.id}
-                                    value={choice.id}>
-                                    {choice.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    <FormControl sx={{ minWidth: 300, m: 0 }}>
-                        <InputLabel>Doświadczenie</InputLabel>
-                        <Select label="Doświadczenie"
-                        // onChange={(e) => changeExperience(e, index)}
-                        >
-                            {dataExperience.map((choice) => (
-                                <MenuItem
-                                    key={choice.id}
-                                    value={choice.id}>
-                                    {choice.experienceName}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </SelectContainer>
-            )
-        })}
-        < ButtonContainer >
-            <Button sx={{ mr: 1 }}
-                disabled={openAddSpecialization}
-                variant="contained"
-            // onClick={() => {
-            //     addSpecializationAndExperience();
-            // }}
-            >Dodaj kolejny</Button>
-
-        </ButtonContainer>
         < ButtonBootstrapContainer >
             <ButtonBootstrap
-                disabled={openAddEmployee}
                 type="submit"
                 id="button"
                 value="Dodaj"
