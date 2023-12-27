@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inzRafalRutowski.Data;
 
@@ -11,9 +12,11 @@ using inzRafalRutowski.Data;
 namespace inzRafalRutowski.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231227000409_addTabelEmployeeWithoutEmployer")]
+    partial class addTabelEmployeeWithoutEmployer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,10 +31,10 @@ namespace inzRafalRutowski.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("EmployeeWithoutEmployerId")
+                    b.Property<Guid>("EmployeeWithoutEmployerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("EmployerId")
+                    b.Property<int?>("EmployerId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsEmployed")
@@ -48,8 +51,7 @@ namespace inzRafalRutowski.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeWithoutEmployerId")
-                        .IsUnique()
-                        .HasFilter("[EmployeeWithoutEmployerId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("EmployerId");
 
@@ -300,13 +302,13 @@ namespace inzRafalRutowski.Migrations
                 {
                     b.HasOne("inzRafalRutowski.Models.EmployeeWithoutEmployer", "EmployeeWithoutEmployers")
                         .WithOne("Employee")
-                        .HasForeignKey("inzRafalRutowski.Models.Employee", "EmployeeWithoutEmployerId");
+                        .HasForeignKey("inzRafalRutowski.Models.Employee", "EmployeeWithoutEmployerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("inzRafalRutowski.Models.Employer", "Employer")
                         .WithMany("Employees")
-                        .HasForeignKey("EmployerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployerId");
 
                     b.Navigation("EmployeeWithoutEmployers");
 

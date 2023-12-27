@@ -11,10 +11,14 @@
         //public string? ContractFinishTime { get; set; }
 
 
-        public int? EmployerId { get; set; }
-        public Employer? Employer { get; set; }
+        public int EmployerId { get; set; }
+        public Employer Employer { get; set; }
         public List<EmployeeSpecialization> EmployeeSpecializations { get; set; }
         public List<JobEmployee> JobEmployees { get; set; }
+        public Guid? EmployeeWithoutEmployerId { get; set; } // mozemy chcieć zrobić ręcznie pracownika i wtedy nie bedzie go tam, ale ustawaić usuwanie cascadowe
+        public EmployeeWithoutEmployer? EmployeeWithoutEmployers { get; set; }
+
+
 
         //public List<Specialization> Specializations { get; set; }
         /*

@@ -15,5 +15,6 @@ namespace inzRafalRutowski.Data
         public DbSet<EmployeeSpecialization> EmployeeSpecializations { get; set; }
         public DbSet<JobEmployee> JobEmployees { get; set; }
         public DbSet<JobHistory> JobHistorys { get; set; }
+        public DbSet<EmployeeWithoutEmployer> EmployeeWithoutEmployers { get; set; }
     }
 }
