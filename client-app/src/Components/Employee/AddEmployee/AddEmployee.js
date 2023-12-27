@@ -89,12 +89,14 @@ const AddEmployee = () => {
         }
         if (name === "" || surname === "") return
 
-        // axios.post('http://localhost:5000/api/Employee', {
-        //     EmployerId: userId, Name: name, Surname: surname,
-        //     IsEmployed: true, SpecializationAndExperience: dataListSpecializationAndExperience
-        // })
-        //     .then(window.location.pathname = '/inzRafalRutkowski/Employee')
-        
+        axios.post('http://localhost:5000/api/Employee', {
+            EmployerId: userId, Name: name, Surname: surname,
+            IsEmployed: true, SpecializationAndExperience: dataListSpecializationAndExperience
+        })
+
+        //zrobić tu axiosa żeby dodać do employeewithoutemployer pracowników z pracami, zrobić kontroler który będzie wyglądał jak do employee,
+        // tylko wysyłać IsEmployed: false
+
         setConfirmModal(true)
         setMessage(addText)
     }

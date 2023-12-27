@@ -15,7 +15,7 @@
         public Employer Employer { get; set; }
         public List<EmployeeSpecialization> EmployeeSpecializations { get; set; }
         public List<JobEmployee> JobEmployees { get; set; }
-        public Guid? EmployeeWithoutEmployerId { get; set; } // mozemy chcieć zrobić ręcznie pracownika i wtedy nie bedzie go tam, ale ustawaić usuwanie cascadowe
+        public Guid? EmployeeWithoutEmployerId { get; set; } // pomimo że moze nie być, to jest kaskadowe usuwanie (w razie jakby było i ktoś usuną konto)
         public EmployeeWithoutEmployer? EmployeeWithoutEmployers { get; set; }
 
 
