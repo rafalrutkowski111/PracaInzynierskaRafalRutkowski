@@ -89,13 +89,16 @@ const AddEmployee = () => {
         }
         if (name === "" || surname === "") return
 
-        axios.post('http://localhost:5000/api/Employee', {
-            EmployerId: userId, Name: name, Surname: surname,
-            IsEmployed: true, SpecializationAndExperience: dataListSpecializationAndExperience
-        })
+        // axios.post('http://localhost:5000/api/Employee', {
+        //     EmployerId: userId, Name: name, Surname: surname,
+        //     IsEmployed: true, SpecializationAndExperience: dataListSpecializationAndExperience
+        // })
 
-        //zrobić tu axiosa żeby dodać do employeewithoutemployer pracowników z pracami, zrobić kontroler który będzie wyglądał jak do employee,
-        // tylko wysyłać IsEmployed: false
+        // używam tego jak chce dodać pracowników do szukania
+        axios.post('http://localhost:5000/api/Employee/addEmployeeWithoutEmployer', {
+            EmployerId: userId, Name: name, Surname: surname,
+            IsEmployed: false, SpecializationAndExperience: dataListSpecializationAndExperience
+        })
 
         setConfirmModal(true)
         setMessage(addText)

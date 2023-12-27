@@ -121,8 +121,7 @@ namespace inzRafalRutowski.Controllers
 
         //ten kontorler jest napisany tylko po to żeby dodać pracowników do Empoyeewitoutemployer których będziemy uzywali w programie(szukanie pracowników)
 
-        /*
-        [HttpPost]
+        [HttpPost("addEmployeeWithoutEmployer")]
         public IActionResult AddEmployeeWithoutEmployer([FromBody] EmployeeAddDTO request)
         {
 
@@ -136,9 +135,9 @@ namespace inzRafalRutowski.Controllers
             _context.EmployeeWithoutEmployers.Add(newEmployee);
 
             var employeeSpecialization = request.SpecializationAndExperience.Select(
-                e => new EmployeeSpecialization
+                e => new EmployeeWithoutEmployerSpecialization
                 {
-                    EmployeeId = newEmployee.Id,
+                    EmployeeWithoutEmployerId = newEmployee.Id,
                     SpecializationId = e.SpecializationId,
                     ExperienceId = e.ExperienceId
                 }
@@ -146,12 +145,12 @@ namespace inzRafalRutowski.Controllers
 
             employeeSpecialization.ForEach(e =>
             {
-                _context.EmployeeSpecializations.Add(e);
+                _context.EmployeeWithoutEmployerSpecializations.Add(e);
             });
 
             _context.SaveChangesAsync();
             return Ok();
         }
-        */
+        
     }
 }
