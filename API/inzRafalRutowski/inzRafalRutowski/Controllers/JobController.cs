@@ -150,15 +150,10 @@ namespace inzRafalRutowski.Controllers
 
 
 
-            List <Employee> listEmployeeFreeInTime;
+            List <Employee> listEmployeeFreeInTime = new List<Employee>();
 
             if (request.JustEdit == true) // tylko edycja czyli uwzględniamy tylko tych pracowników którzy byli wcześniej
             {
-
-                listEmployeeFreeInTime = new List<Employee>();
-
-
-
                 request.listJobSpecializationEmployeeDTO.ForEach(e =>
                 {
                     if(e.EmployeeId != null)
@@ -189,17 +184,30 @@ namespace inzRafalRutowski.Controllers
             }
             else if (request.EmployeeWithoutEmployer == true) //chcemy znaleść wolnych praconików których nie dodaliśmy
             {
-                // tu brać liste EmployeeWithoutEmployer i dodać jej elementy do listEmployeeFreeInTime
 
-                listEmployeeFreeInTime = _context.Employees.Where(e => e.IsEmployed == false).ToList();
+                var listEmployeeFreeInTimeFromAnotherTable = _context.EmployeeWithoutEmployers.Where(e => e.IsEmployed == false).ToList();
 
-                List<Employee> listEmployeeFreeInTimeTemp = _context.Employees.Where(e => e.EmployerId == null).ToList(); //zamiast robić głęboką kopie pobrałem to samo
-                request.listJobSpecializationEmployeeDTO.ForEach(e => //usunięcie (o ile są) dodani nowi wyspecjalizowani pracownicy, aby ponownie ich n ie dodać
+                listEmployeeFreeInTimeFromAnotherTable.ForEach(x =>
+                {
+                    var newEmploye = new Employee()
+                    {
+                        Name = x.Name,
+                        Surname = x.Surname,
+                        IsEmployed = false,
+                        Id = x.Id
+                    };
+                    listEmployeeFreeInTime.Add(newEmploye);
+                });
+
+                List<EmployeeWithoutEmployer> listEmployeeFreeInTimeTemp = _context.EmployeeWithoutEmployers.Where(e => e.IsEmployed == false).ToList(); //zamiast robić głęboką kopie pobrałem to samo
+                request.listJobSpecializationEmployeeDTO.ForEach(e => //usunięcie (o ile są) dodani nowi wyspecjalizowani pracownicy, aby ponownie ich nie dodać
                 {
                     listEmployeeFreeInTimeTemp.ForEach(e2 =>
                     {
                         if (e.EmployeeId == e2.Id)
-                            listEmployeeFreeInTime.Remove(e2);
+                        {
+                            listEmployeeFreeInTime.Remove(listEmployeeFreeInTime.Find(e3 => Guid.Equals(e3.Id, e.EmployeeId)));
+                        }
                     });
                 });
                 List<CopyListJobSpecialization> copySpecializationsWithHours = new List<CopyListJobSpecialization>();
@@ -220,8 +228,6 @@ namespace inzRafalRutowski.Controllers
             }
             else
             {
-                listEmployeeFreeInTime = new List<Employee>();
-
                 var freeEmployeeFromDB = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
                 && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
@@ -231,9 +237,19 @@ namespace inzRafalRutowski.Controllers
                 request.listJobSpecializationEmployeeDTO.ForEach(e =>
                 {
                     var newEmployee = new Employee();
-                    newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
-                    newEmployee.Surname = _context.Employees.First(x => x.Id == e.EmployeeId).Surname;
+
+                    if(_context.Employees.FirstOrDefault(x => x.Id == e.EmployeeId) == null)
+                    {
+                        newEmployee.Name = _context.EmployeeWithoutEmployers.First(x=> Guid.Equals(x.Id, e.EmployeeId)).Name;
+                        newEmployee.Surname = _context.EmployeeWithoutEmployers.First(x => Guid.Equals(x.Id, e.EmployeeId)).Surname;
+                    }
+                    else
+                    {
+                        newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
+                        newEmployee.Surname = _context.Employees.First(x => x.Id == e.EmployeeId).Surname;
+                    }
                     newEmployee.Id = (Guid)e.EmployeeId;
+
                     listEmployeeFreeInTime.Add(newEmployee);
                 });
 
@@ -608,7 +624,7 @@ namespace inzRafalRutowski.Controllers
 
 
         [HttpPost("UpdateTimeJob")]
-        public IActionResult UpdateTimeJob([FromBody] ListEmployeeInJobDTOList request) // ilość godzin do przerobienia jest zła
+        public IActionResult UpdateTimeJob([FromBody] ListEmployeeInJobDTOList request)
         {
             JobFunctions jobFunctions = new JobFunctions();
             var result = jobFunctions.UpdateDateInJob(request);
@@ -623,6 +639,7 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("AddEmployee")]
         public IActionResult AddEmployee([FromBody] ListEmployeeInJobWithEmployerIdDTOList request)
         {
+            //TU TRZEBA PAMIEAĆ, ŻE DODAJĄC PRACOWNIKÓW KTÓŻY BYL ISZUKANI ZNAJDUJA SIĘW INNEJ TABELI NIŻ PRACOWNICY, TO SAMO ICH SPECJALIZACJE
             
             List<EmployeeInJobDTO> EmployeeToAdd = new List<EmployeeInJobDTO>();
             List<Employee> listEmployeeFreeInTime = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
