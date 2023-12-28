@@ -50,7 +50,7 @@ const SearchEmployee = () => {
     const userId = sessionStorage.getItem("userId");
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/Employee/employees')
+        axios.get('http://localhost:5000/api/Employee/getEmployees')
             .then(response => {
                 setDataListEmployee(response.data)
             })
@@ -71,7 +71,7 @@ const SearchEmployee = () => {
         console.log(id)
         axios.put('http://localhost:5000/api/Employee', null, { params: { EmployeeId: id, EmployerId: userId } })
             .then(() => {
-                axios.get('http://localhost:5000/api/Employee/employees')
+                axios.get('http://localhost:5000/api/Employee/getEmployees')
                     .then(response => {
                         console.log(response.data)
                         setDataListEmployee(response.data);

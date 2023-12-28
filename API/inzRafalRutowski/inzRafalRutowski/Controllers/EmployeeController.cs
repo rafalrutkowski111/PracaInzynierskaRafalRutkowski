@@ -23,11 +23,11 @@ namespace inzRafalRutowski.Controllers
         {
             var result = new List<EmployeeDTO>();
 
-            var employeeSearch = _context.Employees.FirstOrDefault(e => Guid.Equals(e.Id, id));
+            var employeeSearch = _context.EmployeeWithoutEmployers.FirstOrDefault(e => Guid.Equals(e.Id, id));
 
 
           
-                var employeeSpecialization = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, employeeSearch.Id)).ToList();
+                var employeeSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, employeeSearch.Id)).ToList();
                 employeeSpecialization.ForEach(e2 =>
                 {
                     var employee = new EmployeeDTO();
@@ -48,18 +48,18 @@ namespace inzRafalRutowski.Controllers
             return Ok(result);
         }
 
-        [HttpGet("employees")]
+        [HttpGet("getEmployees")]
         public ActionResult<List<EmployeeDTO>> GetEmployee()
         {
             var result = new List<EmployeeDTO>();
 
-            var employees = _context.Employees.Where(e => int.Equals(e.EmployerId, null) ).ToList();
+            var employees = _context.EmployeeWithoutEmployers.Where(e => bool.Equals(e.IsEmployed, false) ).ToList();
 
 
             employees.ForEach(e =>
             {
                 
-                var employeeSpecialization = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, e.Id)).ToList();
+                var employeeSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, e.Id)).ToList();
                 employeeSpecialization.ForEach(e2 =>
                 {
                     var employee = new EmployeeDTO();
@@ -77,12 +77,25 @@ namespace inzRafalRutowski.Controllers
             return Ok(result);
         }
 
+        // kopiowanie z danych z EmployeeWithoutEmployers i robienei nowego pracowniak z nimi w Emplyee
         [HttpPut]
         public IActionResult AddEmployeeToEmployer([FromQuery] Guid employeeId, [FromQuery] int employerId)
         {
-            var employee = _context.Employees.FirstOrDefault(e => Guid.Equals(e.Id, employeeId));
-            employee.EmployerId = employerId;
+            var employee = _context.EmployeeWithoutEmployers.First(e => Guid.Equals(e.Id, employeeId));
+
             employee.IsEmployed = true;
+
+            var newEmployee = new Employee()
+            {
+                Name = employee.Name,
+                Surname = employee.Surname,
+                Id = employee.Id,
+                IsEmployed = true,
+                EmployerId = employerId,
+                EmployeeWithoutEmployerId = employee.Id
+            };
+
+            _context.Employees.Add(newEmployee);
             _context.SaveChangesAsync();
             return Ok();
         }
