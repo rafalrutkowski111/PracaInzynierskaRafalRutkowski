@@ -17,13 +17,13 @@ namespace inzRafalRutowski.Class
         {
             var employeeSpecializationListDTO = new EmployeeSpecializationListDTO();
 
-            var employees = _context.Employees.Where(e => int.Equals(e.IsEmployed, false)).ToList();
+            var employees = _context.EmployeeWithoutEmployers.Where(e => int.Equals(e.IsEmployed, false)).ToList();
 
             var employeeDTOList = new List<EmployeeDTO>();
             employees.ForEach(x =>
             {
 
-                var employeeSpecialization = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, x.Id) && int.Equals(e2.SpecializationId, e.SpecializationId)
+                var employeeSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, x.Id) && int.Equals(e2.SpecializationId, e.SpecializationId)
                 && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, e2.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
                 ).ToList();
                 employeeSpecialization.ForEach(e2 =>

@@ -77,7 +77,7 @@ namespace inzRafalRutowski.Controllers
             return Ok(result);
         }
 
-        // kopiowanie z danych z EmployeeWithoutEmployers i robienei nowego pracowniak z nimi w Emplyee
+        // kopiowanie z danych z EmployeeWithoutEmployers i robienie nowego pracowniak z nimi w Emplyee, analogicznie z specjalziacjami pracowników
         [HttpPut]
         public IActionResult AddEmployeeToEmployer([FromQuery] Guid employeeId, [FromQuery] int employerId)
         {
@@ -94,9 +94,23 @@ namespace inzRafalRutowski.Controllers
                 EmployerId = employerId,
                 EmployeeWithoutEmployerId = employee.Id
             };
-
             _context.Employees.Add(newEmployee);
-            _context.SaveChangesAsync();
+
+
+            var listSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(x => Guid.Equals(x.EmployeeWithoutEmployerId, employeeId)).ToList();
+
+            listSpecialization.ForEach(x =>
+            {
+                var newSpecialist = new EmployeeSpecialization()
+                {
+                    EmployeeId = x.EmployeeWithoutEmployerId,
+                    SpecializationId = x.SpecializationId,
+                    ExperienceId = x.ExperienceId,
+                };
+                _context.EmployeeSpecializations.Add(newSpecialist);
+            });
+
+            _context.SaveChanges();
             return Ok();
         }
 
@@ -128,7 +142,7 @@ namespace inzRafalRutowski.Controllers
                 _context.EmployeeSpecializations.Add(e);
             });
             
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
             return Ok();
         }
 
@@ -161,7 +175,7 @@ namespace inzRafalRutowski.Controllers
                 _context.EmployeeWithoutEmployerSpecializations.Add(e);
             });
 
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
             return Ok();
         }
         

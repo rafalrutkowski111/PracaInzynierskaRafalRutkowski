@@ -147,7 +147,10 @@ namespace inzRafalRutowski.Controllers
             bool CanStartWork = false;
 
             var specializationsWithHours = request.JobSpecialization;
-            List<Employee> listEmployeeFreeInTime;
+
+
+
+            List <Employee> listEmployeeFreeInTime;
 
             if (request.JustEdit == true) // tylko edycja czyli uwzględniamy tylko tych pracowników którzy byli wcześniej
             {
@@ -184,9 +187,11 @@ namespace inzRafalRutowski.Controllers
                     });
                 });
             }
-            else if (request.EmployeeWithoutEmployer == true) //chcemy znaleść wolnych praconików których nie dodaliśmy(jako specjaliste)
+            else if (request.EmployeeWithoutEmployer == true) //chcemy znaleść wolnych praconików których nie dodaliśmy
             {
-                listEmployeeFreeInTime = _context.Employees.Where(e => e.EmployerId == null).ToList();
+                // tu brać liste EmployeeWithoutEmployer i dodać jej elementy do listEmployeeFreeInTime
+
+                listEmployeeFreeInTime = _context.Employees.Where(e => e.IsEmployed == false).ToList();
 
                 List<Employee> listEmployeeFreeInTimeTemp = _context.Employees.Where(e => e.EmployerId == null).ToList(); //zamiast robić głęboką kopie pobrałem to samo
                 request.listJobSpecializationEmployeeDTO.ForEach(e => //usunięcie (o ile są) dodani nowi wyspecjalizowani pracownicy, aby ponownie ich n ie dodać
@@ -297,23 +302,42 @@ namespace inzRafalRutowski.Controllers
 
             listEmployeeFreeInTime.ForEach(e =>
             {
-                experianceDescending.ForEach(e2 =>
+                experianceDescending.ForEach(e2 => //chyba moge to wywalić?
                 {
-                    specializationsWithHours.ForEach(e3 =>
+                    specializationsWithHours.ForEach(e3 => //chyba moge to wywalić?
                     {
+                        // to zmienić żeby szukać wszystkich specjalizacji dla danego pracownika
                         var employeeSpecializationList = _context.EmployeeSpecializations.Where(e4 => e4.ExperienceId == e2.Id
-                        && e4.SpecializationId == e3.SpecializationId
-                        && e4.EmployeeId == e.Id
-                        ).ToList();
+                            && e4.SpecializationId == e3.SpecializationId
+                            && e4.EmployeeId == e.Id
+                            ).ToList();
 
-                        // sprawdzanie czy istnieje najlepsze doswiadczenie z wystepujacych specjalizacji(wyżej), ale
-                        // biorąc w przypadku większej ilości tą opcje gdzie jest więcej godzin
+                        //List<EmployeeWithoutEmployerSpecialization>? employeeSpecializationListListToAdd;
+                        //if (request.EmployeeWithoutEmployer == true)
+                        //{
+                        //    employeeSpecializationListListToAdd = _context.EmployeeWithoutEmployerSpecializations.Where(e4 => e4.ExperienceId == e2.Id
+                        //    && e4.SpecializationId == e3.SpecializationId
+                        //    && e4.EmployeeWithoutEmployerId == e.Id
+                        //    ).ToList();
+
+                        //    //To dokończyć, dodać do powyższej listy tą liste
+                        //}
+
+
+                        // sprawdzanie czy istnieje najlepsze doswiadczenie z wystepujacych specjalizacji dla danego pracownika(wyżej lista), ale
+                        // szukamy dla tych specjalizacji dla których liczba Hours jest dodatnia, chya że nie ma takich, to szukamy dla wszystkich.
+                        // Jeżeli spośród szuaknych dwie, lub więcj specjalizacji mają tą samą największą to bierzemy ten który ma najwięcej godzin
                         var specializationMostHoursList = specializationsWithHours.OrderByDescending(x2 => x2.Hours).ToList();
-                        EmployeeSpecialization employeeSpecialization = null;
+                        EmployeeSpecialization? employeeSpecialization = null;
+
                         specializationMostHoursList.ForEach(x3 =>
                         {
                             if(employeeSpecialization == null)
                             employeeSpecialization = employeeSpecializationList.FirstOrDefault(x4 => x4.SpecializationId == x3.SpecializationId);
+
+                            // tu zmienić na to co jest wyzej opisane
+
+
                         }
                         );
 
