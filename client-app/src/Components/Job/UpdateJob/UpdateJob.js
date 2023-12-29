@@ -73,7 +73,7 @@ const UpdateJob = () => {
     const [indexSpecialistToChange, setIndexSpecialistToChange] = useState(0);
     const [currentSpecialistUserIdToChange, setCurrentSpecialistUserIdToChange] = useState();
     const [modalOpenChangeSpeclialist, setModalOpenChangeSpeclialist] = useState(false);
-    const [listEmployeeToAdd, setListEmployeeToAdd] = useState({ employeeToAdd: [] })
+    const [listEmployeeToAdd, setListEmployeeToAdd] = useState({ employeeToAdd: [], employeeWithoutEmployerToAdd: [] })
     const [modalOpenAddEmployee, setModalOpenAddEmployee] = useState(false);
     const [idSpecializationToChangeEmployee, setIdSpecializationToChangeEmployee] = useState(-1)
     const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);

@@ -76,7 +76,7 @@ const AddJob = () => {
     const [indexSpecialistToChange, setIndexSpecialistToChange] = useState(0);
     const [currentSpecialistUserIdToChange, setCurrentSpecialistUserIdToChange] = useState();
     const [modalOpenAddEmployee, setModalOpenAddEmployee] = useState(false);
-    const [listEmployeeToAdd, setListEmployeeToAdd] = useState({ employeeToAdd: [] })
+    const [listEmployeeToAdd, setListEmployeeToAdd] = useState({employeeToAdd: [], employeeWithoutEmployerToAdd: [] })
     const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);
     const [idSpecializationToChangeEmployee, setIdSpecializationToChangeEmployee] = useState(-1)
     const [modalOpenConfirmAdd, setModalOpenConfirmAdd] = useState(false);
@@ -84,8 +84,8 @@ const AddJob = () => {
 
     const userId = sessionStorage.getItem("userId");
 
-    //console.log("aa")
-    //console.log(listEmployeeAddToJob)
+    console.log("aa")
+    console.log(listEmployeeAddToJob)
     
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })

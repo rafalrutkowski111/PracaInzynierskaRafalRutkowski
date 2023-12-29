@@ -33,6 +33,7 @@
         public string Name { get; set; }
         public string Surname { get; set; }
         public string ExperienceName { get; set; }
+        public bool? IsEmployed { get; set; }
     }
 
     public class ListEmployeeInJobWithNewEmployeeDTOList : ListEmployeeInJobDTOList
@@ -50,6 +51,8 @@
         public string Surname { get; set; }
         public int SpecializationId { get; set; }
         public string specializationName { get; set; }
+        public bool? IsEmployed { get; set; }
+
     }
 
     public class SpecialisationListEmployeeRemoveDTO

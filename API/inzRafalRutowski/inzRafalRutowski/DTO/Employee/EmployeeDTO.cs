@@ -8,6 +8,7 @@
         public string ExperienceName { get; set; }
         public Guid? EmployeeId { get; set; }
         public int? SpecializationId { get; set; }
+        public bool? IsEmployed { get; set; }
 
 
     }

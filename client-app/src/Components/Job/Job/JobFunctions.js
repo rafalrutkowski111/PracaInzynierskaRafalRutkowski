@@ -35,8 +35,6 @@ const VerificationEmployeeToJob = (props) => {
             })
             .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
-            //tu zrobić ponowne wyliczenie czasu zakończenia i po 2 obiczeniu (else nizej)
-
             if(props.isUpdate === true)
             props.setStartDayWork(dayjs(response2.data.start).format('DD/MM/YYYY'))
             else  props.setStartDayWork(props.dataStart.format('DD/MM/YYYY'))

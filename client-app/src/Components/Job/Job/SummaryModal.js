@@ -77,14 +77,14 @@ const Summary = (props) => {
 
         axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
             {
-                listEmployeeInJobDTOList: props.listEmployeeAddToJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+                listEmployeeInJobDTOList: removeListEmployeeAddToJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
             })
             .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
     }
     const showAddEmployee = (SpecializationId) => {
 
-        axios.post('http://localhost:5000/api/Job/AddEmployee',
+        axios.post('http://localhost:5000/api/Job/EmployeeToAdd',
             {
                 listEmployeeInJobDTOList: props.listEmployeeAddToJob, EmployerId: props.userId, start: dayjs(props.dataStart), end: dayjs(props.dataEnd),
                 SpecializationId: SpecializationId
@@ -133,7 +133,7 @@ const Summary = (props) => {
                 <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                     <p>Termin rozpoczęcia pracy - {props.startDayWork}</p>
                     <p>Termin zakończenia pracy - {dayjs(props.dataEnd).format('DD/MM/YYYY')}</p>
-                    <p>Czas zakończenia pracy -  {dayjs(props.endDayWork).year() === 2100? "Praca się nie zakończy" : dayjs(props.endDayWork).format('DD/MM/YYYY-HH.mm')} </p>
+                    <p>Czas zakończenia pracy -  {dayjs(props.endDayWork).year() === 2100 ? "Praca się nie zakończy" : dayjs(props.endDayWork).format('DD/MM/YYYY-HH.mm')} </p>
 
                     <p>Specjalizacje</p>
 
@@ -181,7 +181,7 @@ const Summary = (props) => {
                         return (
                             <>
 
-                                <td><b>{item.specializationName}</b> - Czas zakończenia pracy - {dayjs(item.end).year() === 2100? "Praca się nie zakończy" : dayjs(item.end).format('DD/MM/YYYY-HH.mm')} </td>
+                                <td><b>{item.specializationName}</b> - Czas zakończenia pracy - {dayjs(item.end).year() === 2100 ? "Praca się nie zakończy" : dayjs(item.end).format('DD/MM/YYYY-HH.mm')} </td>
 
 
                                 <Sheet sx={{ height: 200, maxHeight: 400, overflow: 'auto' }}>
@@ -276,10 +276,10 @@ const ChangeSpecialist = (props) => {
         props.setModalOpenChangeSpeclialist(false)
 
         axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
-        {
-            listEmployeeInJobDTOList: props.listEmployeeAddToJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
-        })
-        .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+            {
+                listEmployeeInJobDTOList: props.listEmployeeAddToJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+            })
+            .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
     }
 
@@ -432,43 +432,161 @@ const AddEmployee = (props) => {
                 <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                     <p>{props.listEmployeeToAdd.specialializationName}</p>
 
-                    <Sheet sx={{ heightTabel: 200, maxHeight: 400, overflow: 'auto' }}>
-                        {props.listEmployeeToAdd.employeeToAdd.length == 0
-                            ? <><p>Brak dostępnych osób</p></>
-                            :
-                            < Table
-                                stickyHeader
-                                stripe="odd"
-                                variant="outlined" >
-                                <thead>
-                                    <tr>
-                                        <th>Imie</th>
-                                        <th>Nazwisko</th>
-                                        <th>Doświadczenie</th>
-                                        <th>Podgląd</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {props.listEmployeeToAdd.employeeToAdd.map((item) => {
-                                        return (
-                                            <tr>
-                                                <td>{item.name}</td>
-                                                <td>{item.surname}</td>
-                                                <td>{item.experienceName}</td>
-                                                <td>
-                                                    <Button
-                                                        onClick={() => viewEmployeeSummaryDetails(item.employeeId)}
-                                                        startIcon={<VisibilityIcon />}>Podgląd
-                                                    </Button>
-                                                </td>
 
+                    {props.listEmployeeToAdd.employeeToAdd.length === 0 && props.listEmployeeToAdd.employeeWithoutEmployerToAdd.length === 0 //brak danych
+                        ? <><p>Brak dostępnych osób</p></>
+                        :
+                        props.listEmployeeToAdd.employeeWithoutEmployerToAdd.length === 0 // brak naszych pracowników
+                            ?
+                            <>
+                                <b><p>Brak wolnych szukanych pracowników</p></b>
+                                <p>Zatrunieni wolni pracownicy</p>
+                                <Sheet sx={{ heightTabel: 400, maxHeight: 400, overflow: 'auto' }}>
+                                    < Table
+                                        stickyHeader
+                                        stripe="odd"
+                                        variant="outlined" >
+                                        <thead>
+                                            <tr>
+                                                <th>Imie</th>
+                                                <th>Nazwisko</th>
+                                                <th>Doświadczenie</th>
+                                                <th>Podgląd</th>
                                             </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </Table>
-                        }
-                    </Sheet>
+                                        </thead>
+                                        <tbody>
+                                            {props.listEmployeeToAdd.employeeToAdd.map((item) => {
+                                                return (
+                                                    <tr>
+                                                        <td>{item.name}</td>
+                                                        <td>{item.surname}</td>
+                                                        <td>{item.experienceName}</td>
+                                                        <td>
+                                                            <Button
+                                                                onClick={() => viewEmployeeSummaryDetails(item.employeeId)}
+                                                                startIcon={<VisibilityIcon />}>Podgląd
+                                                            </Button>
+                                                        </td>
+
+                                                    </tr>
+                                                )
+                                            })}
+                                        </tbody>
+                                    </Table>
+                                </Sheet>
+                            </>
+                            :
+                            props.listEmployeeToAdd.employeeToAdd.length === 0 // brak szukanych pracowników
+                                ?
+                                <>
+                                    <b><p>Brak wolnych zatrudnionych pracowników</p></b>
+                                    <p>Pracownicy szukający zatrudnienia</p>
+                                    <Sheet sx={{ heightTabel: 400, maxHeight: 400, overflow: 'auto' }}>
+                                        < Table
+                                            stickyHeader
+                                            stripe="odd"
+                                            variant="outlined" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Imie</th>
+                                                    <th>Nazwisko</th>
+                                                    <th>Doświadczenie</th>
+                                                    <th>Podgląd</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {props.listEmployeeToAdd.employeeWithoutEmployerToAdd.map((item) => {
+                                                    return (
+                                                        <tr>
+                                                            <td>{item.name}</td>
+                                                            <td>{item.surname}</td>
+                                                            <td>{item.experienceName}</td>
+                                                            <td>
+                                                                <Button
+                                                                    onClick={() => viewEmployeeSummaryDetails(item.employeeId)}
+                                                                    startIcon={<VisibilityIcon />}>Podgląd
+                                                                </Button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })}
+                                            </tbody>
+                                        </Table>
+                                    </Sheet>
+                                </>
+                                : // w obu tabelach są pracownicy
+                                <>
+                                    <p>Zatrunieni wolni pracownicy</p>
+                                    <Sheet sx={{ heightTabel: 200, maxHeight: 200, overflow: 'auto' }}>
+                                        < Table
+                                            stickyHeader
+                                            stripe="odd"
+                                            variant="outlined" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Imie</th>
+                                                    <th>Nazwisko</th>
+                                                    <th>Doświadczenie</th>
+                                                    <th>Podgląd</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {props.listEmployeeToAdd.employeeToAdd.map((item) => {
+                                                    return (
+                                                        <tr>
+                                                            <td>{item.name}</td>
+                                                            <td>{item.surname}</td>
+                                                            <td>{item.experienceName}</td>
+                                                            <td>
+                                                                <Button
+                                                                    onClick={() => viewEmployeeSummaryDetails(item.employeeId)}
+                                                                    startIcon={<VisibilityIcon />}>Podgląd
+                                                                </Button>
+                                                            </td>
+
+                                                        </tr>
+                                                    )
+                                                })}
+                                            </tbody>
+                                        </Table>
+                                    </Sheet>
+                                    <br />
+                                    <p>Pracownicy szukający zatrudnienia</p>
+                                    <Sheet sx={{ heightTabel: 200, maxHeight: 200, overflow: 'auto' }}>
+                                        < Table
+                                            stickyHeader
+                                            stripe="odd"
+                                            variant="outlined" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Imie</th>
+                                                    <th>Nazwisko</th>
+                                                    <th>Doświadczenie</th>
+                                                    <th>Podgląd</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {props.listEmployeeToAdd.employeeWithoutEmployerToAdd.map((item) => {
+                                                    return (
+                                                        <tr>
+                                                            <td>{item.name}</td>
+                                                            <td>{item.surname}</td>
+                                                            <td>{item.experienceName}</td>
+                                                            <td>
+                                                                <Button
+                                                                    onClick={() => viewEmployeeSummaryDetails(item.employeeId)}
+                                                                    startIcon={<VisibilityIcon />}>Podgląd
+                                                                </Button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })}
+                                            </tbody>
+                                        </Table>
+                                    </Sheet>
+                                </>
+                    }
+
                 </Typography>
 
                 < props.ButtonContainer >
@@ -488,7 +606,6 @@ const AddEmployee = (props) => {
 const SummaryViewEmployee = (props) => {
 
     const addEmployee = (employee) => {
-
         axios.post('http://localhost:5000/api/Job/UpdateDataNewEmployee',
             {
                 listEmployeeInJobDTOList: props.listEmployeeAddToJob, EmployerId: props.userId, start: dayjs(props.dataStart), end: dayjs(props.dataEnd),
@@ -498,12 +615,25 @@ const SummaryViewEmployee = (props) => {
             .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
 
-        const index = props.listEmployeeToAdd.employeeToAdd.findIndex(x => x.employeeId === employee[0].employeeId)
-        const newListEmployeeToAddt = props.listEmployeeToAdd.employeeToAdd.slice(0, index).concat(props.listEmployeeToAdd.employeeToAdd.slice(index + 1))
+        let index
+        let newList
+        let updateList
 
-        const updateListEmployeeToAdd = props.listEmployeeToAdd;
-        updateListEmployeeToAdd.employeeToAdd = newListEmployeeToAddt
-        props.setListEmployeeToAdd(updateListEmployeeToAdd)
+        // wybieramy z której listy ma usunać (jedna to nasi pracownicy, druga to szukani)
+        if (employee[0].isEmployed === true) {
+            index = props.listEmployeeToAdd.employeeToAdd.findIndex(x => x.employeeId === employee[0].employeeId)
+            newList = props.listEmployeeToAdd.employeeToAdd.slice(0, index).concat(props.listEmployeeToAdd.employeeToAdd.slice(index + 1))
+            updateList = props.listEmployeeToAdd;
+            updateList.employeeToAdd = newList
+        }
+        else {
+            index = props.listEmployeeToAdd.employeeWithoutEmployerToAdd.findIndex(x => x.employeeId === employee[0].employeeId)
+            newList = props.listEmployeeToAdd.employeeWithoutEmployerToAdd.slice(0, index).concat(props.listEmployeeToAdd.employeeWithoutEmployerToAdd.slice(index + 1))
+            updateList = props.listEmployeeToAdd;
+            updateList.employeeWithoutEmployerToAdd = newList
+        }
+        props.setListEmployeeToAdd(updateList)
+
 
         props.setModalOpenSummaryViewEmployee(false)
 

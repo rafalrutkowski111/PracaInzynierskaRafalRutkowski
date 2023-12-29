@@ -44,6 +44,7 @@ namespace inzRafalRutowski.Controllers
                     employee.Surname = employeeSearch.Surname;
                     employee.EmployeeId = employeeSearch.Id;
                     employee.SpecializationId = e2.SpecializationId;
+                    employee.IsEmployed = employeeSearch.IsEmployed;
                     result.Add(employee);
                 });
             }
@@ -62,6 +63,7 @@ namespace inzRafalRutowski.Controllers
                     employee.Surname = employeeWithoutEmployerSearch.Surname;
                     employee.EmployeeId = employeeWithoutEmployerSearch.Id;
                     employee.SpecializationId = e2.SpecializationId;
+                    employee.IsEmployed = employeeWithoutEmployerSearch.IsEmployed;
                     result.Add(employee);
                 });
             }
