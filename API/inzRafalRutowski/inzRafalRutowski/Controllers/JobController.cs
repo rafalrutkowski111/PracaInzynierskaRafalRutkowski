@@ -718,13 +718,20 @@ namespace inzRafalRutowski.Controllers
         public IActionResult UpdateDateNewEmployee([FromBody] ListEmployeeInJobWithNewEmployeeDTOList request)
         {
             var experienceIdNewEnployee = _context.EmployeeSpecializations.FirstOrDefault(x => x.SpecializationId == request.SpecializationId && x.EmployeeId == request.Employee.EmployeeId);
+            var experienceIdNewEnployeeWithoutEmployer = _context.EmployeeWithoutEmployerSpecializations.FirstOrDefault(x => x.SpecializationId == request.SpecializationId && x.EmployeeWithoutEmployerId == request.Employee.EmployeeId);
 
             var experiencesName = "Brak doświadczenia";
             var experiencesValue = 40;
 
-            if (experienceIdNewEnployee != null)
+            if (experienceIdNewEnployee != null && request.Employee.IsEmployed == true)
             {
                 var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployee.ExperienceId);
+                experiencesName = experiences.experienceName;
+                experiencesValue = experiences.experienceValue;
+            }
+            else if (experienceIdNewEnployeeWithoutEmployer != null && request.Employee.IsEmployed == false)
+            {
+                var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployeeWithoutEmployer.ExperienceId);
                 experiencesName = experiences.experienceName;
                 experiencesValue = experiences.experienceValue;
             }

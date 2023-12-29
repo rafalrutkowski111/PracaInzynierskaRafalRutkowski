@@ -289,7 +289,7 @@ const UpdateJob = () => {
         return (
             <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization} setOpenAddEmployee={setOpenAddEmployee}
                 setDataSpecialization={setDataSpecialization} setDataListSpecialization={setDataListSpecialization}
-                listEmployeeAddToJobEdit={listEmployeeAddToJobEdit} isUpdate={true}
+                listEmployeeAddToJobEdit={listEmployeeAddToJobEdit} isUpdate={true} setSpecializationValue={setSpecializationValue}
             />
         )
     }
