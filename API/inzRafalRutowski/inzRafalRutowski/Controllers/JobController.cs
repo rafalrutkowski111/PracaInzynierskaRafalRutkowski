@@ -193,7 +193,6 @@ namespace inzRafalRutowski.Controllers
                     {
                         Name = x.Name,
                         Surname = x.Surname,
-                        IsEmployed = false,
                         Id = x.Id
                     };
                     listEmployeeFreeInTime.Add(newEmploye);
@@ -226,7 +225,7 @@ namespace inzRafalRutowski.Controllers
                 });
                 copySpecializationsWithHours.Clear();
             }
-            else
+            else //normalne podejście
             {
                 var freeEmployeeFromDB = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
@@ -279,12 +278,6 @@ namespace inzRafalRutowski.Controllers
                     });
                 }
             }
-            var experianceDescending = _context.Experiences.OrderByDescending(x => x.experienceValue).Where(x => int.Equals(x.EmployerId, request.EmployerId) || int.Equals(x.EmployerId, null)).ToList();
-
-
-            var lastExperianceDescending = experianceDescending.Last();
-            var lastSpecializationsWithHours = specializationsWithHours.Last();
-            Guid LastEmployeeId = new Guid();
 
             var jobFunctions = new JobFunctions();
             var numberOfWorkDaysWithWeekend = request.End.Subtract(request.Start).Days;
@@ -312,283 +305,187 @@ namespace inzRafalRutowski.Controllers
             }
             );
 
-            // można by jakoś posortować listEmployeeFreeInTime, aby algorytm był bardziej dokłądny
-            // ogolnie algortm jest niewydajny, słabe podejście robić tyle pętel, program nie jest przystowsowany do dużej ilości danch
-            // wypadałoby napisać jakieś zapytanie łączące tabele i sortujące, coś jak w poście wyżej
+            // lepszym podejściem byłaby pętla while która by się wykonywała listEmployeeFreeInTime.lenght razy, przy czym z listy byłby brany najbardziej odpowiedni kandytat
+            // który byłby wybierany na podstawie poniższych wyliczeń (wiemy dla której specjalizacji trzeba dodać osobę). Wiedząc do jakiej specjalizacji trzeba dodać kandytata wybrałoby się
+            // z najwiekszym doświadczeniem, wprowadziło do algorytmu, a na końcu usuneło z listy.
 
             listEmployeeFreeInTime.ForEach(e =>
             {
-                experianceDescending.ForEach(e2 => //chyba moge to wywalić?
+                var employeeSpecializationList = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, e.Id)).ToList();
+
+                //to poniżej moze na razie pomińmy i (też wczytanei daynych) i usuńpy 2 pętle
+
+                //List<EmployeeWithoutEmployerSpecialization>? employeeSpecializationListListToAdd;
+                //if (request.EmployeeWithoutEmployer == true)
+                //{
+                //    employeeSpecializationListListToAdd = _context.EmployeeWithoutEmployerSpecializations.Where(e4 => e4.ExperienceId == e2.Id
+                //    && e4.SpecializationId == e3.SpecializationId
+                //    && e4.EmployeeWithoutEmployerId == e.Id
+                //    ).ToList();
+
+                //    //To dokończyć, dodać do powyższej listy tą liste
+                //}
+
+
+                // sprawdzanie czy istnieje najlepsze doswiadczenie z wystepujacych specjalizacji dla danego pracownika(wyżej lista), ale
+                // szukamy dla tych specjalizacji dla których liczba Hours jest dodatnia, chya że nie ma takich, to szukamy najlepszego doświadczenia,
+                // o ile istnieje, ale TYLKO dla spacjalizacji z najwiekszą ilością godzin.
+                // Jeżeli spośród szukanych doświadczeń (chodzi o 1 przypadek) dwie, lub więcj mają tą samą wartość to bierzemy tą który ma najwięcej godzin.
+                var specializationMostHoursList = specializationsWithHours.OrderByDescending(x2 => x2.Hours).ToList();
+                EmployeeSpecialization? employeeSpecialization = null;
+                bool hoursNonNegative = false;
+
+                if (specializationMostHoursList.First().Hours > 0)
+                    hoursNonNegative = true;
+
+
+                if (hoursNonNegative)
                 {
-                    specializationsWithHours.ForEach(e3 => //chyba moge to wywalić?
+                    specializationMostHoursList.ForEach(x =>
                     {
-                        // to zmienić żeby szukać wszystkich specjalizacji dla danego pracownika
-                        var employeeSpecializationList = _context.EmployeeSpecializations.Where(e4 => e4.ExperienceId == e2.Id
-                            && e4.SpecializationId == e3.SpecializationId
-                            && e4.EmployeeId == e.Id
-                            ).ToList();
+                        var employeeSpecializationTemp = employeeSpecializationList.FirstOrDefault(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
 
-                        //List<EmployeeWithoutEmployerSpecialization>? employeeSpecializationListListToAdd;
-                        //if (request.EmployeeWithoutEmployer == true)
-                        //{
-                        //    employeeSpecializationListListToAdd = _context.EmployeeWithoutEmployerSpecializations.Where(e4 => e4.ExperienceId == e2.Id
-                        //    && e4.SpecializationId == e3.SpecializationId
-                        //    && e4.EmployeeWithoutEmployerId == e.Id
-                        //    ).ToList();
-
-                        //    //To dokończyć, dodać do powyższej listy tą liste
-                        //}
-
-
-                        // sprawdzanie czy istnieje najlepsze doswiadczenie z wystepujacych specjalizacji dla danego pracownika(wyżej lista), ale
-                        // szukamy dla tych specjalizacji dla których liczba Hours jest dodatnia, chya że nie ma takich, to szukamy dla wszystkich.
-                        // Jeżeli spośród szuaknych dwie, lub więcj specjalizacji mają tą samą największą to bierzemy ten który ma najwięcej godzin
-                        var specializationMostHoursList = specializationsWithHours.OrderByDescending(x2 => x2.Hours).ToList();
-                        EmployeeSpecialization? employeeSpecialization = null;
-
-                        specializationMostHoursList.ForEach(x3 =>
+                        if (employeeSpecialization != null && employeeSpecializationTemp != null)
                         {
-                            if (employeeSpecialization == null)
-                                employeeSpecialization = employeeSpecializationList.FirstOrDefault(x4 => x4.SpecializationId == x3.SpecializationId);
-
-                            // tu zmienić na to co jest wyzej opisane
-
+                            if(_context.Experiences.First(x2 => int.Equals(x2.Id, employeeSpecializationTemp.ExperienceId)).experienceValue >
+                            _context.Experiences.First(x2 => int.Equals(x2.Id, employeeSpecialization.ExperienceId)).experienceValue)
+                                employeeSpecialization = employeeSpecializationTemp;
 
                         }
-                        );
-
-                        if ((employeeSpecialization == null && e2.Equals(lastExperianceDescending) && e3.Equals(lastSpecializationsWithHours) || employeeSpecialization != null)
-                        && LastEmployeeId != e.Id)
+                        else if (employeeSpecialization != null && employeeSpecializationTemp == null)
                         {
-                            var specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
-
-                            if (specializationMostHours.Hours < 0) //czy praca sie wykona w terminie
-                            {
-                                var lastFinishSpecialization = listEmployeeInJobDTOList.OrderByDescending(x => x.End).First(); // najdłuższa praca
-
-                                employeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(e5 => e5.EmployeeId == e.Id
-                               && e5.SpecializationId == lastFinishSpecialization.SpecializationId);
-                                if (employeeSpecialization != null)
-                                {
-                                    var experienceValue = _context.Experiences.FirstOrDefault(x => x.Id == employeeSpecialization.ExperienceId).experienceValue;
-                                    var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, lastFinishSpecialization.SpecializationId));
-                                    specializationsWithHours[FindIndex].Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)experienceValue / 100);
-
-                                    var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecialization.SpecializationId);
-                                    var employeeInJobDTO = new EmployeeInJobDTO();
-                                    employeeInJobDTO.EmployeeId = employeeSpecialization.EmployeeId;
-                                    employeeInJobDTO.ExperienceValue = experienceValue;
-                                    employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * ((double)experienceValue / 100);
-                                    employeeInJobDTO.Name = e.Name;
-                                    employeeInJobDTO.Surname = e.Surname;
-                                    employeeInJobDTO.ExperienceName = _context.Experiences.FirstOrDefault(x => x.Id == employeeSpecialization.ExperienceId).experienceName;
-                                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
-                                    listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
-
-                                    double workAllEmployeeInSpecializationIn1h = 0;
-                                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
-                                    {
-                                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
-                                    });
-
-                                    double allHours = 0;
-                                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
-
-                                    while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
-                                    {
-                                        allHours++;
-                                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
-                                    }
-
-                                    int days = (int)allHours / 8;
-                                    int leftHours = (int)allHours % 8;
-                                    if (leftHours != 0) days++;
-
-                                    var jobFunctions = new JobFunctions();
-                                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
-                                    TimeSpan hours = new TimeSpan(0, 0, 0);
-                                    if (leftHours != 0)
-                                    {
-                                        hours = new TimeSpan(7 + leftHours, 0, 0); //dodanie godzin
-                                    }
-                                    else hours = new TimeSpan(15, 0, 0);
-
-                                    newDateEnd = newDateEnd.Date + hours;
-                                    listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
-
-                                }
-                                else
-                                {
-                                    var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, lastFinishSpecialization.SpecializationId));
-                                    specializationsWithHours[FindIndex].Hours -= (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
-
-                                    var employeeSpecializationNew = new EmployeeSpecialization();
-                                    employeeSpecializationNew.SpecializationId = lastFinishSpecialization.SpecializationId;
-                                    employeeSpecializationNew.EmployeeId = e.Id;
-
-                                    var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecializationNew.SpecializationId);
-                                    var employeeInJobDTO = new EmployeeInJobDTO();
-                                    employeeInJobDTO.ExperienceValue = 40;
-                                    employeeInJobDTO.EmployeeId = employeeSpecializationNew.EmployeeId;
-                                    employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
-                                    employeeInJobDTO.Name = e.Name;
-                                    employeeInJobDTO.Surname = e.Surname;
-                                    employeeInJobDTO.ExperienceName = "Brak doświadczenia";
-                                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
-                                    listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
-
-                                    double workAllEmployeeInSpecializationIn1h = 0;
-                                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
-                                    {
-                                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
-                                    });
-
-                                    double allHours = 0;
-                                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
-
-                                    while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
-                                    {
-                                        allHours++;
-                                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
-                                    }
-
-                                    int days = (int)allHours / 8;
-                                    int leftHours = (int)allHours % 8;
-                                    if (leftHours != 0) days++;
-
-                                    var jobFunctions = new JobFunctions();
-                                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
-                                    TimeSpan hours = new TimeSpan(0, 0, 0);
-                                    if (leftHours != 0)
-                                    {
-                                        hours = new TimeSpan(7 + leftHours, 0, 0);
-                                    }
-                                    else hours = new TimeSpan(15, 0, 0);
-
-                                    newDateEnd = newDateEnd.Date + hours;
-                                    listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
-
-                                }
-                                var specializationMostHoursTemp = specializationsWithHours.OrderBy(x => x.Hours).First();
-                                LastEmployeeId = e.Id;
-                            }
-                            else if (employeeSpecialization != null)
-                            {
-                                if (e3.Hours < 0) { LastEmployeeId = new Guid(); }
-                                else
-                                {
-                                    e3.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)e2.experienceValue / 100);
-
-                                    var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecialization.SpecializationId);
-                                    var employeeInJobDTO = new EmployeeInJobDTO();
-                                    employeeInJobDTO.EmployeeId = employeeSpecialization.EmployeeId;
-                                    employeeInJobDTO.ExperienceValue = e2.experienceValue;
-                                    employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * ((double)e2.experienceValue / 100);
-                                    employeeInJobDTO.Name = e.Name;
-                                    employeeInJobDTO.Surname = e.Surname;
-                                    employeeInJobDTO.ExperienceName = e2.experienceName;
-                                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
-                                    listEmployeeInJobDTOList[FindIndexResult].Hours = e3.Hours;
-
-                                    double workAllEmployeeInSpecializationIn1h = 0;
-                                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
-                                    {
-                                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
-                                    });
-
-                                    double allHours = 0;
-                                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
-
-                                    while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
-                                    {
-                                        allHours++;
-                                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
-                                    }
-
-                                    int days = (int)allHours / 8;
-                                    int leftHours = (int)allHours % 8;
-                                    if (leftHours != 0) days++;
-
-                                    var jobFunctions = new JobFunctions();
-                                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
-                                    TimeSpan hours = new TimeSpan(0, 0, 0);
-                                    if (leftHours != 0)
-                                    {
-                                        hours = new TimeSpan(7 + leftHours, 0, 0);
-                                    }
-                                    else hours = new TimeSpan(15, 0, 0);
-
-                                    newDateEnd = newDateEnd.Date + hours;
-                                    listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
-
-                                    LastEmployeeId = e.Id;
-                                }
-                            }
-                            else
-                            {
-                                var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, specializationMostHours.SpecializationId));
-                                specializationsWithHours[FindIndex].Hours -= (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
-
-                                var employeeSpecializationNew = new EmployeeSpecialization();
-                                employeeSpecializationNew.SpecializationId = specializationsWithHours[FindIndex].SpecializationId;
-                                employeeSpecializationNew.EmployeeId = e.Id;
-
-                                var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecializationNew.SpecializationId);
-                                var employeeInJobDTO = new EmployeeInJobDTO();
-                                employeeInJobDTO.EmployeeId = employeeSpecializationNew.EmployeeId;
-                                employeeInJobDTO.ExperienceValue = 40;
-                                employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
-                                employeeInJobDTO.Name = e.Name;
-                                employeeInJobDTO.Surname = e.Surname;
-                                employeeInJobDTO.ExperienceName = "Brak doświadczenia";
-                                listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
-                                listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
-
-                                double workAllEmployeeInSpecializationIn1h = 0;
-                                listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
-                                {
-                                    workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
-                                });
-
-                                double allHours = 0;
-                                double sumWorkAllEmployeeInSpecializationIn1h = 0;
-
-                                while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
-                                {
-                                    allHours++;
-                                    sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
-                                }
-
-                                int days = (int)allHours / 8;
-                                int leftHours = (int)allHours % 8;
-                                if (leftHours != 0) days++;
-
-                                var jobFunctions = new JobFunctions();
-                                var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
-                                TimeSpan hours = new TimeSpan(0, 0, 0);
-                                if (leftHours != 0)
-                                {
-                                    hours = new TimeSpan(7 + leftHours, 0, 0);
-                                }
-                                else hours = new TimeSpan(15, 0, 0);
-
-                                newDateEnd = newDateEnd.Date + hours;
-                                listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
-
-                                LastEmployeeId = e.Id;
-                            }
-
-                            specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
+                            // else if wykona się, kiedy już mamy specjalizację, ale kolejny aktualny obiekt z listy nie ma specjalizacji, więc nic nie obliczamy
                         }
+                        else
+                            employeeSpecialization = employeeSpecializationTemp;
                     });
-                });
+                }
+                else
+                    employeeSpecialization = employeeSpecializationList.FirstOrDefault(x2 => int.Equals(x2.SpecializationId, specializationMostHoursList.First().SpecializationId));
+
+
+                Experience currentEmployeeExperiance = new Experience();
+                ListJobSpecialization currentEmployeeSpecialization = new ListJobSpecialization();
+                if (employeeSpecialization != null)
+                {
+                    currentEmployeeExperiance = _context.Experiences.First(x => int.Equals(x.Id, employeeSpecialization.ExperienceId));
+                    currentEmployeeSpecialization = specializationsWithHours.First(x => int.Equals(x.SpecializationId, employeeSpecialization.SpecializationId));
+                }
+                
+
+                if (employeeSpecialization != null)
+                {
+                    currentEmployeeSpecialization.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)currentEmployeeExperiance.experienceValue / 100);
+
+                    var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecialization.SpecializationId);
+                    var employeeInJobDTO = new EmployeeInJobDTO();
+                    employeeInJobDTO.EmployeeId = employeeSpecialization.EmployeeId;
+                    employeeInJobDTO.ExperienceValue = currentEmployeeExperiance.experienceValue;
+                    employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * ((double)currentEmployeeExperiance.experienceValue / 100);
+                    employeeInJobDTO.Name = e.Name;
+                    employeeInJobDTO.Surname = e.Surname;
+                    employeeInJobDTO.ExperienceName = currentEmployeeExperiance.experienceName;
+                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
+                    listEmployeeInJobDTOList[FindIndexResult].Hours = currentEmployeeSpecialization.Hours;
+
+                    double workAllEmployeeInSpecializationIn1h = 0;
+                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
+                    {
+                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
+                    });
+
+                    double allHours = 0;
+                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
+
+                    while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
+                    {
+                        allHours++;
+                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
+                    }
+
+                    int days = (int)allHours / 8;
+                    int leftHours = (int)allHours % 8;
+                    if (leftHours != 0) days++;
+
+                    var jobFunctions = new JobFunctions();
+                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
+                    TimeSpan hours = new TimeSpan(0, 0, 0);
+                    if (leftHours != 0)
+                    {
+                        hours = new TimeSpan(7 + leftHours, 0, 0);
+                    }
+                    else hours = new TimeSpan(15, 0, 0);
+
+                    newDateEnd = newDateEnd.Date + hours;
+                    listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
+
+                }
+                else
+                {
+                    var specializationMostHours = specializationsWithHours.OrderByDescending(x => x.Hours).First();
+
+                    var FindIndex = specializationsWithHours.FindIndex(x => int.Equals(x.SpecializationId, specializationMostHours.SpecializationId));
+                    specializationsWithHours[FindIndex].Hours -= (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
+
+                    var employeeSpecializationNew = new EmployeeSpecialization();
+                    employeeSpecializationNew.SpecializationId = specializationsWithHours[FindIndex].SpecializationId;
+                    employeeSpecializationNew.EmployeeId = e.Id;
+
+                    var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecializationNew.SpecializationId);
+                    var employeeInJobDTO = new EmployeeInJobDTO();
+                    employeeInJobDTO.EmployeeId = employeeSpecializationNew.EmployeeId;
+                    employeeInJobDTO.ExperienceValue = 40;
+                    employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * withoutExperience;
+                    employeeInJobDTO.Name = e.Name;
+                    employeeInJobDTO.Surname = e.Surname;
+                    employeeInJobDTO.ExperienceName = "Brak doświadczenia";
+                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
+                    listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
+
+                    double workAllEmployeeInSpecializationIn1h = 0;
+                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
+                    {
+                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
+                    });
+
+                    double allHours = 0;
+                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
+
+                    while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
+                    {
+                        allHours++;
+                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
+                    }
+
+                    int days = (int)allHours / 8;
+                    int leftHours = (int)allHours % 8;
+                    if (leftHours != 0) days++;
+
+                    var jobFunctions = new JobFunctions();
+                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
+                    TimeSpan hours = new TimeSpan(0, 0, 0);
+                    if (leftHours != 0)
+                    {
+                        hours = new TimeSpan(7 + leftHours, 0, 0);
+                    }
+                    else hours = new TimeSpan(15, 0, 0);
+
+                    newDateEnd = newDateEnd.Date + hours;
+                    listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
+                }
+
             });
+
 
             EndWorkDay = listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
 
             if (EndWorkDay.Date < request.End.Date)
                 CanStartWork = true;
 
+            if (request.JustEdit == true)
+                CanStartWork = true;
+
+            // zmieniamy dane na takie jak były przy wprowadzeniu. Trzeba je przywrócić, ponieważ w dalszych obliczenaich się do nich odwołuje
             if (request.IsUpdate == true)
             {
                 request.ListEmployeeAddToJob.ForEach(x =>
@@ -599,19 +496,11 @@ namespace inzRafalRutowski.Controllers
                         updateList.HoursStart = x.HoursStart;
                     }
                 });
+
+                request.Start = (DateTime)request.RealStart;
             }
 
-            if (request.JustEdit == true)
-                CanStartWork = true;
 
-            if (request.IsUpdate == true)
-                request.Start = (DateTime)request.RealStart;
-
-            //żeby algorytm był dokładniejszy można ciagle te same dane do niego dawać, zmieniając czas zakończenia o ile ten sie zmienił, wtedy istnieje możliwość,
-            // że bęzie dostępnych więcej pracowników. Problem byłby przy usuwaniu pracowników w podsumowaniu (o ile dodam taką opcję), bo za każdym razem będzie
-            // bo musielibyśmy sprawdzać czy przy usuwaniu pracownika a dalej pracownik b będzie dostępny jeżei zmieni się czas zakończenia, bo jeżeli nie to 
-            // wtedy również pracownik b musiałby być usunięty i wtedy byłoby trzeba sprawdzać czy czasowo praca będzie mogła się odbyć, wypadałboby też dać komunikat o
-            // zmianach
             return Ok(new
             {
                 start = request.Start,
@@ -664,7 +553,7 @@ namespace inzRafalRutowski.Controllers
                             Surname = x.Surname,
                             EmployeeId = x.Id
                         };
-                    
+
                         var EmployeeSpecializations = _context.EmployeeSpecializations.FirstOrDefault(x3 => x3.EmployeeId == x.Id && x3.SpecializationId == request.SpecializationId);
                         if (EmployeeSpecializations != null)
                         {
@@ -690,7 +579,7 @@ namespace inzRafalRutowski.Controllers
                             Name = x.Name,
                             Surname = x.Surname,
                             EmployeeId = x.Id
-                    };
+                        };
 
                         var EmployeeSpecializations = _context.EmployeeWithoutEmployerSpecializations
                             .FirstOrDefault(x3 => x3.EmployeeWithoutEmployerId == x.Id && x3.SpecializationId == request.SpecializationId);
