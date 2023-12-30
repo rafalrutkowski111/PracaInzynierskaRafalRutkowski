@@ -386,39 +386,11 @@ namespace inzRafalRutowski.Controllers
                     employeeInJobDTO.Surname = e.Surname;
                     employeeInJobDTO.ExperienceName = currentEmployeeExperiance.experienceName;
                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
+
                     listEmployeeInJobDTOList[FindIndexResult].Hours = currentEmployeeSpecialization.Hours;
 
-                    double workAllEmployeeInSpecializationIn1h = 0;
-                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
-                    {
-                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
-                    });
-
-                    double allHours = 0;
-                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
-
-                    while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
-                    {
-                        allHours++;
-                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
-                    }
-
-                    int days = (int)allHours / 8;
-                    int leftHours = (int)allHours % 8;
-                    if (leftHours != 0) days++;
-
-                    var jobFunctions = new JobFunctions();
-                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
-                    TimeSpan hours = new TimeSpan(0, 0, 0);
-                    if (leftHours != 0)
-                    {
-                        hours = new TimeSpan(7 + leftHours, 0, 0);
-                    }
-                    else hours = new TimeSpan(15, 0, 0);
-
-                    newDateEnd = newDateEnd.Date + hours;
-                    listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
-
+                    JobFunctions jobFunctions = new JobFunctions();
+                    jobFunctions.UpdateEndTime(listEmployeeInJobDTOList[FindIndexResult], request.Start);
                 }
                 else
                 {
@@ -440,38 +412,11 @@ namespace inzRafalRutowski.Controllers
                     employeeInJobDTO.Surname = e.Surname;
                     employeeInJobDTO.ExperienceName = "Brak doświadczenia";
                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
+
                     listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
 
-                    double workAllEmployeeInSpecializationIn1h = 0;
-                    listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.ForEach(e =>
-                    {
-                        workAllEmployeeInSpecializationIn1h += ((double)e.ExperienceValue / 100);
-                    });
-
-                    double allHours = 0;
-                    double sumWorkAllEmployeeInSpecializationIn1h = 0;
-
-                    while (sumWorkAllEmployeeInSpecializationIn1h < listEmployeeInJobDTOList[FindIndexResult].HoursStart)
-                    {
-                        allHours++;
-                        sumWorkAllEmployeeInSpecializationIn1h += workAllEmployeeInSpecializationIn1h;
-                    }
-
-                    int days = (int)allHours / 8;
-                    int leftHours = (int)allHours % 8;
-                    if (leftHours != 0) days++;
-
-                    var jobFunctions = new JobFunctions();
-                    var newDateEnd = jobFunctions.NewDateEnd(request.Start, days);
-                    TimeSpan hours = new TimeSpan(0, 0, 0);
-                    if (leftHours != 0)
-                    {
-                        hours = new TimeSpan(7 + leftHours, 0, 0);
-                    }
-                    else hours = new TimeSpan(15, 0, 0);
-
-                    newDateEnd = newDateEnd.Date + hours;
-                    listEmployeeInJobDTOList[FindIndexResult].End = newDateEnd;
+                    JobFunctions jobFunctions = new JobFunctions();
+                    jobFunctions.UpdateEndTime(listEmployeeInJobDTOList[FindIndexResult], request.Start);
                 }
 
             });
