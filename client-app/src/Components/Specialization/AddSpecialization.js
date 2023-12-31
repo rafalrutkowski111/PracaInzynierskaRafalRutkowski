@@ -63,7 +63,7 @@ const AddSpecialization = () => {
             return
         }
 
-        axios.put('http://localhost:5000/api/Specialization', { name: name, employerId: userId })
+        axios.put('http://localhost:5000/api/specialization', { name: name, employerId: userId })
             .then(
                 setConfirmModal(true),
                 setMessage(addText)

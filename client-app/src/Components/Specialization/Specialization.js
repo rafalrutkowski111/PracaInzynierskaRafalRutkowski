@@ -99,6 +99,10 @@ const Specialization = () => {
     let item = listSpecializations.find(x => x.id === specializationId)
     if (item.errorName === true) return
 
+    console.log("test")
+    console.log(name)
+    console.log(specializationId)
+
     axios.post('http://localhost:5000/api/specialization', { name: name, id: specializationId })
       .then(
         setConfirmModal(true),

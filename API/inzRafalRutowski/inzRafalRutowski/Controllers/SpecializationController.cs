@@ -1,5 +1,6 @@
 ﻿using inzRafalRutowski.Data;
 using inzRafalRutowski.DTO;
+using inzRafalRutowski.DTO.Specialization;
 using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,16 +29,22 @@ namespace inzRafalRutowski.Controllers
         }
 
         [HttpPut]
-        public IActionResult AddSpecialization([FromBody] Specialization request)
+        public IActionResult AddSpecialization([FromBody] SpecializationAddDTO request)
         {
-            _context.Specializations.Add(request);
+            Specialization specialization = new Specialization()
+            {
+                EmployerId = request.EmployerId,
+                Name = request.Name
+            };
+
+            _context.Specializations.Add(specialization);
             _context.SaveChanges();
 
             return Ok();
         }
 
         [HttpPost]
-        public ActionResult<Specialization> Edit([FromBody] Specialization request)
+        public ActionResult<Specialization> Edit([FromBody] SpecializationEditDTO request)
         {
             _context.Specializations.First(x=> int.Equals(x.Id, request.Id)).Name = request.Name;
             _context.SaveChanges();
