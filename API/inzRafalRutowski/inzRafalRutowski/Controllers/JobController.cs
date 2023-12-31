@@ -611,33 +611,43 @@ namespace inzRafalRutowski.Controllers
             request.End = request.End.AddDays(1);
             request.CurrentEnd = request.CurrentEnd.AddHours(1);
 
+            //dodajemy wszystkich pracowników do jednej lsity
             List<Employee> employeeList = new List<Employee>();
-
             request.ListEmployeeAddToJob.ForEach(x =>
             {
                 x.EmployeeInJobList.ForEach(x2 =>
                 {
-                    var employee = _context.Employees.FirstOrDefault(x3 => x3.Id == x2.EmployeeId && x3.IsEmployed == false);
+                    var employee = _context.Employees.FirstOrDefault(x3 => Guid.Equals(x3.Id, x2.EmployeeId));
                     if (employee != null) employeeList.Add(employee);
+                    else
+                    {
+                        var employeeWithoutEmployer = _context.EmployeeWithoutEmployers.FirstOrDefault(x3 => Guid.Equals(x3.Id, x2.EmployeeId));
+                        if (employeeWithoutEmployer != null) // jakby w czasie robienia pracy użytkowni by usuną konto to by nie znalazło go, niżej powinno być sprawdzenie tego
+                        {
+                            Employee empployeToAdd = new Employee()
+                            {
+                                Id = employeeWithoutEmployer.Id,
+                                Name = employeeWithoutEmployer.Name,
+                                Surname = employeeWithoutEmployer.Surname,
+                            };
+                            employeeList.Add(empployeToAdd);
+                        }
+                    }
                 });
-
             });
 
-            //złe podajście, trzeba przesłać liste pracowników do dodania i tu sprawdzać czy zmiany nie nastąpiły- jakaś tranzakcja, albo badrequest w przed zapisem
+            //złe podajście. Poprwanie - tranzakcjia dla dodania nowych pracowników sprawdzając czy podczas procesu tworzenia pracy nie zmieniła się ich dostępność i niepowodzenie badrequest
 
-
-            //employeeList.ForEach(async x =>
-            //{
-            //    var employee = _context.Employees.First(x2 => x2.Id == x.Id);
-            //    if (employee.Employer == null && employee.IsEmployed == false)
-            //    {
-            //        employee.EmployerId = request.EmployerId;
-            //        employee.IsEmployed = true;
-            //    }
-            //});
-
-            //await _context.SaveChangesAsync();
-
+            //dodamy niezatrudnionych pracwoników(z 1 tabeli przeniesiemy do drugiej to samo z specjalizacjami)
+            EmployeeController employeeController = new EmployeeController(_context);
+            employeeList.ForEach(x =>
+            {
+                var employee = _context.EmployeeWithoutEmployers.FirstOrDefault(x2 => Guid.Equals(x2.Id , x.Id)  && bool.Equals(x2.IsEmployed, false));
+                if (employee != null)
+                {
+                    employeeController.AddEmployeeToEmployer(employee.Id, request.EmployerId);
+                }
+            });
 
 
             TimeSpan resetHours = new TimeSpan(8, 0, 0);
@@ -652,6 +662,7 @@ namespace inzRafalRutowski.Controllers
             var saveNewJob = _context.Jobs.Add(result);
             await _context.SaveChangesAsync();
 
+            //tu powiązać osoby z pracą
 
             //request.ListEmployeeAddToJob.ForEach(x =>
             //{
@@ -674,8 +685,8 @@ namespace inzRafalRutowski.Controllers
             //});
 
 
+            //poniżej dodajemy zmiany do histtori
             var currentJobId = saveNewJob.Entity.Id;
-
 
             var resultJobHistory = _mapper.Map<JobHistory>(request);
 
@@ -698,20 +709,44 @@ namespace inzRafalRutowski.Controllers
         {
             // jak sie potem dokonczy AddJob, tu trzeba dodać to samo(brakuje przypisywania pracowników do pracy)
 
-            //request.Start = request.Start.AddDays(1); // dwa różne systemy dat i trzeba je przekonwertować
-            //request.End = request.End.AddDays(1);
+            // przy edycji trzeba usunąć wszystkich jobemployee i dodać nowych, ablo dodać do dnia disiejszego i od dnia dzisiejszego zacząć
+
             request.CurrentEnd = request.CurrentEnd.AddHours(1);
 
-            List<Employee> employeeList = new List<Employee>();
 
+
+            List<Employee> employeeList = new List<Employee>();
             request.ListEmployeeAddToJob.ForEach(x =>
             {
                 x.EmployeeInJobList.ForEach(x2 =>
                 {
-                    var employee = _context.Employees.FirstOrDefault(x3 => x3.Id == x2.EmployeeId && x3.IsEmployed == false);
+                    var employee = _context.Employees.FirstOrDefault(x3 => Guid.Equals(x3.Id, x2.EmployeeId));
                     if (employee != null) employeeList.Add(employee);
+                    else
+                    {
+                        var employeeWithoutEmployer = _context.EmployeeWithoutEmployers.FirstOrDefault(x3 => Guid.Equals(x3.Id, x2.EmployeeId));
+                        if (employeeWithoutEmployer != null) // jakby w czasie robienia pracy użytkowni by usuną konto to by nie znalazło go, niżej powinno być sprawdzenie tego
+                        {
+                            Employee empployeToAdd = new Employee()
+                            {
+                                Id = employeeWithoutEmployer.Id,
+                                Name = employeeWithoutEmployer.Name,
+                                Surname = employeeWithoutEmployer.Surname,
+                            };
+                            employeeList.Add(empployeToAdd);
+                        }
+                    }
                 });
+            });
 
+            EmployeeController employeeController = new EmployeeController(_context);
+            employeeList.ForEach(x =>
+            {
+                var employee = _context.EmployeeWithoutEmployers.FirstOrDefault(x2 => Guid.Equals(x2.Id, x.Id) && bool.Equals(x2.IsEmployed, false));
+                if (employee != null)
+                {
+                    employeeController.AddEmployeeToEmployer(employee.Id, request.EmployerId);
+                }
             });
 
             TimeSpan resetHours = new TimeSpan(8, 00, 0);
