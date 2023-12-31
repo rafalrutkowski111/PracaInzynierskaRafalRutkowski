@@ -313,18 +313,23 @@ namespace inzRafalRutowski.Controllers
             {
                 var employeeSpecializationList = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, e.Id)).ToList();
 
-                //to poniżej moze na razie pomińmy i (też wczytanei daynych) i usuńpy 2 pętle
+                List<EmployeeWithoutEmployerSpecialization>? employeeSpecializationListListToAdd;
+                if (request.EmployeeWithoutEmployer == true)
+                {
+                    employeeSpecializationListListToAdd = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, e.Id)).ToList();
 
-                //List<EmployeeWithoutEmployerSpecialization>? employeeSpecializationListListToAdd;
-                //if (request.EmployeeWithoutEmployer == true)
-                //{
-                //    employeeSpecializationListListToAdd = _context.EmployeeWithoutEmployerSpecializations.Where(e4 => e4.ExperienceId == e2.Id
-                //    && e4.SpecializationId == e3.SpecializationId
-                //    && e4.EmployeeWithoutEmployerId == e.Id
-                //    ).ToList();
-
-                //    //To dokończyć, dodać do powyższej listy tą liste
-                //}
+                    if (employeeSpecializationListListToAdd != null)
+                        employeeSpecializationListListToAdd.ForEach(x =>
+                        {
+                            EmployeeSpecialization employeeSpecialization = new EmployeeSpecialization()
+                            {
+                                EmployeeId = x.EmployeeWithoutEmployerId,
+                                SpecializationId = x.SpecializationId,
+                                ExperienceId = x.ExperienceId
+                            };
+                            employeeSpecializationList.Add(employeeSpecialization);
+                        });
+                }
 
 
                 // sprawdzanie czy istnieje najlepsze doswiadczenie z wystepujacych specjalizacji dla danego pracownika(wyżej lista), ale
