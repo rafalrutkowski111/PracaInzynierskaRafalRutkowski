@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inzRafalRutowski.Data;
 
@@ -11,9 +12,11 @@ using inzRafalRutowski.Data;
 namespace inzRafalRutowski.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231231224544_relactionEmployeAndEmployerWithoutEmployer")]
+    partial class relactionEmployeAndEmployerWithoutEmployer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +29,9 @@ namespace inzRafalRutowski.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("EmployeeWithoutEmployerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("EmployerId")

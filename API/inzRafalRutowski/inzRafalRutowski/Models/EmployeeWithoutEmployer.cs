@@ -6,7 +6,6 @@
         public string Name { get; set; }
         public string Surname { get; set; }
         public bool IsEmployed { get; set; }
-        public Employee Employee { get; set; }
 
         public List<EmployeeWithoutEmployerSpecialization> EmployeeWithoutEmployerSpecializations { get; set; }
     }

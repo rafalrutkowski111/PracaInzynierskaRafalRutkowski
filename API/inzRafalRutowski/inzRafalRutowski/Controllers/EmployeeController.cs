@@ -144,7 +144,6 @@ namespace inzRafalRutowski.Controllers
                 Id = employee.Id,
                 IsEmployed = true,
                 EmployerId = employerId,
-                EmployeeWithoutEmployerId = employee.Id
             };
             _context.Employees.Add(newEmployee);
 
