@@ -16,6 +16,11 @@ const ButtonBootstrap = styled(Form.Control)`
     background-color: green;
     color: white;
 `
+const ButtonBootstrapBack = styled(Form.Control)`
+    width:150px;
+    background-color: red;
+    color: white;
+`
 
 const ConfirmModal = (props) => {
     return (
@@ -59,6 +64,12 @@ const ConfirmModal = (props) => {
                             () => { props.setConfirmModal(false); window.location.pathname = '/inzRafalRutkowski' + props.endPath }
                             : () => { props.setConfirmModal(false) }
                         }
+                    />
+                    <ButtonBootstrapBack
+                        type="submit"
+                        id="button"
+                        value="Anuluj"
+                        onClick={() => props.setConfirmModal(false)}
                     />
                 </ButtonContainer >
             </Sheet>
