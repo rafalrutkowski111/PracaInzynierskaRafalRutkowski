@@ -71,8 +71,8 @@ namespace inzRafalRutowski.Controllers
             return Ok(result);
         }
 
-        [HttpGet("getEmployees")]
-        public ActionResult<List<EmployeeDTO>> GetEmployee()
+        [HttpGet("getEmployeesWithoutEmployer")]
+        public ActionResult<List<EmployeeDTO>> GetEmployeesWithoutEmployer()
         {
             var result = new List<EmployeeDTO>();
 
@@ -83,6 +83,35 @@ namespace inzRafalRutowski.Controllers
             {
                 
                 var employeeSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, e.Id)).ToList();
+                employeeSpecialization.ForEach(e2 =>
+                {
+                    var employee = new EmployeeDTO();
+                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationId));
+                    employee.SpecializationName = specializations.Select(e3 => e3.Name).First();
+
+                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperienceId));
+                    employee.ExperienceName = experiences.Select(e3 => e3.experienceName).First();
+                    employee.Name = e.Name;
+                    employee.Surname = e.Surname;
+                    employee.EmployeeId = e.Id;
+                    result.Add(employee);
+                });
+            });
+            return Ok(result);
+        }
+
+        [HttpGet("getEmployees")]
+        public ActionResult<List<EmployeeDTO>> GetEmployee([FromQuery] int employerId)
+        {
+            var result = new List<EmployeeDTO>();
+
+            var employees = _context.Employees.Where(e => int.Equals(e.EmployerId, employerId)).ToList();
+
+
+            employees.ForEach(e =>
+            {
+
+                var employeeSpecialization = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, e.Id)).ToList();
                 employeeSpecialization.ForEach(e2 =>
                 {
                     var employee = new EmployeeDTO();
