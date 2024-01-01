@@ -311,6 +311,7 @@ const UpdateJob = () => {
                 setModalOpenEmployeeList={setModalOpenEmployeeList} setModalOpenNotEnoughEmployee={setModalOpenNotEnoughEmployee}
                 setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization} setSearchEmployeeJob={setSearchEmployeeJob} justEdit={justEdit}
                 isUpdate={true} listEmployeeAddToJob={listEmployeeAddToJobEdit} realStart={dataStart}
+                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee}
             />
         )
     }
@@ -321,7 +322,7 @@ const UpdateJob = () => {
                 viewSpecialist={viewSpecialist} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization} searchEmployee={searchEmployee}
                 setSearchEmployee={setSearchEmployee} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
                 searchEmployeeJob={searchEmployeeJob} setSearchEmployeeJob={setSearchEmployeeJob} listEmployeeAddToJob={listEmployeeAddToJob}
-                setListEmployeeAddToJob={setListEmployeeAddToJob}
+                setListEmployeeAddToJob={setListEmployeeAddToJob} idSpecializationToChangeEmployee={idSpecializationToChangeEmployee}
             />
         )
     }

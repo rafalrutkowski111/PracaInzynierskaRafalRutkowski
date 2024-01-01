@@ -2,6 +2,7 @@
 using inzRafalRutowski.Data;
 using inzRafalRutowski.DTO.Employee;
 using inzRafalRutowski.DTO.Job;
+using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,7 @@ namespace inzRafalRutowski.Class
                     employee.Name = x.Name;
                     employee.Surname = x.Surname;
                     employee.EmployeeId = x.Id;
+                    employee.SpecializationId = e.SpecializationId;
                     employeeDTOList.Add(employee);
 
 

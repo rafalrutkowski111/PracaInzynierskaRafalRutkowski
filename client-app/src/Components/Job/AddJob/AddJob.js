@@ -84,9 +84,6 @@ const AddJob = () => {
 
     const userId = sessionStorage.getItem("userId");
 
-    console.log("aa")
-    console.log(listEmployeeAddToJob)
-    
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
             .then(response => {
@@ -155,6 +152,7 @@ const AddJob = () => {
                 setEndDayWork={setEndDayWork} setStartDayWork={setStartDayWork} setModalOpenSummary={setModalOpenSummary}
                 setModalOpenEmployeeList={setModalOpenEmployeeList} setModalOpenNotEnoughEmployee={setModalOpenNotEnoughEmployee}
                 setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization} setSearchEmployeeJob={setSearchEmployeeJob}
+                setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee}
             />
         )
     }
@@ -165,7 +163,7 @@ const AddJob = () => {
                 viewSpecialist={viewSpecialist} dataEmployeeWithSpecialization={dataEmployeeWithSpecialization} searchEmployee={searchEmployee}
                 setSearchEmployee={setSearchEmployee} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
                 searchEmployeeJob={searchEmployeeJob} setSearchEmployeeJob={setSearchEmployeeJob} listEmployeeAddToJob={listEmployeeAddToJob}
-                setListEmployeeAddToJob={setListEmployeeAddToJob}
+                setListEmployeeAddToJob={setListEmployeeAddToJob} idSpecializationToChangeEmployee={idSpecializationToChangeEmployee}
             />
         )
     }

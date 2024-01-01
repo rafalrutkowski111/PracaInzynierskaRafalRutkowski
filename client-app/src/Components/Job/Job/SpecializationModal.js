@@ -155,7 +155,8 @@ const SpecializationList = (props) => {
                                                                     onClick={() => ViewEmployeeDetails({
                                                                         idEmployee: item2.employeeId, isViewSpecialist: true,
                                                                         setDataEmployee: props.setDataEmployee, setViewSpecialist: props.setViewSpecialist,
-                                                                        setModalOpenViewEmployee: props.setModalOpenViewEmployee
+                                                                        setModalOpenViewEmployee: props.setModalOpenViewEmployee, idSpecialization: item2.specializationId,
+                                                                        setIdSpecializationToChangeEmployee: props.setIdSpecializationToChangeEmployee
                                                                     })}
                                                                     startIcon={<VisibilityIcon />}>Szczegóły
                                                                 </Button>
@@ -193,11 +194,10 @@ const SpecializationList = (props) => {
 }
 
 const ViewEmployee = (props) => {
-
     const addSpecialistEmployees = (employee) => {
 
         const updateDataEmployeeWithSpecialization = props.dataEmployeeWithSpecialization.map((data) => {
-            if (data.specializationId === employee[0].specializationId) {
+            if (data.specializationId === props.idSpecializationToChangeEmployee) {
                 data.haveSpecialist = true;
                 data.employeeId = employee[0].employeeId
                 data.name = employee[0].name
@@ -228,7 +228,7 @@ const ViewEmployee = (props) => {
                 if (data2.employeeId === employee[0].employeeId) {
                     idSpecialization = data.specializationId;
 
-                    findIndex1 = props.searchEmployeeJob.findIndex(x=> x.specializationId === data.specializationId)
+                    findIndex1 = props.searchEmployeeJob.findIndex(x => x.specializationId === data.specializationId)
                     findIndex2 = findIndextemp2;
                     data.hoursStart -= props.searchEmployeeJob[findIndex1].employeeInJobList[findIndex2].hoursJob
 
