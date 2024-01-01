@@ -31,5 +31,7 @@ namespace inzRafalRutowski.DTO.Job
         public int EmployerId { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public bool IsUpdate { get; set; }
+        public int? JobId { get; set; }
     }
 }

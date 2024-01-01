@@ -85,9 +85,6 @@ const UpdateJob = () => {
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
-    //console.log("listEmployeeAddToJobEdit")
-    //console.log(listEmployeeAddToJobEdit)
-
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
             .then(response => {
@@ -186,7 +183,7 @@ const UpdateJob = () => {
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
-            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
+            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd), isUpdate:true, jobId: params.id })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
                 setSearchEmployee(response.data.searchEmployee)
@@ -209,12 +206,6 @@ const UpdateJob = () => {
     }
 
     const nextEdit = () => {
-
-        // możliwy czarny kolor przy zapisie
-
-        // kolory w podsumowaniu
-
-        //w terminażu dodać brak zakońćzenia pracy
 
         setJustEdit(true)
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return

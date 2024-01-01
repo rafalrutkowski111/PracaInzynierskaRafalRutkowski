@@ -38,11 +38,6 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
 `
-const ColorRed = styled.div`
-    color: red;
-    display: flex;
-    float: right;
-`
 const AddJob = () => {
 
     const [dataSpecialization, setDataSpecialization] = useState([]);
@@ -97,7 +92,7 @@ const AddJob = () => {
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
-            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
+            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd),isUpdate:false })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
                 //console.log(response.data)

@@ -52,8 +52,11 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobSpecialization")]
         public IActionResult SpecialisationInJob([FromBody] JobSpecializationDTO request)
         {
-            request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń
-            request.End = request.End.AddDays(1);
+            if(request.IsUpdate == false)
+            {
+                request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń
+                request.End = request.End.AddDays(1);
+            }
 
             var restult = new List<JobSpecializationEmployeeDTO>();
             var employeeDTOListInList = new List<EmployeeSpecializationListDTO>();
@@ -63,13 +66,29 @@ namespace inzRafalRutowski.Controllers
 
             request.JobSpecialization.ForEach(e =>
             {
-                var EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
-                && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
-                && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
-                && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
-                && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date) ||
-                (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date))
-                ).EmployerId == request.EmployerId));
+                EmployeeSpecialization? EmployeeSpecialization;
+
+                if (request.IsUpdate == true)
+                {
+                    EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
+                    && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
+                    && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
+                    && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
+                    && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date && y.JobId != request.JobId) ||
+                    (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date && y.JobId != request.JobId))
+                    ).EmployerId == request.EmployerId));
+                }
+                else
+                {
+                    EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
+                    && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
+                    && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
+                    && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
+                    && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date) ||
+                    (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date))
+                    ).EmployerId == request.EmployerId));
+                }
+
 
                 var jobSpecializationEmployee = new JobSpecializationEmployeeDTO();
 
