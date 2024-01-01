@@ -673,7 +673,6 @@ namespace inzRafalRutowski.Controllers
             //powiązanie pracowników z pracą
             request.ListEmployeeAddToJob.ForEach(x =>
             {
-                //mejbi tu dodawać najpierw osobe odpowiedzialna, a potem na dole sprawdzać po id czy jest i ją pomijać + zrobić idSpecjalizacji żeby łatwo ogarnąć osoby odpowiedzialne za prace
                 x.EmployeeInJobList.ForEach(x2 =>
                 {
                     var jobEmployee = new JobEmployee();
@@ -775,10 +774,18 @@ namespace inzRafalRutowski.Controllers
 
             var currentJobId = request.JobId;
 
+            //usuwamy poprzednie powiązanie
+            var jobEmployeListRemove = _context.JobEmployees.Where(x => int.Equals(x.JobId, request.JobId)).ToList();
+
+            jobEmployeListRemove.ForEach(x =>
+            {
+                _context.JobEmployees.Remove(x);
+            });
+            await _context.SaveChangesAsync();
+
             //powiązanie pracowników z pracą
             request.ListEmployeeAddToJob.ForEach(x =>
             {
-                //mejbi tu dodawać najpierw osobe odpowiedzialna, a potem na dole sprawdzać po id czy jest i ją pomijać + zrobić idSpecjalizacji żeby łatwo ogarnąć osoby odpowiedzialne za prace
                 x.EmployeeInJobList.ForEach(x2 =>
                 {
                     var jobEmployee = new JobEmployee();
