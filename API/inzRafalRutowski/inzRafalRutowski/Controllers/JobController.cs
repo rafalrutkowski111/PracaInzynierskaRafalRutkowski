@@ -52,6 +52,9 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobSpecialization")]
         public IActionResult SpecialisationInJob([FromBody] JobSpecializationDTO request)
         {
+            request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń
+            request.End = request.End.AddDays(1);
+
             var restult = new List<JobSpecializationEmployeeDTO>();
             var employeeDTOListInList = new List<EmployeeSpecializationListDTO>();
             var isOpenModalSpecialization = false;
@@ -64,7 +67,8 @@ namespace inzRafalRutowski.Controllers
                 && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
                 && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
-                && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
+                && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date) ||
+                (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date))
                 ).EmployerId == request.EmployerId));
 
                 var jobSpecializationEmployee = new JobSpecializationEmployeeDTO();
@@ -229,7 +233,8 @@ namespace inzRafalRutowski.Controllers
             {
                 var freeEmployeeFromDB = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
-                && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
+                && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date) ||
+                (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date))
                 ).EmployerId == request.EmployerId)
                 ).ToList(); //wolni pracownicy w tym czasie
 
@@ -488,7 +493,8 @@ namespace inzRafalRutowski.Controllers
             //lista naszych wolnych pracowników
             List<Employee> listEmployeeFreeInTime = _context.Employees.Where(e => int.Equals(e.EmployerId, request.EmployerId)
                 && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == e.Id)
-                && ((y.TimeStartJob <= request.Start && y.TimeFinishJob >= request.Start) || (y.TimeStartJob <= request.End && y.TimeFinishJob >= request.End))
+                && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date) ||
+                (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date))
                 ).EmployerId == request.EmployerId)
                 ).ToList();
 
