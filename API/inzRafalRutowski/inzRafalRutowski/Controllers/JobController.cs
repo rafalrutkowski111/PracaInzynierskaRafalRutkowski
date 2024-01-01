@@ -662,32 +662,31 @@ namespace inzRafalRutowski.Controllers
             var saveNewJob = _context.Jobs.Add(result);
             await _context.SaveChangesAsync();
 
-            //tu powiązać osoby z pracą
-
-            //request.ListEmployeeAddToJob.ForEach(x =>
-            //{
-            //    //mejbi tu dodawać najpierw osobe odpowiedzialna, a potem na dole sprawdzać po id czy jest i ją pomijać + zrobić idSpecjalizacji żeby łatwo ogarnąć osoby odpowiedzialne za prace
-            //    x.EmployeeInJobList.ForEach(x2 =>
-            //    {
-            //        var jobEmployee = new JobEmployee();
-
-            //        jobEmployee.EmployerId = request.EmployerId;
-            //        jobEmployee.EmployeeId = x2.EmployeeId;
-            //        jobEmployee.JobId = currentJobId.Id;
-            //        jobEmployee.TimeStartJob = request.Start;
-            //        jobEmployee.TimeFinishJob = x.End;
-            //        if(x.ResponsiblePersonEmployeeId == x2.EmployeeId)
-            //            jobEmployee.IsNeed = true;
-            //        else 
-            //        jobEmployee.IsNeed = false;
-            //        _context.JobEmployees.Add(jobEmployee);
-            //    });
-            //});
-
-
-            //poniżej dodajemy zmiany do histtori
             var currentJobId = saveNewJob.Entity.Id;
 
+            //powiązanie pracowników z pracą
+            request.ListEmployeeAddToJob.ForEach(x =>
+            {
+                //mejbi tu dodawać najpierw osobe odpowiedzialna, a potem na dole sprawdzać po id czy jest i ją pomijać + zrobić idSpecjalizacji żeby łatwo ogarnąć osoby odpowiedzialne za prace
+                x.EmployeeInJobList.ForEach(x2 =>
+                {
+                    var jobEmployee = new JobEmployee();
+
+                    jobEmployee.EmployerId = request.EmployerId;
+                    jobEmployee.EmployeeId = x2.EmployeeId;
+                    jobEmployee.JobId = currentJobId;
+                    jobEmployee.TimeStartJob = request.Start;
+                    jobEmployee.TimeFinishJob = x.End;
+                    if (x.ResponsiblePersonEmployeeId == x2.EmployeeId)
+                        jobEmployee.IsNeed = true;
+                    else
+                        jobEmployee.IsNeed = false;
+                    _context.JobEmployees.Add(jobEmployee);
+                });
+            });
+
+
+            //poniżej dodajemy zmiany do histtori 
             var resultJobHistory = _mapper.Map<JobHistory>(request);
 
             if (request.End.Date == request.CurrentEnd.Date) resultJobHistory.Color = "#3174ad"; //niebieski
@@ -707,8 +706,6 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("editJob")]
         public async Task<IActionResult> EditJob([FromBody] JobDTO request)
         {
-            // jak sie potem dokonczy AddJob, tu trzeba dodać to samo(brakuje przypisywania pracowników do pracy)
-
             // przy edycji trzeba usunąć wszystkich jobemployee i dodać nowych, ablo dodać do dnia disiejszego i od dnia dzisiejszego zacząć
 
             request.CurrentEnd = request.CurrentEnd.AddHours(1);
@@ -770,9 +767,29 @@ namespace inzRafalRutowski.Controllers
             await _context.SaveChangesAsync();
 
 
-
-
             var currentJobId = request.JobId;
+
+            //powiązanie pracowników z pracą
+            request.ListEmployeeAddToJob.ForEach(x =>
+            {
+                //mejbi tu dodawać najpierw osobe odpowiedzialna, a potem na dole sprawdzać po id czy jest i ją pomijać + zrobić idSpecjalizacji żeby łatwo ogarnąć osoby odpowiedzialne za prace
+                x.EmployeeInJobList.ForEach(x2 =>
+                {
+                    var jobEmployee = new JobEmployee();
+
+                    jobEmployee.EmployerId = request.EmployerId;
+                    jobEmployee.EmployeeId = x2.EmployeeId;
+                    jobEmployee.JobId = (int)currentJobId;
+                    jobEmployee.TimeStartJob = request.Start;
+                    jobEmployee.TimeFinishJob = x.End;
+                    if (x.ResponsiblePersonEmployeeId == x2.EmployeeId)
+                        jobEmployee.IsNeed = true;
+                    else
+                        jobEmployee.IsNeed = false;
+                    _context.JobEmployees.Add(jobEmployee);
+                });
+            });
+
 
             var resultJobHistory = _mapper.Map<JobHistory>(request);
 
