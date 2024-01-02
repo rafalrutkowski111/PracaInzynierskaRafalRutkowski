@@ -88,7 +88,23 @@ const UpdateJob = () => {
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
             .then(response => {
-                console.log(response)
+
+                // dodanie specjalizacji (musiałem zrobić nową liste bo 2 razy się useEffect wykonuje, a useState uptade ma dopiero po wszystkich wykonaniach)
+                let updateDataEmployeeWithSpecialization = []
+                response.data.listEmployeeAddToJob.map(x => {
+                    if (x.responsiblePersonEmployeeId != null &&
+                        updateDataEmployeeWithSpecialization.find(x2 => x2.employeeId === x.responsiblePersonEmployeeId) === undefined) {
+                        updateDataEmployeeWithSpecialization.push({
+                            employeeId: x.responsiblePersonEmployeeId,
+                            haveSpecialist: true,
+                            name: x.responsiblePersonName,
+                            surname: x.responsiblePersonSurname,
+                            specializationName: x.specializationName,
+                            specializationId: x.specializationId
+                        })
+                    }
+                })
+                setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
 
                 let needChangeHours = false
 
@@ -183,7 +199,10 @@ const UpdateJob = () => {
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
-            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd), isUpdate:true, jobId: params.id })
+            {
+                JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd), isUpdate: true, jobId: params.id,
+                dataEmployeeWithSpecialization: dataEmployeeWithSpecialization
+            })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
                 setSearchEmployee(response.data.searchEmployee)
@@ -211,28 +230,32 @@ const UpdateJob = () => {
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
-            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd) })
+            {
+                JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd), isUpdate: true, jobId: params.id,
+                dataEmployeeWithSpecialization: dataEmployeeWithSpecialization
+            })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
                 setSearchEmployee(response.data.searchEmployee)
                 setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
 
-                let updateDataEmployeeWithSpecialization = response.data.specializationList.map(x => {
-                    let updateSpecialist = listEmployeeAddToJobEdit.find(x2 => x2.specializationId === x.specializationId)
+                // użycie poprzednich specjalistów, nawet jeżeli jest null. Użyje tego przy modyfikacji pracownika jako wybór opcjonalny
+                // let updateDataEmployeeWithSpecialization = response.data.specializationList.map(x => {
+                //     let updateSpecialist = listEmployeeAddToJobEdit.find(x2 => x2.specializationId === x.specializationId)
 
-                    if (updateSpecialist !== undefined) {
-                        x.name = updateSpecialist.responsiblePersonName
-                        x.surname = updateSpecialist.responsiblePersonSurname
-                        x.employeeId = updateSpecialist.responsiblePersonEmployeeId
+                //     if (updateSpecialist !== undefined) {
+                //         x.name = updateSpecialist.responsiblePersonName
+                //         x.surname = updateSpecialist.responsiblePersonSurname
+                //         x.employeeId = updateSpecialist.responsiblePersonEmployeeId
 
-                        if (updateSpecialist.responsiblePersonEmployeeId === null) {
-                            x.haveSpecialist = false
-                            x.name = "Brak"
-                        }
-                    }
-                    return x
-                })
-                setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
+                //         if (updateSpecialist.responsiblePersonEmployeeId === null) {
+                //             x.haveSpecialist = false
+                //             x.name = "Brak"
+                //         }
+                //     }
+                //     return x
+                // })
+                // setDataEmployeeWithSpecialization(updateDataEmployeeWithSpecialization)
 
                 VerificationEmployeeToJob({
                     listJobSpecializationEmployeeDTO: response.data.specializationList, dataEmployeeWithSpecialization: response.data.specializationList,

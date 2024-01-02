@@ -33,5 +33,6 @@ namespace inzRafalRutowski.DTO.Job
         public DateTime End { get; set; }
         public bool IsUpdate { get; set; }
         public int? JobId { get; set; }
+        public List<JobSpecializationEmployeeDTO>? DataEmployeeWithSpecialization { get; set; }
     }
 }
