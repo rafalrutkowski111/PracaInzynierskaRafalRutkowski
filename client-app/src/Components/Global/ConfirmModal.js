@@ -28,7 +28,9 @@ const ConfirmModal = (props) => {
             aria-labelledby="modal-title"
             aria-describedby="modal-desc"
             open={props.confirmModal}
-            onClose={() => props.setConfirmModal(false)}
+            onClose={props.changePath === true ?
+                () => { props.setConfirmModal(false); window.location.pathname = '/inzRafalRutkowski' + props.endPath }
+                : () => { props.setConfirmModal(false) }}
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
             <Sheet
@@ -64,12 +66,6 @@ const ConfirmModal = (props) => {
                             () => { props.setConfirmModal(false); window.location.pathname = '/inzRafalRutkowski' + props.endPath }
                             : () => { props.setConfirmModal(false) }
                         }
-                    />
-                    <ButtonBootstrapBack
-                        type="submit"
-                        id="button"
-                        value="Anuluj"
-                        onClick={() => props.setConfirmModal(false)}
                     />
                 </ButtonContainer >
             </Sheet>
