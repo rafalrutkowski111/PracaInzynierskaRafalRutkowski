@@ -153,6 +153,7 @@ const Summary = (props) => {
                             <tbody>
                                 {props.dataEmployeeWithSpecialization.map((item) => {
                                     return (
+                                        item.hide === true ? null :
                                         <tr>
                                             <td>{item.specializationName}</td>
                                             <td>{item.hours}</td>

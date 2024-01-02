@@ -3,12 +3,11 @@ import * as dayjs from 'dayjs'
 
 const ViewEmployeeDetails = (props) => {
 
-        axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: props.idEmployee } })
+    axios.get('http://localhost:5000/api/Employee/employeeSearch', { params: { id: props.idEmployee } })
         .then(response => {
             props.setDataEmployee(response.data)
         })
-    if (props.isViewSpecialist)
-    {
+    if (props.isViewSpecialist) {
         props.setViewSpecialist(true)
         props.setIdSpecializationToChangeEmployee(props.idSpecialization)
     }
@@ -21,7 +20,7 @@ const VerificationEmployeeToJob = (props) => {
         {
             listJobSpecializationEmployeeDTO: props.listJobSpecializationEmployeeDTO, JobSpecialization: props.dataListSpecialization, EmployerId: props.userId,
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployeeWithoutEmployer: false, IsUpdate: props.isUpdate,
-             ListEmployeeAddToJob: props.listEmployeeAddToJob, justEdit: props.justEdit, realStart: props.realStart
+            ListEmployeeAddToJob: props.listEmployeeAddToJob, justEdit: props.justEdit, realStart: props.realStart
 
         })
         .then(response2 => {
@@ -33,14 +32,14 @@ const VerificationEmployeeToJob = (props) => {
             }); // aktualizacja specjalistów, też dane do rozpoczecia pracy
 
             axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
-            {
-                listEmployeeInJobDTOList: response2.data.listEmployeeInJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
-            })
-            .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
+                {
+                    listEmployeeInJobDTOList: response2.data.listEmployeeInJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+                })
+                .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
-            if(props.isUpdate === true)
-            props.setStartDayWork(dayjs(response2.data.start).format('DD/MM/YYYY'))
-            else  props.setStartDayWork(props.dataStart.format('DD/MM/YYYY'))
+            if (props.isUpdate === true)
+                props.setStartDayWork(dayjs(response2.data.start).format('DD/MM/YYYY'))
+            else props.setStartDayWork(props.dataStart.format('DD/MM/YYYY'))
 
             if (response2.data.canStartWork === true) {
                 props.setModalOpenSummary(true) //podsumowanie
@@ -68,6 +67,15 @@ const updateDataEmployeeWithSpecialization = (props) => {
 
         data.hours = props.dataListSpecialization.find(x => x.SpecializationId === data.specializationId).Hours
         data.nameSurname = data.name + " " + data.surname
+
+        //poniższy kod dodaje właściwość do ukrycia jej w specjalziacji jeżeli nie będzie wykonywana już żadna praca
+        let specializationTemp = props.dataListSpecialization.find(x => x.SpecializationId === data.specializationId)
+        if (specializationTemp.finishWorkHours != undefined) {
+            if (specializationTemp.Hours == specializationTemp.finishWorkHours.toFixed(0))
+                data.hide = true
+        }
+
+
         return data
     })
 

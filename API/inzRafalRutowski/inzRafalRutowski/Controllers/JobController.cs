@@ -145,7 +145,9 @@ namespace inzRafalRutowski.Controllers
             {
                 request.ListEmployeeAddToJob.ForEach(x => // zmiana pobranych wartościu hours na te które zmieniliśmy
                 {
-                    x.HoursStart = (int)request.JobSpecialization.Find(x2 => x2.SpecializationId == x.SpecializationId).Hours;
+                    var hours = request.JobSpecialization.Find(x2 => x2.SpecializationId == x.SpecializationId);
+                    if (hours != null)
+                        x.HoursStart = (int)hours.Hours;
                 });
 
                 request.ListEmployeeAddToJob.ForEach(x =>
