@@ -75,7 +75,7 @@ const AddSpecializationAndHours = (props) => {
 const ViewSpecializationAndHours = (props) => {
 
     const removeSpecializationAndHours = (id) => {
-if (props.dataListSpecialization.length - 1 === 0)
+        if (props.dataListSpecialization.length - 1 === 0)
             props.setOpenAddEmployee(true)
 
         const list = [...props.dataListSpecialization];
@@ -142,7 +142,7 @@ if (props.dataListSpecialization.length - 1 === 0)
                                 </td>
                                 <td>
                                     <Button
-                                        disabled={item.disableUpdate}
+                                        disabled={item.disableUpdate === true && item.finishWorkHours !== 0 ? true : false}
                                         onClick={() => removeSpecializationAndHours(item.SpecializationId)}
                                         startIcon={<DeleteIcon />}>Usuń
                                     </Button>
