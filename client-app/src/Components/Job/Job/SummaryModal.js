@@ -34,6 +34,7 @@ const Summary = (props) => {
         let sendlistEmployeeAddToJob = props.listEmployeeAddToJob
 
             //dodanie wykonanych prac
+            if(props.dataListSpecialization != undefined)
             props.dataListSpecialization.map(x => {
                 if (props.listEmployeeAddToJob.find(x2 => x2.specializationId == x.SpecializationId) == undefined) {
                     sendlistEmployeeAddToJob.push({
