@@ -85,10 +85,11 @@ const UpdateJob = () => {
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
 
-    console.log("dataEmployeeWithSpecialization")
-    console.log(dataEmployeeWithSpecialization)
-    //console.log("listEmployeeToAdd")
-    //console.log(listEmployeeToAdd)
+    //console.log("dataEmployeeWithSpecialization")
+    //console.log(dataEmployeeWithSpecialization)
+    //console.log(listEmployeeAddToJob)
+    //console.log(dataSpecialization)
+
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: params.id } })
@@ -201,24 +202,6 @@ const UpdateJob = () => {
 
     const next = () => {
         
-        //testowanie czy jest praca do wykonania
-
-        // jak tyle samo h to wywalenie osoby odpowiedzialnej
-
-    //     dataListSpecialization.map(x => {
-    //         if (x.finishWorkHours !== undefined)
-    //         {
-    //             var index = dataListSpecialization.findIndex(x2=> x2.SpecializationId === x.SpecializationId && x.Hours == x.finishWorkHours.toFixed(0))
-                
-    //             if(index !== -1 )
-    //             {
-    //                 newList = dataListSpecialization.slice(0, index).concat(dataListSpecialization.slice(index + 1))
-    //                 setDataListSpecialization(newList)
-    //             }
-                
-    //         }
-    // })
-
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
@@ -391,6 +374,7 @@ const UpdateJob = () => {
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"editJob"} jobId={params.id} isUpdate={true}
                 listEmployeeAddToJobEdit={listEmployeeAddToJobEdit} justEdit={justEdit} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
+                dataListSpecialization={dataListSpecialization} setDataSpecialization={setDataSpecialization} dataSpecialization={dataSpecialization}
             />
         )
     }

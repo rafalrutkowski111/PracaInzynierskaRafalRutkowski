@@ -31,6 +31,24 @@ const Summary = (props) => {
         })
         props.setListEmployeeAddToJob(updatelistEmployeeAddToJob)
 
+        let sendlistEmployeeAddToJob = props.listEmployeeAddToJob
+
+            //dodanie wykonanych prac
+            props.dataListSpecialization.map(x => {
+                if (props.listEmployeeAddToJob.find(x2 => x2.specializationId == x.SpecializationId) == undefined) {
+                    sendlistEmployeeAddToJob.push({
+                        finishWorkHours: x.finishWorkHours,
+                        hoursStart: x.Hours,
+                        specializationId: x.SpecializationId,
+                        specializationName: x.SpecializationName,
+                        finishWork: true,
+                        employeeInJobList:[]
+                    })
+                }
+            })
+
+        props.setListEmployeeAddToJob(sendlistEmployeeAddToJob)
+            
         axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),

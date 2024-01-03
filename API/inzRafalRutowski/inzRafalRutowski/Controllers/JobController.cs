@@ -714,7 +714,7 @@ namespace inzRafalRutowski.Controllers
                     jobEmployee.EmployeeId = x2.EmployeeId;
                     jobEmployee.JobId = currentJobId;
                     jobEmployee.TimeStartJob = request.Start;
-                    jobEmployee.TimeFinishJob = x.End;
+                    jobEmployee.TimeFinishJob = (DateTime)x.End;
                     if (x.ResponsiblePersonEmployeeId == x2.EmployeeId)
                         jobEmployee.IsNeed = true;
                     else
@@ -827,7 +827,7 @@ namespace inzRafalRutowski.Controllers
                     jobEmployee.EmployeeId = x2.EmployeeId;
                     jobEmployee.JobId = (int)currentJobId;
                     jobEmployee.TimeStartJob = request.Start;
-                    jobEmployee.TimeFinishJob = x.End;
+                    jobEmployee.TimeFinishJob = (DateTime)x.End;
                     if (x.ResponsiblePersonEmployeeId == x2.EmployeeId)
                         jobEmployee.IsNeed = true;
                     else
