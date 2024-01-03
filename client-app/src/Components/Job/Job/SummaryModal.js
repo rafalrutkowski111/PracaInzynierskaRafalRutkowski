@@ -41,7 +41,6 @@ const Summary = (props) => {
                         hoursStart: x.Hours,
                         specializationId: x.SpecializationId,
                         specializationName: x.SpecializationName,
-                        finishWork: true,
                         employeeInJobList:[]
                     })
                 }

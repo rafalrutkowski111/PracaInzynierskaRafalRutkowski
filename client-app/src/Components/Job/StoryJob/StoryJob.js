@@ -45,7 +45,7 @@ const StoryJob = () => {
             x.style.display = "none";
         }
     }
-                // moze sformatowac wygląd ,zrobic jakeiś tabelki czy coś żeby to ładnie wyglądało
+    // moze sformatowac wygląd ,zrobic jakeiś tabelki czy coś żeby to ładnie wyglądało
     return (
         <>
             <TittleContainer>
@@ -55,49 +55,61 @@ const StoryJob = () => {
             {listStoryJob.map(x =>
             (
                 <>
-                        <span>
-                            <StoryTitleContainer>
-                                <div onClick={() => showHide(x.id)}>{dayjs(x.timeAddHistory).format('YYYY/MM/DD-HH:mm:ss')}</div>
-                            </StoryTitleContainer>
-                            <div style={{ display: "none" }} id={x.id}>
-                                <StoryContainer>
-                                    <p>Termin rozpoczęcia pracy: {dayjs(x.start).format('DD/MM/YYYY')}</p>
-                                </StoryContainer>
-                                <StoryContainer>
-                                    <p>Termin zakończenia pracy: {dayjs(x.end).format('DD/MM/YYYY')}</p>
-                                </StoryContainer>
-                                <StoryContainer>
-                                    <b><p style={{ color: x.color }}>Czas zakończenia pracy:
-                                        {dayjs(x.currentEnd).year() === 2100 ? " Brak" : " " + dayjs(x.currentEnd).format('DD/MM/YYYY-HH.mm')}</p></b>
-                                </StoryContainer>
-                                <StoryContainer>
-                                    <p>Specjalizacje </p>
-                                </StoryContainer>
-                                {x.listEmployeeAddToJob.map((data) =>
-                                    <div>
-                                        <StoryContainer>
-                                            <b>{data.specializationName}</b>
-                                        </StoryContainer>
-                                        <StoryContainer>
-                                            <p>Termin zakończenia:
-                                                {dayjs(data.end).year() === 2100 ? " Brak" : " " + dayjs(data.end).format('DD/MM/YYYY-HH.mm')}</p>
-                                        </StoryContainer>
-                                        <StoryContainer>
-                                            <p>Oosba odpowiedzialna za specjalizację: {data.responsiblePersonName + " " + data.responsiblePersonSurname}</p>
-                                        </StoryContainer>
+                    <span>
+                        <StoryTitleContainer>
+                            <div onClick={() => showHide(x.id)}>{dayjs(x.timeAddHistory).format('YYYY/MM/DD-HH:mm:ss')}</div>
+                        </StoryTitleContainer>
+                        <div style={{ display: "none" }} id={x.id}>
+                            <StoryContainer>
+                                <p>Termin rozpoczęcia pracy: {dayjs(x.start).format('DD/MM/YYYY')}</p>
+                            </StoryContainer>
+                            <StoryContainer>
+                                <p>Termin zakończenia pracy: {dayjs(x.end).format('DD/MM/YYYY')}</p>
+                            </StoryContainer>
+                            <StoryContainer>
+                                <b><p style={{ color: x.color }}>Czas zakończenia pracy:
+                                    {dayjs(x.currentEnd).year() === 2100 ? " Brak" : " " + dayjs(x.currentEnd).format('DD/MM/YYYY-HH.mm')}</p></b>
+                            </StoryContainer>
+                            <StoryContainer>
+                                <p>Specjalizacje </p>
+                            </StoryContainer>
+                            {x.listEmployeeAddToJob.map((data) =>
+                                <div>
+                                    <StoryContainer>
+                                        <b>{data.specializationName}</b>
+                                    </StoryContainer>
+                                    <StoryContainer>
+                                        <p>Termin zakończenia:
+                                            {data.end === null ?
+                                                <b> "Praca zakończona"</b> :
+                                                dayjs(data.end).year() === 2100 ? " Brak" : " " + dayjs(data.end).format('DD/MM/YYYY-HH.mm')}
+                                        </p>
+                                    </StoryContainer>
+                                    <StoryContainer>
+                                        <p>Ilość wykonanej pracy:
+                                            {" " + data.finishWorkHours.toFixed(0)}</p>
+                                    </StoryContainer>
+                                    {data.end === null ? null :
+                                        <>
+                                            <StoryContainer>
+                                                <p>Oosba odpowiedzialna za specjalizację: {data.responsiblePersonName + " " + data.responsiblePersonSurname}</p>
+                                            </StoryContainer>
 
-                                        <p><StoryContainer>Pracownicy</StoryContainer> <br />
-                                            {data.employeeInJobList.map((data2) =>
-                                                <StoryContainer>
-                                                    <div>
-                                                        {data2.name + " " + data2.surname + ": " + data2.experienceName}
-                                                    </div>
-                                                </StoryContainer>
-                                            )}</p>
-                                    </div>
-                                )}
-                            </div>
-                        </span>
+                                            <p><StoryContainer>Pracownicy</StoryContainer> <br />
+                                                {data.employeeInJobList.map((data2) =>
+                                                    <StoryContainer>
+                                                        <div>
+                                                            {data2.name + " " + data2.surname + ": " + data2.experienceName}
+                                                        </div>
+                                                    </StoryContainer>
+                                                )}</p>
+                                        </>
+                                    }
+
+                                </div>
+                            )}
+                        </div>
+                    </span>
                 </>
             ))}
         </>
