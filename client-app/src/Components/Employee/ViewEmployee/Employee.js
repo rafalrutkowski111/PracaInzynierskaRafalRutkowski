@@ -44,6 +44,8 @@ const Employee = () => {
   const [searchSurname, setSearchSurname] = useState('');
   const [searchSpecialization, setSearchSpecialization] = useState('');
   const [searchExperience, setSearchExperience] = useState('');
+  const [employeInJobList, setEmployeInJobList] = useState([]);
+  const [modalOpenAlert, setModalOpenAlert] = useState(false)
 
   const userId = sessionStorage.getItem("userId");
 
@@ -63,7 +65,14 @@ const Employee = () => {
   }
 
   const removeEmployee = (id) => {
-    //usunąć pracownika
+    axios.get('http://localhost:5000/api/Employee/checkEmployeeWork', { params: { employeeId: id } })
+    .then(response => {
+      console.log(response.data)
+      setEmployeInJobList(response.data)
+      if(response.data.needAlert === true)
+        setModalOpenAlert(response.data.needAlert)
+      // else wykonac usuwanie
+    })
 
     //trzeba tu wysłać id pracownika i sprawdzić czy nie jest gdzieś zatrudniony (żeby to zrobić trzeba dokończyć dodawanie praconików do pracy)
     //następnie okno modalne z potwierdzeniem. Jeżeli gdzieś pracuje to o tym poinformować z ewentualnymi nazwami rpac gdzie
@@ -72,6 +81,10 @@ const Employee = () => {
     // na końcu informacja o pomyślnej edycji. Jeżeli edytowaliśmy prace to inforamcja o tym z ewentuanymi nazwami gdzie
   }
   const editEmployee = (id) => {
+
+
+    // sprawdzać czy zmieniliśmy coś poza nazwą i nazwiskiem może zrobić liste na starcie i na końcu ją porównać 
+    
     // albo zrobienie okna modalnego, albo przejście do nowej strony
     // wygląd edycji tak jak w dodaniu, ale z uzupełnionymi danymi
     // edytujemy pracownika
@@ -92,7 +105,6 @@ const Employee = () => {
       </TittleContainer>
       
       <Container>
-        <H1Container>Szukaj pracownika</H1Container>
         <TextFieldContaioner>
           <TextField
             onChange={(e) => setSearchName(e.target.value)}
@@ -158,14 +170,14 @@ const Employee = () => {
                     <td>
                       <Button
                         disabled={item.employerId === null ? true : false}
-                        onClick={() => editEmployee(item.id)}
+                        onClick={() => editEmployee(item.employeeId)}
                         startIcon={<ManageAccountsIcon />}>Edycja
                       </Button>
                     </td>
                     <td>
                       <Button
                         disabled={item.employerId === null ? true : false}
-                        onClick={() => removeEmployee(item.id)}
+                        onClick={() => removeEmployee(item.employeeId)}
                         startIcon={<PersonRemoveIcon />}>Usuń
                       </Button>
                     </td>

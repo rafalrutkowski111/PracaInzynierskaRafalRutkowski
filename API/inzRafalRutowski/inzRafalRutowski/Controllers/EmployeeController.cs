@@ -229,6 +229,45 @@ namespace inzRafalRutowski.Controllers
             _context.SaveChanges();
             return Ok();
         }
-        
+
+
+        //kontroler sprawdza czy pracownik pracuje i czy jest osobą odpowiedzialną za jakąś prace 
+
+        //może zwrócić liste tego i tego
+        [HttpGet("checkEmployeeWork")]
+        public IActionResult CheckEmployeeWork([FromQuery] Guid employeeId)
+        {
+            bool needAlert = false;
+            bool isSpecialist = false;
+            List<EmployeeModifyDTO> employeeModifylist = new List<EmployeeModifyDTO>();
+
+            var listEmployeeJob = _context.JobEmployees.Where(x=> Guid.Equals(x.EmployeeId, employeeId)).ToList();
+            
+            if(listEmployeeJob.Count != 0)
+            {
+                needAlert = true;
+
+                listEmployeeJob.ForEach(x =>
+                {
+                    var employeeModify = new EmployeeModifyDTO();
+
+                    employeeModify.JobName = _context.Jobs.First(x2 => int.Equals(x2.Id, x.JobId)).Title;
+
+
+                    if (x.IsNeed == true)
+                    {
+                        isSpecialist = true;
+                        employeeModify.IsSpecialist = true;
+                    }
+                });
+            }
+
+            return Ok(new {
+                needAlert= needAlert,
+                isSpecialist= isSpecialist,
+                employeeModifylist = employeeModifylist
+            });
+        }
+
     }
 }
