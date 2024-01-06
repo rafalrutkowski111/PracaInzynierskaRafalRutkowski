@@ -235,6 +235,8 @@ const UpdateJob = () => {
         setJustEdit(true)
         if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
 
+        console.log(dataListSpecialization)
+
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             {
                 JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd), isUpdate: true, jobId: params.id,

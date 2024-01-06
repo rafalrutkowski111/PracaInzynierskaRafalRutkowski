@@ -237,36 +237,49 @@ namespace inzRafalRutowski.Controllers
         [HttpGet("checkEmployeeWork")]
         public IActionResult CheckEmployeeWork([FromQuery] Guid employeeId)
         {
-            bool needAlert = false;
-            bool isSpecialist = false;
+            bool modifyWorks = false;
+            bool removeSpecialist = false;
+            DateTime tomorrow = DateTime.Today.AddDays(1);
             List<EmployeeModifyDTO> employeeModifylist = new List<EmployeeModifyDTO>();
 
-            var listEmployeeJob = _context.JobEmployees.Where(x=> Guid.Equals(x.EmployeeId, employeeId)).ToList();
+            var listEmployeeJob = _context.JobEmployees.Where(x=> Guid.Equals(x.EmployeeId, employeeId) && x.TimeFinishJob > tomorrow).ToList();
             
             if(listEmployeeJob.Count != 0)
             {
-                needAlert = true;
+                modifyWorks = true;
 
                 listEmployeeJob.ForEach(x =>
                 {
                     var employeeModify = new EmployeeModifyDTO();
 
                     employeeModify.JobName = _context.Jobs.First(x2 => int.Equals(x2.Id, x.JobId)).Title;
+                    employeeModify.JobId = _context.Jobs.First(x2 => int.Equals(x2.Id, x.JobId)).Id;
 
 
                     if (x.IsNeed == true)
                     {
-                        isSpecialist = true;
-                        employeeModify.IsSpecialist = true;
+                        removeSpecialist = true;
+                        employeeModify.RemoveSpecialist = true;
                     }
+                    employeeModifylist.Add(employeeModify);
                 });
             }
 
             return Ok(new {
-                needAlert= needAlert,
-                isSpecialist= isSpecialist,
+                modifyWorks = modifyWorks,
+                removeSpecialist = removeSpecialist, //oznacza ze bedziemy wywalac go jako osobe odpowiedzialna, wiec jezeli bedzie edycja, ale dalej powyzej 70 doswiadczenie to bedzie to false
                 employeeModifylist = employeeModifylist
             });
+        }
+
+        [HttpDelete]
+        public ActionResult<Employee> DeleteEmployee(Guid employeeId)
+        {
+            var result = _context.Employees.First(x => Guid.Equals(x.Id, employeeId));
+            _context.Employees.Remove(result);
+            _context.SaveChanges();
+
+            return Ok();
         }
 
     }

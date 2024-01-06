@@ -79,7 +79,18 @@ namespace inzRafalRutowski.Controllers
                 {
                     EmployeeSpecialization? EmployeeSpecialization;
 
-                    if (request.IsUpdate == true)
+                    if( request.RemoveSpecialist == true)
+                    {
+                        EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
+                        && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
+                        && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
+                        && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
+                        && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date && y.JobId != request.JobId) ||
+                        (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date && y.JobId != request.JobId))
+                        ).EmployerId == request.EmployerId)
+                        && x.EmployeeId != request.EmployeeId);
+                    }
+                    else if (request.IsUpdate == true)
                     {
                         EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                         && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId

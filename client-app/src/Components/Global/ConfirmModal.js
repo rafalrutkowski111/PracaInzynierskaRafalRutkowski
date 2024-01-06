@@ -16,11 +16,6 @@ const ButtonBootstrap = styled(Form.Control)`
     background-color: green;
     color: white;
 `
-const ButtonBootstrapBack = styled(Form.Control)`
-    width:150px;
-    background-color: red;
-    color: white;
-`
 
 const ConfirmModal = (props) => {
     return (

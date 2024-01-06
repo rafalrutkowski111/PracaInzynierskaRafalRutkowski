@@ -60,7 +60,7 @@ const VerificationEmployeeToJob = (props) => {
                     })
             }
         })
-}
+} 
 
 const updateDataEmployeeWithSpecialization = (props) => {
     const updatedataEmployeeWithSpecialization = props.dataEmployeeWithSpecialization.map(data => {
