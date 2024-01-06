@@ -151,20 +151,21 @@ const Employee = () => {
     const data = employeInJobList
 
 
+    if (isRemove === true) //usuwanie pracownika
+    {
+      axios.delete('http://localhost:5000/api/Employee', { params: { employeeId: employeeId } })
+        .then(() => {
+          const index = dataListEmployee.findIndex(x => x.employeeId === employeeId)
+          const updateDataListEmployee = dataListEmployee.slice(0, index).concat(dataListEmployee.slice(index + 1))
+          setDataListEmployee(updateDataListEmployee)
+        })
+    }
+    else //edycja pracownika
+    {
+
+    }
 
     if (employeInJobList.modifyWorks === true) {
-      if (isRemove === true) //usuwanie pracownika
-      {
-        axios.delete('http://localhost:5000/api/Employee', { params: { employeeId: employeeId } })
-        .then(()=>{
-          //zaktualizaowanie listy pracownikow
-        })
-      }
-      else //edycja pracownika
-      {
-
-      }
-
       data.employeeModifylist.map(x => {
         axios.get('http://localhost:5000/api/Job/GetLastUpdate', { params: { jobId: x.jobId } })
           .then(response => {
