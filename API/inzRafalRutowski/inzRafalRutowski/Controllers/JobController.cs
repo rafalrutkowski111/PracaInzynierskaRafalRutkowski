@@ -83,7 +83,7 @@ namespace inzRafalRutowski.Controllers
                     {
                         EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                         && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
-                        && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
+                        && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).ExperienceValue >= 70 // 70 stała waga- średniozaawansowany
                         && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
                         && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date && y.JobId != request.JobId) ||
                         (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date && y.JobId != request.JobId))
@@ -94,7 +94,7 @@ namespace inzRafalRutowski.Controllers
                     {
                         EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                         && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
-                        && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
+                        && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).ExperienceValue >= 70 // 70 stała waga- średniozaawansowany
                         && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
                         && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date && y.JobId != request.JobId) ||
                         (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date && y.JobId != request.JobId))
@@ -104,7 +104,7 @@ namespace inzRafalRutowski.Controllers
                     {
                         EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                         && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
-                        && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
+                        && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, x.ExperienceId)).ExperienceValue >= 70 // 70 stała waga- średniozaawansowany
                         && !(_context.JobEmployees.FirstOrDefault(y => (y.EmployeeId == x.EmployeeId)
                         && ((y.TimeStartJob.Date >= request.Start.Date && y.TimeStartJob.Date <= request.End.Date) ||
                         (y.TimeFinishJob.Date >= request.Start.Date && y.TimeFinishJob.Date <= request.End.Date))
@@ -401,8 +401,8 @@ namespace inzRafalRutowski.Controllers
 
                         if (employeeSpecialization != null && employeeSpecializationTemp != null)
                         {
-                            if (_context.Experiences.First(x2 => int.Equals(x2.Id, employeeSpecializationTemp.ExperienceId)).experienceValue >
-                            _context.Experiences.First(x2 => int.Equals(x2.Id, employeeSpecialization.ExperienceId)).experienceValue)
+                            if (_context.Experiences.First(x2 => int.Equals(x2.Id, employeeSpecializationTemp.ExperienceId)).ExperienceValue >
+                            _context.Experiences.First(x2 => int.Equals(x2.Id, employeeSpecialization.ExperienceId)).ExperienceValue)
                                 employeeSpecialization = employeeSpecializationTemp;
 
                         }
@@ -429,16 +429,17 @@ namespace inzRafalRutowski.Controllers
 
                 if (employeeSpecialization != null)
                 {
-                    currentEmployeeSpecialization.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)currentEmployeeExperiance.experienceValue / 100);
+                    currentEmployeeSpecialization.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)currentEmployeeExperiance.ExperienceValue / 100);
 
                     var FindIndexResult = listEmployeeInJobDTOList.FindIndex(x => x.SpecializationId == employeeSpecialization.SpecializationId);
                     var employeeInJobDTO = new EmployeeInJobDTO();
                     employeeInJobDTO.EmployeeId = employeeSpecialization.EmployeeId;
-                    employeeInJobDTO.ExperienceValue = currentEmployeeExperiance.experienceValue;
-                    employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * ((double)currentEmployeeExperiance.experienceValue / 100);
+                    employeeInJobDTO.ExperienceValue = currentEmployeeExperiance.ExperienceValue;
+                    employeeInJobDTO.HoursJob = (numberOfWorkDays * hoursWorkInDay) * ((double)currentEmployeeExperiance.ExperienceValue / 100);
                     employeeInJobDTO.Name = e.Name;
                     employeeInJobDTO.Surname = e.Surname;
-                    employeeInJobDTO.ExperienceName = currentEmployeeExperiance.experienceName;
+                    employeeInJobDTO.ExperienceName = currentEmployeeExperiance.ExperienceName;
+                    employeeInJobDTO.ExperienceId = currentEmployeeExperiance.Id;
                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
 
                     listEmployeeInJobDTOList[FindIndexResult].Hours = currentEmployeeSpecialization.Hours;
@@ -465,6 +466,7 @@ namespace inzRafalRutowski.Controllers
                     employeeInJobDTO.Name = e.Name;
                     employeeInJobDTO.Surname = e.Surname;
                     employeeInJobDTO.ExperienceName = "Brak doświadczenia";
+                    employeeInJobDTO.ExperienceId = null;
                     listEmployeeInJobDTOList[FindIndexResult].EmployeeInJobList.Add(employeeInJobDTO);
 
                     listEmployeeInJobDTOList[FindIndexResult].Hours = specializationsWithHours[FindIndex].Hours;
@@ -557,7 +559,7 @@ namespace inzRafalRutowski.Controllers
                         var EmployeeSpecializations = _context.EmployeeSpecializations.FirstOrDefault(x3 => x3.EmployeeId == x.Id && x3.SpecializationId == request.SpecializationId);
                         if (EmployeeSpecializations != null)
                         {
-                            employee.ExperienceName = _context.Experiences.First(x3 => x3.Id == EmployeeSpecializations.ExperienceId).experienceName;
+                            employee.ExperienceName = _context.Experiences.First(x3 => x3.Id == EmployeeSpecializations.ExperienceId).ExperienceName;
                         }
                         else employee.ExperienceName = "Brak doświadczenia";
 
@@ -585,7 +587,7 @@ namespace inzRafalRutowski.Controllers
                             .FirstOrDefault(x3 => x3.EmployeeWithoutEmployerId == x.Id && x3.SpecializationId == request.SpecializationId);
                         if (EmployeeSpecializations != null)
                         {
-                            employee.ExperienceName = _context.Experiences.First(x3 => x3.Id == EmployeeSpecializations.ExperienceId).experienceName;
+                            employee.ExperienceName = _context.Experiences.First(x3 => x3.Id == EmployeeSpecializations.ExperienceId).ExperienceName;
                         }
                         else employee.ExperienceName = "Brak doświadczenia";
 
@@ -615,14 +617,14 @@ namespace inzRafalRutowski.Controllers
             if (experienceIdNewEnployee != null && request.Employee.IsEmployed == true)
             {
                 var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployee.ExperienceId);
-                experiencesName = experiences.experienceName;
-                experiencesValue = experiences.experienceValue;
+                experiencesName = experiences.ExperienceName;
+                experiencesValue = experiences.ExperienceValue;
             }
             else if (experienceIdNewEnployeeWithoutEmployer != null && request.Employee.IsEmployed == false)
             {
                 var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployeeWithoutEmployer.ExperienceId);
-                experiencesName = experiences.experienceName;
-                experiencesValue = experiences.experienceValue;
+                experiencesName = experiences.ExperienceName;
+                experiencesValue = experiences.ExperienceValue;
             }
 
             var jobFunctions = new JobFunctions();
@@ -726,6 +728,9 @@ namespace inzRafalRutowski.Controllers
                     jobEmployee.JobId = currentJobId;
                     jobEmployee.TimeStartJob = request.Start;
                     jobEmployee.TimeFinishJob = (DateTime)x.End;
+                    jobEmployee.SpecializationId = x.SpecializationId;
+                    if (x2.ExperienceId != null)
+                        jobEmployee.ExperienceId = (int)x2.ExperienceId;
                     if (x.ResponsiblePersonEmployeeId == x2.EmployeeId)
                         jobEmployee.IsNeed = true;
                     else
@@ -839,6 +844,9 @@ namespace inzRafalRutowski.Controllers
                     jobEmployee.JobId = (int)currentJobId;
                     jobEmployee.TimeStartJob = request.Start;
                     jobEmployee.TimeFinishJob = (DateTime)x.End;
+                    jobEmployee.SpecializationId = x.SpecializationId;
+                    if (x2.ExperienceId != null)
+                        jobEmployee.ExperienceId = (int)x2.ExperienceId;
                     if (x.ResponsiblePersonEmployeeId == x2.EmployeeId)
                         jobEmployee.IsNeed = true;
                     else

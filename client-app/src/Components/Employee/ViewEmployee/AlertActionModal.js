@@ -27,7 +27,7 @@ const AlertAction = (props) => {
         const message = "Pracownik jest odpowiedzialny za prace: "
         return (
             <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                Pracownik zatrudniony jest w pracach:
+                Pracownik używa tych specjalizacji w pracach:
                 {props.employeInJobList.employeeModifylist.map(x => " " + x.jobName)} <br /><br />
                 {(props.employeInJobList.removeSpecialist === true ? message : '')}
                 {(props.employeInJobList.removeSpecialist === true ?
@@ -81,7 +81,7 @@ const AlertAction = (props) => {
                     <ButtonBootstrapBack
                         type="submit"
                         id="button"
-                        value="Powrót"
+                        value="Anuluj"
                         onClick={() => { props.setModalOpenAlert(false) }}
                     />
                 </ButtonContainer >

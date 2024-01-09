@@ -9,10 +9,11 @@ import TextField from '@mui/material/TextField';
 import { Button } from "@mui/material";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import { AlertAction } from '../Employee/AlertAction';
+import { AlertAction } from './AlertActionModal';
 import Typography from '@mui/joy/Typography';
 import * as dayjs from 'dayjs'
 import { ConfirmModal } from '../../Global/ConfirmModal';
+import { EditEmployee } from './EditModal';
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -98,6 +99,13 @@ const Employee = () => {
   const [confirmModal, setConfirmModal] = useState(false)
   const [nameEmployee, setNameEmployee] = useState('')
   const [employeeId, setEmployeeId] = useState()
+  const [editModal, setEditModal] = useState(false)
+
+  //te są do edycji
+  const [dataListSpecializationAndExperience, setDataListSpecializationAndExperience] = useState([]);
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [dataSpecialization, setDataSpecialization] = useState([]);
 
   const userId = sessionStorage.getItem("userId");
 
@@ -118,10 +126,12 @@ const Employee = () => {
   const removeEmployee = (id, item) => {
     setNameEmployee(item.name + " " + item.surname)
     setEmployeeId(id)
-    axios.get('http://localhost:5000/api/Employee/checkEmployeeWork', { params: { employeeId: id } })
+
+
+    axios.post('http://localhost:5000/api/Employee/checkEmployeeWork',
+      { employeeId: id, isEdit: false })
       .then(response => {
-        console.log(response.data)
-        setEmployeInJobList(response.data) //tu podane 
+        setEmployeInJobList(response.data)
         setIsRemove(true)
         setMessage(removeStartText)
         setModalOpenAlert(true)
@@ -129,20 +139,25 @@ const Employee = () => {
   }
   const editEmployee = (id, item) => {
     setNameEmployee(item.name + " " + item.surname)
+    setEmployeeId(id)
 
-    // sprawdzać czy zmieniliśmy coś poza nazwą i nazwiskiem może zrobić liste na starcie i na końcu ją porównać 
+    axios.get('http://localhost:5000/api/Employee/getEmployeeToEdit', { params: { employeeId: id } })
+      .then(response => {
+        setName(response.data.name)
+        setSurname(response.data.surname)
+        setDataListSpecializationAndExperience(response.data.dataListSpecializationAndExperience)
 
-    // albo zrobienie okna modalnego, albo przejście do nowej strony
-    // wygląd edycji tak jak w dodaniu, ale z uzupełnionymi danymi
-    // edytujemy pracownika
-
-    // przy edycji będzie trzeba sprawdzać czy zrobiliśmy coś poza edycją nazw, jeżeli tak to zrobić to poniżej, jeżlei tylko nazwy to tylko potwierdzenie
-
-    //trzeba tu wysłać id pracownika i sprawdzić czy nie jest gdzieś zatrudniony (żeby to zrobić trzeba dokończyć dodawanie praconików do pracy)
-    //następnie okno modalne z potwierdzeniem. Jeżeli gdzieś pracuje to o tym poinformować z ewentualnymi nazwami rpac gdzie
-    //jeżeli potwierdzi to trzeba dla tych prac zrobić edycje. (trzbea pomyśleć jaką, albo tylko usunąć osobę, albo usunąć osobę i dać do algorytmu
-    // ale tylko z tymi osobami co byli - ta osoba, albo to i to, ale nie wiem czy mam aż tyle czasu na robienie)
-    // na końcu informacja o pomyślnej edycji. Jeżeli edytowaliśmy prace to inforamcja o tym z ewentuanymi nazwami gdzie
+        axios.get('http://localhost:5000/api/Specialization', { params: { employerId: userId } })
+          .then(response2 => {
+            let tempDataSpecialization = response2.data
+            response.data.dataListSpecializationAndExperience.map(x => {
+              const index = tempDataSpecialization.findIndex(x2 => x2.id === x.specializationId)
+              tempDataSpecialization.splice(index, 1)
+            })
+            setDataSpecialization(tempDataSpecialization)
+            setEditModal(true)
+          })
+      })
   }
 
   const editWorks = () => {
@@ -162,7 +177,16 @@ const Employee = () => {
     }
     else //edycja pracownika
     {
-
+      axios.post('http://localhost:5000/api/employee/editEmployee', {
+        employerId: userId, name: name, surname: surname, employeeId: employeeId,
+        isEmployed: true, listSpecializationAndExperience: dataListSpecializationAndExperience
+      }).then(() => {
+        axios.get('http://localhost:5000/api/Employee/getEmployees', { params: { employerId: userId } })
+          .then(response => {
+            setDataListEmployee(response.data)
+            setEditModal(false)
+          })
+      })
     }
 
     if (employeInJobList.modifyWorks === true) {
@@ -397,11 +421,21 @@ const Employee = () => {
         nameTitle={"Pracownik " + nameEmployee} />
     )
   }
+  const renderEditEmployeeModal = () => {
+    return (
+      <EditEmployee nameEmployee={nameEmployee} name={name} setName={setName} surname={surname} setSurname={setSurname}
+        dataListSpecializationAndExperience={dataListSpecializationAndExperience} editModal={editModal} setModalOpenAlert={setModalOpenAlert}
+        setDataListSpecializationAndExperience={setDataListSpecializationAndExperience} employeeId={employeeId}
+        dataSpecialization={dataSpecialization} setDataSpecialization={setDataSpecialization} setEditModal={setEditModal}
+        setEmployeInJobList={setEmployeInJobList} setIsRemove={setIsRemove} setMessage={setMessage} editStartText={editStartText} />
+    )
+  }
 
   return (
     <>
       {renerModalAlertAction()}
       {renderConfirmModal()}
+      {renderEditEmployeeModal()}
 
       <TittleContainer>
         <h1>Pracownicy</h1>

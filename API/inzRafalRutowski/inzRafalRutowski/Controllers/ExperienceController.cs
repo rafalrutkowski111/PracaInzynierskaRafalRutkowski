@@ -47,7 +47,7 @@ namespace inzRafalRutowski.Controllers
 
             });
 
-            if (edit && (_context.Experiences.First(x => int.Equals(x.Id, experianceId)).experienceValue == value))
+            if (edit && (_context.Experiences.First(x => int.Equals(x.Id, experianceId)).ExperienceValue == value))
                 canModify = true;
             return Ok(canModify);
         }
@@ -57,8 +57,8 @@ namespace inzRafalRutowski.Controllers
         {
             var experianceItem = _context.Experiences.First(x => int.Equals(x.Id, request.ExperianceId));
 
-            experianceItem.experienceName = request.Name;
-            experianceItem.experienceValue = request.Value;
+            experianceItem.ExperienceName = request.Name;
+            experianceItem.ExperienceValue = request.Value;
 
             _context.SaveChanges();
 

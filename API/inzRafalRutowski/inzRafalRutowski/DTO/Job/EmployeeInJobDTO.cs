@@ -34,6 +34,7 @@
         public string Surname { get; set; }
         public string ExperienceName { get; set; }
         public bool? IsEmployed { get; set; }
+        public int? ExperienceId { get; set; }
     }
 
     public class ListEmployeeInJobWithNewEmployeeDTOList : ListEmployeeInJobDTOList

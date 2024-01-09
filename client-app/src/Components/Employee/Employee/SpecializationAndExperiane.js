@@ -89,7 +89,6 @@ const ButtonSpecializationAndExperiance = (props) => {
             experienceId: props.experianceValue, experianceName: experienceName.experienceName
         }])
 
-        console.log(props.specializationValue)
         var tempDataSpecialization = [...props.dataSpecialization];
         const i = tempDataSpecialization.findIndex(x => x.id === props.specializationValue)
         tempDataSpecialization.splice(i, 1)

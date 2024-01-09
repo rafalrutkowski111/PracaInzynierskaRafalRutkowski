@@ -25,7 +25,7 @@ namespace inzRafalRutowski.Class
             {
 
                 var employeeSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, x.Id) && int.Equals(e2.SpecializationId, e.SpecializationId)
-                && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, e2.ExperienceId)).experienceValue >= 70 // 70 stała waga- średniozaawansowany
+                && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, e2.ExperienceId)).ExperienceValue >= 70 // 70 stała waga- średniozaawansowany
                 ).ToList();
                 employeeSpecialization.ForEach(e2 =>
                 {
@@ -34,7 +34,7 @@ namespace inzRafalRutowski.Class
                     employee.SpecializationName = specializations.Select(e3 => e3.Name).First();
 
                     var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperienceId));
-                    employee.ExperienceName = experiences.Select(e3 => e3.experienceName).First();
+                    employee.ExperienceName = experiences.Select(e3 => e3.ExperienceName).First();
                     employee.Name = x.Name;
                     employee.Surname = x.Surname;
                     employee.EmployeeId = x.Id;
