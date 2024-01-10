@@ -195,6 +195,10 @@ const UpdateJob = () => {
                                 setDataStart(dayjs(response3.data.start));
                                 setDataEnd(dayjs(response3.data.end));
                                 setTitle(response3.data.title)
+                                setCity(response3.data.city)
+                                setStreet(response3.data.street)
+                                setNumber(response3.data.number)
+                                setZip(response3.data.zip)
 
                                 let tempResponseData = response3.data.listEmployeeAddToJob
                                 let tempDataListSpecialization = []
