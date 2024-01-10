@@ -12,6 +12,10 @@ namespace inzRafalRutowski.Models
         public string ListEmployeeAddToJob { get; set; }
         public string Color { get; set; }
         public DateTime TimeAddHistory { get; set; }
+        public string City { get; set; }
+        public string Street { get; set; }
+        public string Number { get; set; }
+        public string Zip { get; set; }
 
 
         public int JobId { get; set; }

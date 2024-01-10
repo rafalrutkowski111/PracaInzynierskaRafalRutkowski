@@ -9,7 +9,10 @@
         public string Title { get; set; }
         public string ListEmployeeAddToJob { get; set; } 
         public string Color { get; set; }
-
+        public string City { get; set; }
+        public string Street { get; set; }
+        public string Number { get; set; }
+        public string Zip { get; set; }
 
         public int EmployerId { get; set; }
         public Employer Employer { get; set; }
