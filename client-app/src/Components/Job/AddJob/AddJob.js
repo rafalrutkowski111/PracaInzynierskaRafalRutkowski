@@ -141,7 +141,7 @@ const AddJob = () => {
             setErrorAddressZipLabel("Pole nie może być puste")
             setErrorAddressZip(true)
         }
-        
+
         if (title === "" || dataEnd === null || dataEnd.$d === "Invalid Date" || dataStart === null ||
             dataStart.$d === "Invalid Date" || dataStart > dataEnd || dataListSpecialization.length === 0
             || city === "" || street === "" || number === "" || zip === "" || !rgxZIP.test(zip)) return
@@ -243,6 +243,7 @@ const AddJob = () => {
                 setCurrentSpecialistUserIdToChange={setCurrentSpecialistUserIdToChange} setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist}
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"addJob"} isUpdate={false}
+                city={city} street={street} number={number} zip={zip}
             />
         )
     }

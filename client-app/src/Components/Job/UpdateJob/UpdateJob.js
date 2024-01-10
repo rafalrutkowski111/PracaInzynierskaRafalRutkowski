@@ -465,6 +465,7 @@ const UpdateJob = () => {
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"editJob"} jobId={params.id} isUpdate={true}
                 listEmployeeAddToJobEdit={listEmployeeAddToJobEdit} justEdit={justEdit} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
                 dataListSpecialization={dataListSpecialization} setDataSpecialization={setDataSpecialization} dataSpecialization={dataSpecialization}
+                city={city} street={street} number={number} zip={zip}
             />
         )
     }

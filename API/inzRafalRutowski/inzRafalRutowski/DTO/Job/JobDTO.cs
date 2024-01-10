@@ -15,7 +15,10 @@ namespace inzRafalRutowski.DTO.Job
         public int? JobId { get; set; }
         public double? FinishWorkHours { get; set; }
         public DateTime? TimeAddHistory { get; set; }
-        
+        public string City { get; set; }
+        public string Street { get; set; }
+        public string Number { get; set; }
+        public string Zip { get; set; }
 
     }
 

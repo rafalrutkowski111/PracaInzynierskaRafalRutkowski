@@ -48,11 +48,11 @@ const Summary = (props) => {
             })
 
         props.setListEmployeeAddToJob(sendlistEmployeeAddToJob)
-            
+
         axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
-            jobId: props.action === 'editJob' ? props.jobId : null
+            jobId: props.action === 'editJob' ? props.jobId : null, city:props.city, street:props.street, number:props.number, zip:props.zip
         })
             .then(props.setModalOpenConfirmAdd(true))
     }
