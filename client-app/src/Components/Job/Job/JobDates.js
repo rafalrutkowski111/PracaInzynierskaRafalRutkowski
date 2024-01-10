@@ -6,7 +6,6 @@ import * as dayjs from 'dayjs'
 
 const DataContainer = styled.div`
     margin-top:2%;
-    margin-bottom:3%;
     display: flex;
     justify-content: center;
 `

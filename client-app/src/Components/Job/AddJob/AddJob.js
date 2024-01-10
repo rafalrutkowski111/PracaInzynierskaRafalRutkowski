@@ -10,6 +10,7 @@ import JobDate from "../Job/JobDates";
 import JobTitle from "../Job/JobTitle";
 import { VerificationEmployeeToJob } from "../Job/JobFunctions";
 import * as dayjs from 'dayjs'
+import JobAddress from "../Job/JobAddress";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -250,6 +251,11 @@ const AddJob = () => {
             />
         )
     }
+    const renderAddress = () =>{
+        return(
+            <JobAddress/>
+        )
+    }
     return (
         <>
             {renderModalSpecializationEmptyList()}
@@ -270,6 +276,7 @@ const AddJob = () => {
 
             {renderJobTitle()}
             {renderJobDates()}
+            {renderAddress()}
             {renderAddSpecializationAndHours()}
             {renderButtonSpeciazization()}
             {renderViewSpecializationAndHours()}

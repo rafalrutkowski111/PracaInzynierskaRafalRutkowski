@@ -11,7 +11,7 @@ import Sheet from '@mui/joy/Sheet';
 import Container from '@mui/material/Container';
 
 const SelectContainer = styled.div`
-    margin-top: 1%;
+    margin-top: 2%;
     display: flex;
     justify-content: center;
 `
