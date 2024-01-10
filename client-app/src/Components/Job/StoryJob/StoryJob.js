@@ -60,6 +60,9 @@ const StoryJob = () => {
                             <div onClick={() => showHide(x.id)}>{dayjs(x.timeAddHistory).format('YYYY/MM/DD-HH:mm:ss')}</div>
                         </StoryTitleContainer>
                         <div style={{ display: "none" }} id={x.id}>
+                        <StoryContainer>
+                                <p>Adres: {x.city + " " + x.street + " " + x.number + " " + x.zip}</p>
+                            </StoryContainer>
                             <StoryContainer>
                                 <p>Termin rozpoczęcia pracy: {dayjs(x.start).format('DD/MM/YYYY')}</p>
                             </StoryContainer>
