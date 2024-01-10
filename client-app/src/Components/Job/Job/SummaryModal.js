@@ -149,6 +149,8 @@ const Summary = (props) => {
 
 
                 <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+                    <p>Nazwa pracy - {props.title}</p>
+                    <p>Adres - {props.city} {props.street} {props.number} {props.zip}</p>
                     <p>Termin rozpoczęcia pracy - {props.startDayWork}</p>
                     <p>Termin zakończenia pracy - {dayjs(props.dataEnd).format('DD/MM/YYYY')}</p>
                     <p>Czas zakończenia pracy -  {dayjs(props.endDayWork).year() === 2100 ? "Praca się nie zakończy" : dayjs(props.endDayWork).format('DD/MM/YYYY-HH.mm')} </p>
