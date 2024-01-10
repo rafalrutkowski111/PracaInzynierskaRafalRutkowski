@@ -43,12 +43,11 @@ const AddJob = () => {
 
     const [dataSpecialization, setDataSpecialization] = useState([]);
     const [dataListSpecialization, setDataListSpecialization] = useState([]);
-    const [dataStart, setDataStart] = useState('');
-    const [dataEnd, setDataEnd] = useState('');
+    const [dataStart, setDataStart] = useState(null);
+    const [dataEnd, setDataEnd] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalSpecializationListEmpltyOpen, setModalSpecializationListEmpltyOpen] = useState(false);
     const [openAddSpecialization, setOpenAddSpecialization] = useState(true);
-    const [openAddEmployee, setOpenAddEmployee] = useState(true);
     const [dataEmployeeWithSpecialization, setDataEmployeeWithSpecialization] = useState([]);
     const [specializationValue, setSpecializationValue] = useState('');
     const [hoursValue, setHoursValue] = useState('');
@@ -72,13 +71,35 @@ const AddJob = () => {
     const [indexSpecialistToChange, setIndexSpecialistToChange] = useState(0);
     const [currentSpecialistUserIdToChange, setCurrentSpecialistUserIdToChange] = useState();
     const [modalOpenAddEmployee, setModalOpenAddEmployee] = useState(false);
-    const [listEmployeeToAdd, setListEmployeeToAdd] = useState({employeeToAdd: [], employeeWithoutEmployerToAdd: [] })
+    const [listEmployeeToAdd, setListEmployeeToAdd] = useState({ employeeToAdd: [], employeeWithoutEmployerToAdd: [] })
     const [modalOpenSummaryViewEmployee, setModalOpenSummaryViewEmployee] = useState(false);
     const [idSpecializationToChangeEmployee, setIdSpecializationToChangeEmployee] = useState(-1)
     const [modalOpenConfirmAdd, setModalOpenConfirmAdd] = useState(false);
     const [heightModal, setHeightModal] = useState(700)
+    const [city, setCity] = useState('')
+    const [street, setStreet] = useState('')
+    const [number, setNumber] = useState('')
+    const [zip, setZip] = useState('')
+
+    const [errorTitle, setErrorTitle] = useState(false)
+    const [errorTitleLabel, setErrorTitleLabel] = useState('')
+    const [errorDataStart, setErrorDataStart] = useState(false)
+    const [errorDataStartLabel, setErrorDataStartLabel] = useState('')
+    const [errorDataEnd, setErrorDataEnd] = useState(false)
+    const [errorDataEndLabel, setErrorDataEndLabel] = useState('')
+    const [errorSpecializationLabel, setErrorSpecializationLabel] = useState('')
+    const [errorAddressCity, setErrorAddressCity] = useState(false)
+    const [errorAddressCityLabel, setErrorAddressCityLabel] = useState('')
+    const [errorAddressStreet, setErrorAddressStreet] = useState(false)
+    const [errorAddressStreetLabel, setErrorAddressStreetLabel] = useState('')
+    const [errorAddressNumber, setErrorAddressNumber] = useState(false)
+    const [errorAddressNumberLabel, setErrorAddressNumberLabel] = useState('')
+    const [errorAddressZip, setErrorAddressZip] = useState(false)
+    const [errorAddressZipLabel, setErrorAddressZipLabel] = useState('')
+
 
     const userId = sessionStorage.getItem("userId");
+    const rgxZIP = /^[0-9]{2}[-][0-9]{3}(-[0-9]{2}[-][0-9]{2})?$/;
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
@@ -89,14 +110,46 @@ const AddJob = () => {
     const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
 
     const next = () => {
-
-        if (dataEnd.$d === "Invalid Date" || dataStart.$d === "Invalid Date" || dataStart > dataEnd) return
+        if (title === "") {
+            setErrorTitleLabel("Pole nie może być puste");
+            setErrorTitle(true);
+        }
+        if (dataStart === null) {
+            setErrorDataStartLabel("Data nie może być pusta")
+            setErrorDataStart(true)
+        }
+        if (dataEnd === null) {
+            setErrorDataEndLabel("Data nie może być pusta")
+            setErrorDataEnd(true)
+        }
+        if (dataListSpecialization.length === 0) {
+            setErrorSpecializationLabel("Lista specjalizacji nie może być pusta")
+        }
+        if (city === "") {
+            setErrorAddressCityLabel("Pole nie może być puste")
+            setErrorAddressCity(true)
+        }
+        if (street === "") {
+            setErrorAddressStreetLabel("Pole nie może być puste")
+            setErrorAddressStreet(true)
+        }
+        if (number === "") {
+            setErrorAddressNumberLabel("Pole nie może być puste")
+            setErrorAddressNumber(true)
+        }
+        if (zip === "") {
+            setErrorAddressZipLabel("Pole nie może być puste")
+            setErrorAddressZip(true)
+        }
+        
+        if (title === "" || dataEnd === null || dataEnd.$d === "Invalid Date" || dataStart === null ||
+            dataStart.$d === "Invalid Date" || dataStart > dataEnd || dataListSpecialization.length === 0
+            || city === "" || street === "" || number === "" || zip === "" || !rgxZIP.test(zip)) return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
-            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd),isUpdate:false })
+            { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd), isUpdate: false })
             .then(response => {
                 setDataEmployeeWithSpecialization(response.data.specializationList)
-                //console.log(response.data)
                 setSearchEmployee(response.data.searchEmployee)
                 setListEmployeeSpecializationListEmpty(response.data.listEmployeeSpecializationListEmplty)
 
@@ -125,9 +178,9 @@ const AddJob = () => {
     }
     const renderViewSpecializationAndHours = () => {
         return (
-            <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization} setOpenAddEmployee={setOpenAddEmployee}
+            <ViewSpecializationAndHours dataListSpecialization={dataListSpecialization} errorSpecializationLabel={errorSpecializationLabel}
                 setDataSpecialization={setDataSpecialization} setDataListSpecialization={setDataListSpecialization}
-                setSpecializationValue={setSpecializationValue}
+                setSpecializationValue={setSpecializationValue} setErrorSpecializationLabel={setErrorSpecializationLabel}
             />
         )
     }
@@ -230,15 +283,17 @@ const AddJob = () => {
     const renderJobDates = () => {
         return (
             <JobDate setDataStart={setDataStart} dataListSpecialization={dataListSpecialization} dataEnd={dataEnd}
-                title={title} setOpenAddEmployee={setOpenAddEmployee} dataStart={dataStart} setDataEnd={setDataEnd}
-                isUpdate={false}
+                title={title} dataStart={dataStart} setDataEnd={setDataEnd} isUpdate={false}
+                errorDataStart={errorDataStart} setErrorDataStart={setErrorDataStart} errorDataStartLabel={errorDataStartLabel}
+                setErrorDataStartLabel={setErrorDataStartLabel} setErrorDataEndLabel={setErrorDataEndLabel}
+                errorDataEnd={errorDataEnd} setErrorDataEnd={setErrorDataEnd} errorDataEndLabel={errorDataEndLabel}
             />
         )
     }
     const renderJobTitle = () => {
         return (
             <JobTitle setTitle={setTitle} dataListSpecialization={dataListSpecialization} dataEnd={dataEnd} dataStart={dataStart}
-                setOpenAddEmployee={setOpenAddEmployee} />
+                errorTitle={errorTitle} setErrorTitle={setErrorTitle} errorTitleLabel={errorTitleLabel} setErrorTitleLabel={setErrorTitleLabel} />
         )
     }
     const renderButtonSpeciazization = () => {
@@ -247,13 +302,19 @@ const AddJob = () => {
                 specializationValue={specializationValue} hoursValue={hoursValue} dataSpecialization={dataSpecialization} setDataListSpecialization={setDataListSpecialization}
                 setDataSpecialization={setDataSpecialization} setChangeValueHours={setChangeValueHours} setHoursValue={setHoursValue} title={title}
                 setSpecializationValue={setSpecializationValue} setOpenAddSpecialization={setOpenAddSpecialization} dataStart={dataStart} dataEnd={dataEnd}
-                setOpenAddEmployee={setOpenAddEmployee}
+                setErrorSpecializationLabel={setErrorSpecializationLabel}
             />
         )
     }
-    const renderAddress = () =>{
-        return(
-            <JobAddress/>
+    const renderAddress = () => {
+        return (
+            <JobAddress city={city} setCity={setCity} street={street} setStreet={setStreet} number={number} setNumber={setNumber} zip={zip} setZip={setZip}
+            errorAddressCity={errorAddressCity} setErrorAddressCity={setErrorAddressCity} errorAddressCityLabel={errorAddressCityLabel}
+            setErrorAddressCityLabel={setErrorAddressCityLabel} errorAddressStreet={errorAddressStreet} setErrorAddressStreet={setErrorAddressStreet}
+            errorAddressStreetLabel={errorAddressStreetLabel} setErrorAddressStreetLabel={setErrorAddressStreetLabel} errorAddressNumber={errorAddressNumber}
+            setErrorAddressNumber={setErrorAddressNumber} errorAddressNumberLabel={errorAddressNumberLabel} setErrorAddressNumberLabel={setErrorAddressNumberLabel}
+            errorAddressZip={errorAddressZip} setErrorAddressZip={setErrorAddressZip} errorAddressZipLabel={errorAddressZipLabel}
+            setErrorAddressZipLabel={setErrorAddressZipLabel}/>
         )
     }
     return (
@@ -283,7 +344,6 @@ const AddJob = () => {
 
             < ButtonBootstrapContainer >
                 <ButtonBootstrap
-                    disabled={openAddEmployee}
                     type="submit"
                     id="button"
                     value="Dalej"

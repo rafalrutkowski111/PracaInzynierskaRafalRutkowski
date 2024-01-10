@@ -19,17 +19,45 @@ const JobDate = (props) => {
     const changeStartDate = (e) => {
         props.setDataStart(e)
 
-        if (props.dataListSpecialization.length - 1 >= 0 && e !== "" && props.dataEnd !== "" && props.title !== "")
-            props.setOpenAddEmployee(false)
-        else props.setOpenAddEmployee(true)
+        if (e === null) {
+            props.setErrorDataStartLabel("Data nie może być pusta");
+            props.setErrorDataStart(true);
+        }
+        else if (e.$d == "Invalid Date") {
+            props.setErrorDataStartLabel("Niepoprawna data");
+            props.setErrorDataStart(true);
+        }
+        else if(e > props.dataEnd && props.dataEnd != null)
+        {
+            props.setErrorDataStartLabel("Data rozpoczęcia nie może być większa niż zakończenia");
+            props.setErrorDataStart(true);
+        }
+        else {
+            props.setErrorDataStartLabel("");
+            props.setErrorDataStart(false);
+        }
     }
 
     const changeEndDate = (e) => {
         props.setDataEnd(e)
 
-        if (props.dataListSpecialization.length - 1 >= 0 && props.dataStart !== "" && e !== "" && props.title !== "")
-            props.setOpenAddEmployee(false)
-        else props.setOpenAddEmployee(true)
+        if (e === null) {
+            props.setErrorDataEndLabel("Data nie może być pusta");
+            props.setErrorDataEnd(true);
+        }
+        else if (e.$d == "Invalid Date") {
+            props.setErrorDataEndLabel("Niepoprawna data");
+            props.setErrorDataEnd(true);
+        }
+        else if(props.dataStart < e)
+        {
+            props.setErrorDataStartLabel("");
+            props.setErrorDataStart(false);
+        }
+        else {
+            props.setErrorDataEndLabel("");
+            props.setErrorDataEnd(false);
+        }
     }
 
     const startValidation = (date) => {
@@ -42,7 +70,7 @@ const JobDate = (props) => {
         const day = date.day();
 
         if (props.isUpdate === true && date.format('YYYY/MM/DD') === dayjs(new Date()).format('YYYY/MM/DD')) return true
-        if (props.dataStart !== '') 
+        if (props.dataStart !== '')
             return props.dataStart >= date || day === 0 || day === 6;
         return day === 0 || day === 6;
     };
@@ -50,6 +78,12 @@ const JobDate = (props) => {
         <DataContainer>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
+                    slotProps={{
+                        textField: {
+                            helperText: props.errorDataStartLabel,
+                            error: props.errorDataStart
+                        },
+                    }}
                     value={props.isUpdate !== true ? null : dayjs(props.dataStart)}
                     disablePast={props.isUpdate !== true ? null : dayjs(props.dataEnd)}
                     label="Data rozpoczęcia projektu"
@@ -58,6 +92,12 @@ const JobDate = (props) => {
                     disabled={props.isUpdate !== true ? null : changeStartWork ? true : false}
                 />
                 <DatePicker
+                    slotProps={{
+                        textField: {
+                            helperText: props.errorDataEndLabel,
+                            error: props.errorDataEnd
+                        },
+                    }}
                     value={props.isUpdate !== true ? null : dayjs(props.dataEnd)}
                     disablePast={props.isUpdate !== true ? null : dayjs(props.dataEnd)}
                     label="Data zakończenia projektu"

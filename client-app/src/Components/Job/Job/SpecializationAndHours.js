@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 import Container from '@mui/material/Container';
+import FormHelperText from '@mui/material/FormHelperText';
 
 const SelectContainer = styled.div`
     margin-top: 2%;
@@ -75,8 +76,7 @@ const AddSpecializationAndHours = (props) => {
 const ViewSpecializationAndHours = (props) => {
 
     const removeSpecializationAndHours = (id) => {
-        if (props.dataListSpecialization.length - 1 === 0)
-            props.setOpenAddEmployee(true)
+        //if (props.dataListSpecialization.length - 1 === 0)
 
         const list = [...props.dataListSpecialization];
         const specializationRemove = list.find(x => x.SpecializationId === id)
@@ -87,6 +87,8 @@ const ViewSpecializationAndHours = (props) => {
         props.setDataListSpecialization(list)
 
         props.setSpecializationValue(id)
+
+        props.setErrorSpecializationLabel("Lista specjalizacji nie może być pusta")
     }
 
     const changeHoursInList = (e, itemChange) => {
@@ -151,8 +153,8 @@ const ViewSpecializationAndHours = (props) => {
                         ))}
                     </tbody>
                 </Table>
+                <FormHelperText error><b>{props.errorSpecializationLabel}</b></FormHelperText>
                 {props.isUpdate === true ? "Liczba po * oznacza liczbę wykonanej pracy (licząc z dniem dzisiejszym)" : null}
-
             </Sheet>
         </Container>
     )
@@ -177,9 +179,7 @@ const AddSpecializationButton = (props) => {
 
         props.setOpenAddSpecialization(true)
 
-        if (props.dataStart !== "" && props.dataEnd !== "" && props.title !== "")
-            props.setOpenAddEmployee(false)
-        else props.setOpenAddEmployee(true)
+        props.setErrorSpecializationLabel('')
     }
 
     return (

@@ -11,23 +11,25 @@ const TittleContainer = styled.div`
 const JobTitle = (props) => {
 
     const changeTitle = (e) => {
-        const currentDate = new Date();
-        if (e.target.value === '') {
-            e.target.value = "Praca-" + dayjs(currentDate).format('DD/MM/YYYY-HH:mm');
+        props.setTitle(e)
+        if (e === '') {
+            props.setErrorTitle(true)
+            props.setErrorTitleLabel("Pole nie może być puste")
         }
-        props.setTitle(e.target.value)
-
-        if (props.dataListSpecialization.length - 1 >= 0 && props.dataEnd !== "" && props.dataStart)
-            props.setOpenAddEmployee(false)
-        else props.setOpenAddEmployee(true)
+        else {
+            props.setErrorTitle(false)
+            props.setErrorTitleLabel("")
+        }
     }
 
-    return(
+    return (
         <TittleContainer>
             <TextField
-                value={props.isUpdate !== true ? null : props.title}
+                error={props.errorTitle}
+                helperText={props.errorTitleLabel}
+                value={props.title}
                 InputLabelProps={{ shrink: true }}
-                onChange={e => changeTitle(e)}
+                onChange={e => changeTitle(e.target.value)}
                 id="outlined-basic"
                 label="Nazwa pracy"
                 variant="outlined" />
