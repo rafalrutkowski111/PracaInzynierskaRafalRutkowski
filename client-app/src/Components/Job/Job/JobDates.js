@@ -49,14 +49,15 @@ const JobDate = (props) => {
             props.setErrorDataEndLabel("Niepoprawna data");
             props.setErrorDataEnd(true);
         }
-        else if(props.dataStart < e)
-        {
-            props.setErrorDataStartLabel("");
-            props.setErrorDataStart(false);
-        }
         else {
             props.setErrorDataEndLabel("");
             props.setErrorDataEnd(false);
+        }
+
+        if(props.dataStart < e && props.dataStart != null)
+        {
+            props.setErrorDataStartLabel("");
+            props.setErrorDataStart(false);
         }
     }
 

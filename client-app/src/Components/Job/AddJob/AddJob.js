@@ -11,6 +11,7 @@ import JobTitle from "../Job/JobTitle";
 import { VerificationEmployeeToJob } from "../Job/JobFunctions";
 import * as dayjs from 'dayjs'
 import JobAddress from "../Job/JobAddress";
+import { jsPDF } from "jspdf";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -310,16 +311,34 @@ const AddJob = () => {
     const renderAddress = () => {
         return (
             <JobAddress city={city} setCity={setCity} street={street} setStreet={setStreet} number={number} setNumber={setNumber} zip={zip} setZip={setZip}
-            errorAddressCity={errorAddressCity} setErrorAddressCity={setErrorAddressCity} errorAddressCityLabel={errorAddressCityLabel}
-            setErrorAddressCityLabel={setErrorAddressCityLabel} errorAddressStreet={errorAddressStreet} setErrorAddressStreet={setErrorAddressStreet}
-            errorAddressStreetLabel={errorAddressStreetLabel} setErrorAddressStreetLabel={setErrorAddressStreetLabel} errorAddressNumber={errorAddressNumber}
-            setErrorAddressNumber={setErrorAddressNumber} errorAddressNumberLabel={errorAddressNumberLabel} setErrorAddressNumberLabel={setErrorAddressNumberLabel}
-            errorAddressZip={errorAddressZip} setErrorAddressZip={setErrorAddressZip} errorAddressZipLabel={errorAddressZipLabel}
-            setErrorAddressZipLabel={setErrorAddressZipLabel}/>
+                errorAddressCity={errorAddressCity} setErrorAddressCity={setErrorAddressCity} errorAddressCityLabel={errorAddressCityLabel}
+                setErrorAddressCityLabel={setErrorAddressCityLabel} errorAddressStreet={errorAddressStreet} setErrorAddressStreet={setErrorAddressStreet}
+                errorAddressStreetLabel={errorAddressStreetLabel} setErrorAddressStreetLabel={setErrorAddressStreetLabel} errorAddressNumber={errorAddressNumber}
+                setErrorAddressNumber={setErrorAddressNumber} errorAddressNumberLabel={errorAddressNumberLabel} setErrorAddressNumberLabel={setErrorAddressNumberLabel}
+                errorAddressZip={errorAddressZip} setErrorAddressZip={setErrorAddressZip} errorAddressZipLabel={errorAddressZipLabel}
+                setErrorAddressZipLabel={setErrorAddressZipLabel} />
         )
+    }
+
+    const generatePDF = () => {
+        console.log("test")
+        var pdf = new jsPDF({
+            orientation: 'p',
+            unit: 'mm',
+            format: 'a5',
+            putOnlyUsedFonts: true
+        });
+        pdf.text("Hello World", 20, 20);
+        pdf.save('Demopdf.pdf');
     }
     return (
         <>
+                        <ButtonBootstrap
+                    type="submit"
+                    id="button"
+                    value="Dalej"
+                    onClick={() => { generatePDF(); }}
+                />
             {renderModalSpecializationEmptyList()}
             {renderModalSpecializationList()}
             {renderModalViewEmployee()}
