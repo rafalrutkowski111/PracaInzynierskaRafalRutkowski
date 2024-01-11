@@ -13,6 +13,7 @@ import { EmployeeList, NotEnoughEmployee } from "../Job/EmployeeModal";
 import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "../Job/SummaryModal";
 import JobAddress from "../Job/JobAddress";
 import { Estimate, MoneyPerHour } from "../Job/Estimate";
+import Investor from "../Job/Investor";
 
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -89,6 +90,8 @@ const UpdateJob = () => {
     const [modalOpenMoneyPerHour, setModalOpenMoneyPerHour] = useState(false)
     const [moneyPerHour, setMoneyPerHour] = useState('')
     const [modalOpenEstimate, setModalOpenEstimate] = useState('')
+    const [nameInvestor, setNameInvestor] = useState('')
+    const [surnameInvestor, setSurnameInvestor] = useState('')
 
     const [errorTitle, setErrorTitle] = useState(false)
     const [errorTitleLabel, setErrorTitleLabel] = useState('')
@@ -107,6 +110,10 @@ const UpdateJob = () => {
     const [errorAddressZipLabel, setErrorAddressZipLabel] = useState('')
     const [errorMoneyPerHour, setErrorMoneyPerHour] = useState(false)
     const [errorMoneyPerHourLabel, setErrorMoneyPerHourLabel] = useState('')
+    const [errorNameInvestor, setErrorNameInvestor] = useState(false)
+    const [errorNameInvestorLabel, setErrorNameInvestorLabel] = useState('')
+    const [errorSurnameInvestor, setErrorSurnameInvestor] = useState(false)
+    const [errorSurnameInvestorLabel, setErrorSurnameInvestorLabel] = useState('')
 
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
@@ -261,10 +268,19 @@ const UpdateJob = () => {
             setErrorAddressZipLabel("Pole nie może być puste")
             setErrorAddressZip(true)
         }
+        if (nameInvestor === "") {
+            setErrorNameInvestorLabel("Pole nie może być puste")
+            setErrorNameInvestor(true)
+        }
+        if (surnameInvestor === "") {
+            setErrorSurnameInvestorLabel("Pole nie może być puste")
+            setErrorSurnameInvestor(true)
+        }
 
         if (title === "" || dataEnd === null || dataEnd.$d === "Invalid Date" || dataStart === null ||
             dataStart.$d === "Invalid Date" || dataStart > dataEnd || dataListSpecialization.length === 0
-            || city === "" || street === "" || number === "" || zip === "" || !rgxZIP.test(zip)) return
+            || city === "" || street === "" || number === "" || zip === "" || !rgxZIP.test(zip) || nameInvestor === ""
+            || surnameInvestor === "") return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             {
@@ -326,10 +342,19 @@ const UpdateJob = () => {
             setErrorAddressZipLabel("Pole nie może być puste")
             setErrorAddressZip(true)
         }
+        if (nameInvestor === "") {
+            setErrorNameInvestorLabel("Pole nie może być puste")
+            setErrorNameInvestor(true)
+        }
+        if (surnameInvestor === "") {
+            setErrorSurnameInvestorLabel("Pole nie może być puste")
+            setErrorSurnameInvestor(true)
+        }
 
         if (title === "" || dataEnd === null || dataEnd.$d === "Invalid Date" || dataStart === null ||
             dataStart.$d === "Invalid Date" || dataStart > dataEnd || dataListSpecialization.length === 0
-            || city === "" || street === "" || number === "" || zip === "" || !rgxZIP.test(zip)) return
+            || city === "" || street === "" || number === "" || zip === "" || !rgxZIP.test(zip) || nameInvestor === ""
+            || surnameInvestor === "") return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             {
@@ -475,7 +500,7 @@ const UpdateJob = () => {
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"editJob"} jobId={params.id} isUpdate={true}
                 listEmployeeAddToJobEdit={listEmployeeAddToJobEdit} justEdit={justEdit} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
                 dataListSpecialization={dataListSpecialization} setDataSpecialization={setDataSpecialization} dataSpecialization={dataSpecialization}
-                city={city} street={street} number={number} zip={zip}
+                city={city} street={street} number={number} zip={zip} nameInvestor={nameInvestor} surnameInvestor={surnameInvestor}
             />
         )
     }
@@ -516,25 +541,33 @@ const UpdateJob = () => {
     const renderAddress = () => {
         return (
             <JobAddress city={city} setCity={setCity} street={street} setStreet={setStreet} number={number} setNumber={setNumber} zip={zip} setZip={setZip}
-            errorAddressCity={errorAddressCity} setErrorAddressCity={setErrorAddressCity} errorAddressCityLabel={errorAddressCityLabel}
-            setErrorAddressCityLabel={setErrorAddressCityLabel} errorAddressStreet={errorAddressStreet} setErrorAddressStreet={setErrorAddressStreet}
-            errorAddressStreetLabel={errorAddressStreetLabel} setErrorAddressStreetLabel={setErrorAddressStreetLabel} errorAddressNumber={errorAddressNumber}
-            setErrorAddressNumber={setErrorAddressNumber} errorAddressNumberLabel={errorAddressNumberLabel} setErrorAddressNumberLabel={setErrorAddressNumberLabel}
-            errorAddressZip={errorAddressZip} setErrorAddressZip={setErrorAddressZip} errorAddressZipLabel={errorAddressZipLabel}
-            setErrorAddressZipLabel={setErrorAddressZipLabel}/>
+                errorAddressCity={errorAddressCity} setErrorAddressCity={setErrorAddressCity} errorAddressCityLabel={errorAddressCityLabel}
+                setErrorAddressCityLabel={setErrorAddressCityLabel} errorAddressStreet={errorAddressStreet} setErrorAddressStreet={setErrorAddressStreet}
+                errorAddressStreetLabel={errorAddressStreetLabel} setErrorAddressStreetLabel={setErrorAddressStreetLabel} errorAddressNumber={errorAddressNumber}
+                setErrorAddressNumber={setErrorAddressNumber} errorAddressNumberLabel={errorAddressNumberLabel} setErrorAddressNumberLabel={setErrorAddressNumberLabel}
+                errorAddressZip={errorAddressZip} setErrorAddressZip={setErrorAddressZip} errorAddressZipLabel={errorAddressZipLabel}
+                setErrorAddressZipLabel={setErrorAddressZipLabel} />
         )
     }
     const renderModalMoneyPerHour = () => {
         return (
-            <MoneyPerHour modalOpenMoneyPerHour={modalOpenMoneyPerHour} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} 
-            moneyPerHour={moneyPerHour} setMoneyPerHour={setMoneyPerHour} errorMoneyPerHour={errorMoneyPerHour}
-            setErrorMoneyPerHour={setErrorMoneyPerHour} errorMoneyPerHourLabel={errorMoneyPerHourLabel} 
-            setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate}/>
+            <MoneyPerHour modalOpenMoneyPerHour={modalOpenMoneyPerHour} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
+                moneyPerHour={moneyPerHour} setMoneyPerHour={setMoneyPerHour} errorMoneyPerHour={errorMoneyPerHour}
+                setErrorMoneyPerHour={setErrorMoneyPerHour} errorMoneyPerHourLabel={errorMoneyPerHourLabel}
+                setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate} />
         )
     }
     const renderModalEstimate = () => {
         return (
-            <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}/>
+            <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} />
+        )
+    }
+    const renderNameAndSurnameInvestor = () => {
+        return (
+            <Investor nameInvestor={nameInvestor} setNameInvestor={setNameInvestor} surnameInvestor={surnameInvestor} setSurnameInvestor={setSurnameInvestor}
+                errorNameInvestor={errorNameInvestor} setErrorNameInvestor={setErrorNameInvestor} errorNameInvestorLabel={errorNameInvestorLabel}
+                setErrorNameInvestorLabel={setErrorNameInvestorLabel} errorSurnameInvestor={errorSurnameInvestor} setErrorSurnameInvestor={setErrorSurnameInvestor}
+                errorSurnameInvestorLabel={errorSurnameInvestorLabel} setErrorSurnameInvestorLabel={setErrorSurnameInvestorLabel} />
         )
     }
 
@@ -559,6 +592,7 @@ const UpdateJob = () => {
             </TittleContainer>
 
             {renderJobTitle()}
+            {renderNameAndSurnameInvestor()}
             {renderJobDates()}
             {renderAddress()}
             {renderAddSpecializationAndHours()}

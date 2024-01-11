@@ -52,7 +52,8 @@ const Summary = (props) => {
         axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
-            jobId: props.action === 'editJob' ? props.jobId : null, city: props.city, street: props.street, number: props.number, zip: props.zip
+            jobId: props.action === 'editJob' ? props.jobId : null, city: props.city, street: props.street, number: props.number, zip: props.zip,
+            name: props.nameInvestor, surname: props.surnameInvestor
         })
             .then(props.setModalOpenConfirmAdd(true))
     }

@@ -43,7 +43,7 @@ const AddSpecializationAndHours = (props) => {
 
     return (
         <SelectContainer>
-            <FormControl sx={{ minWidth: 300 }}>
+            <FormControl sx={{ minWidth: 222 }}>
                 <InputLabel>Specjazlizacja</InputLabel>
                 <Select
                     label="Specjazlizacja"

@@ -12,6 +12,7 @@ import { VerificationEmployeeToJob } from "../Job/JobFunctions";
 import * as dayjs from 'dayjs'
 import JobAddress from "../Job/JobAddress";
 import { Estimate, MoneyPerHour } from "../Job/Estimate";
+import Investor from "../Job/Investor";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -84,7 +85,9 @@ const AddJob = () => {
     const [modalOpenMoneyPerHour, setModalOpenMoneyPerHour] = useState(false)
     const [moneyPerHour, setMoneyPerHour] = useState('')
     const [modalOpenEstimate, setModalOpenEstimate] = useState('')
-    
+    const [nameInvestor, setNameInvestor] = useState('')
+    const [surnameInvestor, setSurnameInvestor] = useState('')
+
     const [errorTitle, setErrorTitle] = useState(false)
     const [errorTitleLabel, setErrorTitleLabel] = useState('')
     const [errorDataStart, setErrorDataStart] = useState(false)
@@ -102,6 +105,11 @@ const AddJob = () => {
     const [errorAddressZipLabel, setErrorAddressZipLabel] = useState('')
     const [errorMoneyPerHour, setErrorMoneyPerHour] = useState(false)
     const [errorMoneyPerHourLabel, setErrorMoneyPerHourLabel] = useState('')
+    const [errorNameInvestor, setErrorNameInvestor] = useState(false)
+    const [errorNameInvestorLabel, setErrorNameInvestorLabel] = useState('')
+    const [errorSurnameInvestor, setErrorSurnameInvestor] = useState(false)
+    const [errorSurnameInvestorLabel, setErrorSurnameInvestorLabel] = useState('')
+
 
 
     const userId = sessionStorage.getItem("userId");
@@ -147,10 +155,19 @@ const AddJob = () => {
             setErrorAddressZipLabel("Pole nie może być puste")
             setErrorAddressZip(true)
         }
+        if (nameInvestor === "") {
+            setErrorNameInvestorLabel("Pole nie może być puste")
+            setErrorNameInvestor(true)
+        }
+        if (surnameInvestor === "") {
+            setErrorSurnameInvestorLabel("Pole nie może być puste")
+            setErrorSurnameInvestor(true)
+        }
 
         if (title === "" || dataEnd === null || dataEnd.$d === "Invalid Date" || dataStart === null ||
             dataStart.$d === "Invalid Date" || dataStart > dataEnd || dataListSpecialization.length === 0
-            || city === "" || street === "" || number === "" || zip === "" || !rgxZIP.test(zip)) return
+            || city === "" || street === "" || number === "" || zip === "" || !rgxZIP.test(zip) || nameInvestor === ""
+            || surnameInvestor === "") return
 
         axios.post('http://localhost:5000/api/Job/JobSpecialization',
             { JobSpecialization: dataListSpecialization, EmployerId: userId, start: dayjs(dataStart), end: dayjs(dataEnd), isUpdate: false })
@@ -250,6 +267,7 @@ const AddJob = () => {
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"addJob"} isUpdate={false}
                 city={city} street={street} number={number} zip={zip} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
+                nameInvestor={nameInvestor} surnameInvestor={surnameInvestor}
             />
         )
     }
@@ -326,15 +344,23 @@ const AddJob = () => {
     }
     const renderModalMoneyPerHour = () => {
         return (
-            <MoneyPerHour modalOpenMoneyPerHour={modalOpenMoneyPerHour} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} 
-            moneyPerHour={moneyPerHour} setMoneyPerHour={setMoneyPerHour} errorMoneyPerHour={errorMoneyPerHour}
-            setErrorMoneyPerHour={setErrorMoneyPerHour} errorMoneyPerHourLabel={errorMoneyPerHourLabel} 
-            setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate}/>
+            <MoneyPerHour modalOpenMoneyPerHour={modalOpenMoneyPerHour} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
+                moneyPerHour={moneyPerHour} setMoneyPerHour={setMoneyPerHour} errorMoneyPerHour={errorMoneyPerHour}
+                setErrorMoneyPerHour={setErrorMoneyPerHour} errorMoneyPerHourLabel={errorMoneyPerHourLabel}
+                setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate} />
         )
     }
     const renderModalEstimate = () => {
         return (
-            <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}/>
+            <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} />
+        )
+    }
+    const renderNameAndSurnameInvestor = () => {
+        return (
+            <Investor nameInvestor={nameInvestor} setNameInvestor={setNameInvestor} surnameInvestor={surnameInvestor} setSurnameInvestor={setSurnameInvestor}
+                errorNameInvestor={errorNameInvestor} setErrorNameInvestor={setErrorNameInvestor} errorNameInvestorLabel={errorNameInvestorLabel}
+                setErrorNameInvestorLabel={setErrorNameInvestorLabel} errorSurnameInvestor={errorSurnameInvestor} setErrorSurnameInvestor={setErrorSurnameInvestor}
+                errorSurnameInvestorLabel={errorSurnameInvestorLabel} setErrorSurnameInvestorLabel={setErrorSurnameInvestorLabel} />
         )
     }
     return (
@@ -358,6 +384,7 @@ const AddJob = () => {
             </TittleContainer>
 
             {renderJobTitle()}
+            {renderNameAndSurnameInvestor()}
             {renderJobDates()}
             {renderAddress()}
             {renderAddSpecializationAndHours()}
