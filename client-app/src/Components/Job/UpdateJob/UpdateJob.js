@@ -12,6 +12,7 @@ import { VerificationEmployeeToJob } from "../Job/JobFunctions";
 import { EmployeeList, NotEnoughEmployee } from "../Job/EmployeeModal";
 import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee } from "../Job/SummaryModal";
 import JobAddress from "../Job/JobAddress";
+import { Estimate, MoneyPerHour } from "../Job/Estimate";
 
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -85,6 +86,9 @@ const UpdateJob = () => {
     const [street, setStreet] = useState('')
     const [number, setNumber] = useState('')
     const [zip, setZip] = useState('')
+    const [modalOpenMoneyPerHour, setModalOpenMoneyPerHour] = useState(false)
+    const [moneyPerHour, setMoneyPerHour] = useState('')
+    const [modalOpenEstimate, setModalOpenEstimate] = useState('')
 
     const [errorTitle, setErrorTitle] = useState(false)
     const [errorTitleLabel, setErrorTitleLabel] = useState('')
@@ -101,6 +105,8 @@ const UpdateJob = () => {
     const [errorAddressNumberLabel, setErrorAddressNumberLabel] = useState('')
     const [errorAddressZip, setErrorAddressZip] = useState(false)
     const [errorAddressZipLabel, setErrorAddressZipLabel] = useState('')
+    const [errorMoneyPerHour, setErrorMoneyPerHour] = useState(false)
+    const [errorMoneyPerHourLabel, setErrorMoneyPerHourLabel] = useState('')
 
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
@@ -518,6 +524,19 @@ const UpdateJob = () => {
             setErrorAddressZipLabel={setErrorAddressZipLabel}/>
         )
     }
+    const renderModalMoneyPerHour = () => {
+        return (
+            <MoneyPerHour modalOpenMoneyPerHour={modalOpenMoneyPerHour} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} 
+            moneyPerHour={moneyPerHour} setMoneyPerHour={setMoneyPerHour} errorMoneyPerHour={errorMoneyPerHour}
+            setErrorMoneyPerHour={setErrorMoneyPerHour} errorMoneyPerHourLabel={errorMoneyPerHourLabel} 
+            setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate}/>
+        )
+    }
+    const renderModalEstimate = () => {
+        return (
+            <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}/>
+        )
+    }
 
     return (
         <>
@@ -531,6 +550,8 @@ const UpdateJob = () => {
             {renderModalAddEmployee()}
             {renderModalSummaryViewEmployee()}
             {renderModalConfirmAdd()}
+            {renderModalMoneyPerHour()}
+            {renderModalEstimate()}
 
 
             <TittleContainer>

@@ -33,8 +33,8 @@ const Summary = (props) => {
 
         let sendlistEmployeeAddToJob = props.listEmployeeAddToJob
 
-            //dodanie wykonanych prac
-            if(props.dataListSpecialization != undefined)
+        //dodanie wykonanych prac
+        if (props.dataListSpecialization != undefined)
             props.dataListSpecialization.map(x => {
                 if (props.listEmployeeAddToJob.find(x2 => x2.specializationId == x.SpecializationId) == undefined) {
                     sendlistEmployeeAddToJob.push({
@@ -42,7 +42,7 @@ const Summary = (props) => {
                         hoursStart: x.Hours,
                         specializationId: x.SpecializationId,
                         specializationName: x.SpecializationName,
-                        employeeInJobList:[]
+                        employeeInJobList: []
                     })
                 }
             })
@@ -52,7 +52,7 @@ const Summary = (props) => {
         axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
-            jobId: props.action === 'editJob' ? props.jobId : null, city:props.city, street:props.street, number:props.number, zip:props.zip
+            jobId: props.action === 'editJob' ? props.jobId : null, city: props.city, street: props.street, number: props.number, zip: props.zip
         })
             .then(props.setModalOpenConfirmAdd(true))
     }
@@ -174,17 +174,17 @@ const Summary = (props) => {
                                 {props.dataEmployeeWithSpecialization.map((item) => {
                                     return (
                                         item.hide === true ? null :
-                                        <tr>
-                                            <td>{item.specializationName}</td>
-                                            <td>{item.hours}</td>
-                                            <td>{item.nameSurname}</td>
-                                            <td>
-                                                <Button
-                                                    onClick={() => changeSpecialist(item.specializationId, item.employeeId)}
-                                                    startIcon={<ManageAccountsIcon />}>Podgląd
-                                                </Button>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>{item.specializationName}</td>
+                                                <td>{item.hours}</td>
+                                                <td>{item.nameSurname}</td>
+                                                <td>
+                                                    <Button
+                                                        onClick={() => changeSpecialist(item.specializationId, item.employeeId)}
+                                                        startIcon={<ManageAccountsIcon />}>Podgląd
+                                                    </Button>
+                                                </td>
+                                            </tr>
                                     )
                                 })}
 
@@ -264,13 +264,19 @@ const Summary = (props) => {
                         type="submit"
                         id="button"
                         value={props.action === 'addJob' ? "Dodaj prace" : "Edytuj prace"}
-                        onClick={() => { addNewJob() }}
+                        onClick={() => addNewJob()}
+                    />
+                    <props.ButtonBootstrap
+                        type="submit"
+                        id="button"
+                        value={"Dodaj kosztorys"}
+                        onClick={() => props.setModalOpenMoneyPerHour(true)}
                     />
                     <props.ButtonBootstrapBack
                         type="submit"
                         id="button"
                         value="Anuluj"
-                        onClick={() => { props.setModalOpenSummary(false) }}
+                        onClick={() => props.setModalOpenSummary(false)}
                     />
                 </props.ButtonContainer >
 

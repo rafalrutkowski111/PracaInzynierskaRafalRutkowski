@@ -11,7 +11,7 @@ import JobTitle from "../Job/JobTitle";
 import { VerificationEmployeeToJob } from "../Job/JobFunctions";
 import * as dayjs from 'dayjs'
 import JobAddress from "../Job/JobAddress";
-import { jsPDF } from "jspdf";
+import { Estimate, MoneyPerHour } from "../Job/Estimate";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -81,7 +81,10 @@ const AddJob = () => {
     const [street, setStreet] = useState('')
     const [number, setNumber] = useState('')
     const [zip, setZip] = useState('')
-
+    const [modalOpenMoneyPerHour, setModalOpenMoneyPerHour] = useState(false)
+    const [moneyPerHour, setMoneyPerHour] = useState('')
+    const [modalOpenEstimate, setModalOpenEstimate] = useState('')
+    
     const [errorTitle, setErrorTitle] = useState(false)
     const [errorTitleLabel, setErrorTitleLabel] = useState('')
     const [errorDataStart, setErrorDataStart] = useState(false)
@@ -97,6 +100,8 @@ const AddJob = () => {
     const [errorAddressNumberLabel, setErrorAddressNumberLabel] = useState('')
     const [errorAddressZip, setErrorAddressZip] = useState(false)
     const [errorAddressZipLabel, setErrorAddressZipLabel] = useState('')
+    const [errorMoneyPerHour, setErrorMoneyPerHour] = useState(false)
+    const [errorMoneyPerHourLabel, setErrorMoneyPerHourLabel] = useState('')
 
 
     const userId = sessionStorage.getItem("userId");
@@ -244,7 +249,7 @@ const AddJob = () => {
                 setCurrentSpecialistUserIdToChange={setCurrentSpecialistUserIdToChange} setModalOpenChangeSpeclialist={setModalOpenChangeSpeclialist}
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"addJob"} isUpdate={false}
-                city={city} street={street} number={number} zip={zip}
+                city={city} street={street} number={number} zip={zip} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
             />
         )
     }
@@ -319,26 +324,21 @@ const AddJob = () => {
                 setErrorAddressZipLabel={setErrorAddressZipLabel} />
         )
     }
-
-    const generatePDF = () => {
-        console.log("test")
-        var pdf = new jsPDF({
-            orientation: 'p',
-            unit: 'mm',
-            format: 'a5',
-            putOnlyUsedFonts: true
-        });
-        pdf.text("Hello World", 20, 20);
-        pdf.save('Demopdf.pdf');
+    const renderModalMoneyPerHour = () => {
+        return (
+            <MoneyPerHour modalOpenMoneyPerHour={modalOpenMoneyPerHour} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} 
+            moneyPerHour={moneyPerHour} setMoneyPerHour={setMoneyPerHour} errorMoneyPerHour={errorMoneyPerHour}
+            setErrorMoneyPerHour={setErrorMoneyPerHour} errorMoneyPerHourLabel={errorMoneyPerHourLabel} 
+            setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate}/>
+        )
+    }
+    const renderModalEstimate = () => {
+        return (
+            <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}/>
+        )
     }
     return (
         <>
-                        <ButtonBootstrap
-                    type="submit"
-                    id="button"
-                    value="Dalej"
-                    onClick={() => { generatePDF(); }}
-                />
             {renderModalSpecializationEmptyList()}
             {renderModalSpecializationList()}
             {renderModalViewEmployee()}
@@ -349,6 +349,8 @@ const AddJob = () => {
             {renderModalAddEmployee()}
             {renderModalSummaryViewEmployee()}
             {renderModalConfirmAdd()}
+            {renderModalMoneyPerHour()}
+            {renderModalEstimate()}
 
 
             <TittleContainer>
