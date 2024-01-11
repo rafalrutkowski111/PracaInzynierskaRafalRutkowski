@@ -212,6 +212,8 @@ const UpdateJob = () => {
                                 setStreet(response3.data.street)
                                 setNumber(response3.data.number)
                                 setZip(response3.data.zip)
+                                setNameInvestor(response3.data.name)
+                                setSurnameInvestor(response3.data.surname)
 
                                 let tempResponseData = response3.data.listEmployeeAddToJob
                                 let tempDataListSpecialization = []

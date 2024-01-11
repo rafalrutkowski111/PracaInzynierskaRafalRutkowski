@@ -16,6 +16,8 @@ namespace inzRafalRutowski.Models
         public string Street { get; set; }
         public string Number { get; set; }
         public string Zip { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
 
 
         public int JobId { get; set; }
