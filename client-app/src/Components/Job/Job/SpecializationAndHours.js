@@ -76,8 +76,6 @@ const AddSpecializationAndHours = (props) => {
 const ViewSpecializationAndHours = (props) => {
 
     const removeSpecializationAndHours = (id) => {
-        //if (props.dataListSpecialization.length - 1 === 0)
-
         const list = [...props.dataListSpecialization];
         const specializationRemove = list.find(x => x.SpecializationId === id)
 
@@ -88,7 +86,8 @@ const ViewSpecializationAndHours = (props) => {
 
         props.setSpecializationValue(id)
 
-        props.setErrorSpecializationLabel("Lista specjalizacji nie może być pusta")
+        if (props.dataListSpecialization.length - 1 === 0)
+            props.setErrorSpecializationLabel("Lista specjalizacji nie może być pusta")
     }
 
     const changeHoursInList = (e, itemChange) => {
