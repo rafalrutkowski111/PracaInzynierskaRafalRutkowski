@@ -27,7 +27,7 @@ const AlertAction = (props) => {
         const message = "Pracownik jest odpowiedzialny za prace: "
         return (
             <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
-                Pracownik używa tych specjalizacji w pracach:
+                Pracownik używa tych specjalizacji w pracach (zaktualizuje je):
                 {props.employeInJobList.employeeModifylist.map(x => " " + x.jobName)} <br /><br />
                 {(props.employeInJobList.removeSpecialist === true ? message : '')}
                 {(props.employeInJobList.removeSpecialist === true ?

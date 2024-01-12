@@ -266,12 +266,11 @@ namespace inzRafalRutowski.Controllers
 
                     if (request.IsEdit == true)
                     {
-                        //tu jest błąd, bo chcemy uwzględniać tylko prace ktora wykonujemy
                         changeSpecializationOrExperriance = request.ListSpecializationAndExperience.FirstOrDefault(x2 =>
-                        int.Equals(x2.SpecializationId, x.SpecializationId) && int.Equals(x2.ExperienceId, x.ExperienceId));
+                        int.Equals(x2.SpecializationId, x.SpecializationId) && x2.ExperienceId != x.ExperienceId);
                     }
 
-                    if (changeSpecializationOrExperriance == null)
+                    if (changeSpecializationOrExperriance != null)
                     {
                         modifyWorks = true;
                         var employeeModify = new EmployeeModifyDTO();
