@@ -92,6 +92,10 @@ const StoryJob = () => {
                                         </p>
                                     </StoryContainer>
                                     <StoryContainer>
+                                        <p>Ilość całkowitej pracy:
+                                            {" " + data.hoursStart.toFixed(0)}</p>
+                                    </StoryContainer>
+                                    <StoryContainer>
                                         <p>Ilość wykonanej pracy:
                                             {" " + data.finishWorkHours.toFixed(0)}</p>
                                     </StoryContainer>
