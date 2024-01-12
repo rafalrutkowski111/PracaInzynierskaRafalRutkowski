@@ -94,9 +94,14 @@ const Summary = (props) => {
         })
         props.setListEmployeeAddToJob(removeListEmployeeAddToJob)
 
+        var start
+        if(props.isUpdate === true)
+        start = props.startDataInUpdate
+        else start = dayjs(props.dataStart)
+
         axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
             {
-                listEmployeeInJobDTOList: removeListEmployeeAddToJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+                listEmployeeInJobDTOList: removeListEmployeeAddToJob, start: start, listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
             })
             .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 

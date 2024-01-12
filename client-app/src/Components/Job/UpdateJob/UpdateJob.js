@@ -516,7 +516,7 @@ const UpdateJob = () => {
                 listEmployeeAddToJobEdit={listEmployeeAddToJobEdit} justEdit={justEdit} setDataEmployeeWithSpecialization={setDataEmployeeWithSpecialization}
                 dataListSpecialization={dataListSpecialization} setDataSpecialization={setDataSpecialization} dataSpecialization={dataSpecialization}
                 city={city} street={street} number={number} zip={zip} nameInvestor={nameInvestor} surnameInvestor={surnameInvestor}
-                isEstimate={isEstimate} setIsEstimate={setIsEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
+                isEstimate={isEstimate} setIsEstimate={setIsEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} startDataInUpdate={startDataInUpdate}
             />
         )
     }
