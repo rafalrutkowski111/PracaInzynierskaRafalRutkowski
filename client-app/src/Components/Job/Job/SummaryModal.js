@@ -268,12 +268,21 @@ const Summary = (props) => {
                         value={props.action === 'addJob' ? "Dodaj prace" : "Edytuj prace"}
                         onClick={() => addNewJob()}
                     />
-                    <props.ButtonBootstrap
-                        type="submit"
-                        id="button"
-                        value={"Dodaj kosztorys"}
-                        onClick={() => props.setModalOpenMoneyPerHour(true)}
-                    />
+                    {props.isEstimate === true ?
+                        <props.ButtonBootstrapBack
+                            type="submit"
+                            id="button"
+                            value={"Usuń kosztorys"}
+                            onClick={() => props.setIsEstimate(false)}
+                        />
+                        :
+                        <props.ButtonBootstrap
+                            type="submit"
+                            id="button"
+                            value={"Dodaj kosztorys"}
+                            onClick={() => props.setModalOpenMoneyPerHour(true)}
+                        />
+                    }
                     <props.ButtonBootstrapBack
                         type="submit"
                         id="button"

@@ -6,6 +6,8 @@ import Typography from '@mui/joy/Typography';
 import Form from 'react-bootstrap/Form';
 import TextField from '@mui/material/TextField';
 import { jsPDF } from "jspdf";
+import Table from '@mui/joy/Table';
+import autoTable from 'jspdf-autotable'
 
 const ButtonContainer = styled.div`
     widht:60%;
@@ -48,7 +50,6 @@ const MoneyPerHour = (props) => {
         }
     }
     const validation = () => {
-        console.log("gggggggg")
         if (props.moneyPerHour === '') {
             props.setErrorMoneyPerHour(true)
             props.setErrorMoneyPerHourLabel("Pole nie może być puste")
@@ -63,7 +64,15 @@ const MoneyPerHour = (props) => {
         }
     }
     const next = () => {
-        //tu obliczyć i dodać do listy prace z ilością do zapłaty
+        var cost = 0;
+        const updateListEmployeeAddToJob = props.listEmployeeAddToJob.map(x => {
+            x.cost = parseInt((x.employeeInJobList.length * props.moneyPerHour * x.hoursStart).toFixed(0))
+            cost += x.cost
+            return x
+        })
+        props.setListEmployeeAddToJob(updateListEmployeeAddToJob)
+        props.setFullCost(cost.toFixed(0))
+
         props.setModalOpenEstimate(true)
     }
 
@@ -140,89 +149,194 @@ const MoneyPerHour = (props) => {
 }
 
 const Estimate = (props) => {
+    let currentDate = new Date().toJSON().slice(0, 10);
 
     const back = () => {
         props.setModalOpenEstimate(false)
         props.setModalOpenMoneyPerHour(false)
     }
+    const add = () => {
+        props.setIsEstimate(true)
+        props.setModalOpenEstimate(false)
+        props.setModalOpenMoneyPerHour(false)
+    }
 
     const generatePDF = () => {
-        console.log("test")
         var pdf = new jsPDF({
             orientation: 'p',
             unit: 'mm',
             format: 'a5',
             putOnlyUsedFonts: true
         });
-        pdf.text("Hello World", 20, 20);
-        pdf.save('Demopdf.pdf');
-    }
+        pdf.setFontSize(22).setFont(undefined, 'bold')
+        pdf.text("KOSZTORYS", 75, 30, 'center')
 
-    return (
-        <Modal
-            aria-labelledby="modal-title"
-            aria-describedby="modal-desc"
-            open={props.modalOpenEstimate}
-            onClose={() => props.setModalOpenEstimate(false)}
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        pdf.setFontSize(10).setFont(undefined, 'normal')
+        pdf.text(currentDate, 120, 10)
+        pdf.text(props.title, 38, 50)
+        pdf.text(props.city + " " + props.street + " " + props.number + " " + props.zip, 37, 55)
+        pdf.text(props.nameInvestor + " " + props.surnameInvestor, 42, 60)
+        pdf.text("Prace remontowe", 39, 65)
+        pdf.text(props.moneyPerHour, 57, 70)
+        pdf.text(currentDate, 45, 75)
+        pdf.text(props.employer.name + " " + props.employer.surname, 39, 80)
+        pdf.text(props.employer.phone, 29.5, 85)
+
+
+        pdf.setFontSize(10).setFont(undefined, 'bold')
+        pdf.text("Nazwa pracy:", 15, 50)
+        pdf.text("Adres pracy:", 15, 55)
+        pdf.text("Zleceniodawca:", 15, 60)
+        pdf.text("Rodzaj pracy:", 15, 65)
+        pdf.text("Stawka roboczogodziny:", 15, 70)
+        pdf.text("Data opracownia:", 15, 75)
+        pdf.text("Opracowanie:", 15, 80)
+        pdf.text("Telefon:", 15, 85)
+
+        autoTable(pdf, {
+            margin: { top: 90 },
+            head: [['Specializacja', 'Robocizna']],
+            body:
+                props.listEmployeeAddToJob.map((item) => {
+                    return (
+
+                        [item.specializationName,
+                        item.cost]
+                    )
+                })
+
+            ,
+            columns: [
+            { header: 'Europe', dataKey: 'europe' },
+            { header: 'Asia', dataKey: 'asia' },
+        ],
+        })
+        autoTable(pdf, {
+            body: [
+                ['RAZEM', "                                           " + props.fullCost + " PLN"],
+            ],
+        })
+
+
+    pdf.save(props.title + '_kosztorys.pdf');
+}
+
+return (
+    <Modal
+        aria-labelledby="modal-title"
+        aria-describedby="modal-desc"
+        open={props.modalOpenEstimate}
+        onClose={() => props.setModalOpenEstimate(false)}
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+    >
+        <Sheet
+            variant="outlined"
+            sx={{
+                width: 600,
+                maxWidth: 1200,
+                borderRadius: 'md',
+                p: 3,
+                boxShadow: 'lg',
+            }}
         >
-            <Sheet
-                variant="outlined"
-                sx={{
-                    width: 600,
-                    maxWidth: 800,
-                    borderRadius: 'md',
-                    p: 3,
-                    boxShadow: 'lg',
-                }}
+            <ModalClose variant="plain" sx={{ m: 1 }} />
+            <Typography
+                component="h2"
+                id="modal-title"
+                level="h4"
+                textColor="inherit"
+                fontWeight="lg"
+                mb={3}
             >
-                <ModalClose variant="plain" sx={{ m: 1 }} />
-                <Typography
-                    component="h2"
-                    id="modal-title"
-                    level="h4"
-                    textColor="inherit"
-                    fontWeight="lg"
-                    mb={3}
-                >
-                    Kosztorys
-                </Typography>
+                Dane do kosztorysu
+            </Typography>
 
-                test
+            <b>Nazwa pracy:</b> {props.title}
+            <br />
+            <b>Adres pracy:</b> {props.city}, {props.street} {props.number} {props.zip}
+            <br />
+            <b>Zleceniodawca:</b> {props.nameInvestor} {props.surnameInvestor}
+            <br />
+            <b>Rodzaj pracy:</b> prace remontowe
+            <br />
+            <b>Stawka roboczogodziny:</b> {props.moneyPerHour}
+            <br />
+            <b>Data opracownia:</b> {currentDate}
+            <br />
+            <b>Sporządził:</b> {props.employer.name} {props.employer.surname}
+            <br />
+            <b>Telefon:</b> {props.employer.phone}
+            <br />
+            <br />
 
-                trzeba dodać dane inwestora
-                w poprzednim oknie modalnym zrobić funkcje wyliczającą dane
-
-                < ButtonContainer >
-                    <ButtonBootstrap
-                        type="submit"
-                        id="button"
-                        value="pdfTEST"
-                        onClick={() => { generatePDF(); }}
-                    />
-                    <ButtonBootstrap
-                        type="submit"
-                        id="button"
-                        value="Dodaj"
-                    //onClick={ }
-                    />
-                    <ButtonBootstrap
-                        type="submit"
-                        id="button"
-                        value="Generuj pdf"
-                    //onClick={ }
-                    />
-                    <ButtonBootstrapBack
-                        type="submit"
-                        id="button"
-                        value="Anuluj"
-                        onClick={() => back()}
-                    />
-                </ButtonContainer >
-
+            <Sheet >
+                < Table
+                    variant="outlined"
+                    borderAxis="x"
+                    stickyHeader >
+                    <thead>
+                        <tr>
+                            <th>Specializacja</th>
+                            <th>Robocizna</th>
+                        </tr>
+                    </thead>
+                    {props.listEmployeeAddToJob.map((item) => {
+                        return (
+                            <>
+                                <tbody>
+                                    <tr>
+                                        <td>{item.specializationName}</td>
+                                        <td>{item.cost}</td>
+                                    </tr>
+                                </tbody>
+                            </>
+                        )
+                    })}
+                </Table >
             </Sheet>
-        </Modal >
-    )
+
+            <Sheet>
+                < Table
+                    stickyHeader
+                    stripe="odd"
+                >
+                    <thead>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>RAZEM</td>
+                            <td>{props.fullCost} PLN</td>
+                        </tr>
+                    </tbody>
+                </Table>
+            </Sheet>
+            <br />
+
+
+            < ButtonContainer >
+                <ButtonBootstrap
+                    type="submit"
+                    id="button"
+                    value="Dodaj"
+                    onClick={() => add()}
+                />
+                <ButtonBootstrap
+                    type="submit"
+                    id="button"
+                    value="Generuj pdf"
+                    onClick={() => { generatePDF(); }}
+                />
+                <ButtonBootstrapBack
+                    type="submit"
+                    id="button"
+                    value="Anuluj"
+                    onClick={() => back()}
+                />
+            </ButtonContainer >
+
+        </Sheet>
+    </Modal >
+)
 }
 
 export { MoneyPerHour }

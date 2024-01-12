@@ -87,6 +87,9 @@ const AddJob = () => {
     const [modalOpenEstimate, setModalOpenEstimate] = useState('')
     const [nameInvestor, setNameInvestor] = useState('')
     const [surnameInvestor, setSurnameInvestor] = useState('')
+    const [isEstimate, setIsEstimate] = useState(false)
+    const [employer, setEmployer] = useState({ name: '', surname: '', phone: '' })
+    const [fullCost, setFullCost] = useState('')
 
     const [errorTitle, setErrorTitle] = useState(false)
     const [errorTitleLabel, setErrorTitleLabel] = useState('')
@@ -119,6 +122,17 @@ const AddJob = () => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
             .then(response => {
                 setDataSpecialization(response.data);
+            })
+    }, [])
+    useEffect(() => {
+        axios.get('http://localhost:5000/api/employer', { params: { EmployerId: userId } })
+            .then(response => {
+                var employer = {
+                    name: response.data.name,
+                    surname: response.data.surname,
+                    phone: response.data.phone
+                }
+                setEmployer(employer)
             })
     }, [])
     const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
@@ -267,7 +281,7 @@ const AddJob = () => {
                 setEndDayWork={setEndDayWork} setListEmployeeToAdd={setListEmployeeToAdd} setModalOpenAddEmployee={setModalOpenAddEmployee}
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"addJob"} isUpdate={false}
                 city={city} street={street} number={number} zip={zip} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
-                nameInvestor={nameInvestor} surnameInvestor={surnameInvestor}
+                nameInvestor={nameInvestor} surnameInvestor={surnameInvestor} isEstimate={isEstimate} setIsEstimate={setIsEstimate}
             />
         )
     }
@@ -347,12 +361,16 @@ const AddJob = () => {
             <MoneyPerHour modalOpenMoneyPerHour={modalOpenMoneyPerHour} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
                 moneyPerHour={moneyPerHour} setMoneyPerHour={setMoneyPerHour} errorMoneyPerHour={errorMoneyPerHour}
                 setErrorMoneyPerHour={setErrorMoneyPerHour} errorMoneyPerHourLabel={errorMoneyPerHourLabel}
-                setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate} />
+                setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate}
+                listEmployeeAddToJob={listEmployeeAddToJob} setListEmployeeAddToJob={setListEmployeeAddToJob} setFullCost={setFullCost}/>
         )
     }
     const renderModalEstimate = () => {
         return (
-            <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} />
+            <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
+                setIsEstimate={setIsEstimate} title={title} city={city} street={street} number={number} zip={zip} nameInvestor={nameInvestor}
+                surnameInvestor={surnameInvestor} moneyPerHour={moneyPerHour} employer={employer} listEmployeeAddToJob={listEmployeeAddToJob}
+                fullCost={fullCost}/>
         )
     }
     const renderNameAndSurnameInvestor = () => {

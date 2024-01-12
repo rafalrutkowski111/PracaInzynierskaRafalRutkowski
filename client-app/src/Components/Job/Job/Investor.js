@@ -39,7 +39,7 @@ const Investor = (props) => {
                 InputLabelProps={{ shrink: true }}
                 onChange={e => changeName(e.target.value)}
                 id="outlined-basic"
-                label="Imie inwestora"
+                label="Imie zleceniodawcy"
                 variant="outlined" />
             <TextField
                 error={props.errorSurnameInvestor}
@@ -48,7 +48,7 @@ const Investor = (props) => {
                 InputLabelProps={{ shrink: true }}
                 onChange={e => changeSurname(e.target.value)}
                 id="outlined-basic"
-                label="Nazwisko inwestora"
+                label="Nazwisko zleceniodawcy"
                 variant="outlined" />
         </InvestorContainer>
     )

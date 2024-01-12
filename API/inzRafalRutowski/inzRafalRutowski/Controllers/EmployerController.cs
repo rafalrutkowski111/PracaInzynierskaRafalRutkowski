@@ -63,5 +63,18 @@ namespace inzRafalRutowski.Controllers
             if (string.Equals(builder.ToString(), hash)) return Ok();
             return BadRequest();
         }
+
+        [HttpGet]
+        public IActionResult GetEmployer([FromQuery] int employerId)
+        {
+            var employer = _context.Employers.FirstOrDefault(x => string.Equals(x.Id, employerId));
+
+            return Ok(new
+            {
+                name = employer.Name,
+                surname = employer.Surname,
+                phone = employer.Phone,
+            });
+        }
     }
 }
