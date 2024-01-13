@@ -7,9 +7,9 @@ using System.Text.Json;
 
 namespace inzRafalRutowski.Mapper
 {
-    public class TestMappingProfile : Profile
+    public class Mapper : Profile
     {
-        public TestMappingProfile() //jeżeli nazwy się pokrywają automatycznie są mapowane
+        public Mapper() //jeżeli nazwy się pokrywają automatycznie są mapowane
         {
             CreateMap<Employer, EmployerDTO>()  // z pierwszego argumentu do drugiego mapowanie
                 .ForMember(m => m.SurnameTest, c => c.MapFrom(s => s.Surname));

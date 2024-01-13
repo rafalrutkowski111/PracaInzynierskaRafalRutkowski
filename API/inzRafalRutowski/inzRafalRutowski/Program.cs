@@ -17,7 +17,7 @@ builder.Services.AddTransient<ITestApiService, TestApiService>();
 // start mapper
 var mapperConfig = new MapperConfiguration(mc =>
 {
-    mc.AddProfile(new TestMappingProfile()); // po zrobieniu normalnego mappera zaktualizowaæ
+    mc.AddProfile(new inzRafalRutowski.Mapper.Mapper());
 });
 
 IMapper mapper = mapperConfig.CreateMapper();
