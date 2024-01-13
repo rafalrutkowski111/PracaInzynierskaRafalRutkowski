@@ -1,4 +1,6 @@
-﻿namespace inzRafalRutowski.Models
+﻿using inzRafalRutowski.DTO.Job;
+
+namespace inzRafalRutowski.Models
 {
     public class Job
     {
@@ -15,6 +17,8 @@
         public string Zip { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
+        public bool isEstimate { get; set; }
+        public string? Estimate { get; set; }
 
         public int EmployerId { get; set; }
         public Employer Employer { get; set; }

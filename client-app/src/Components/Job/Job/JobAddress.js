@@ -26,8 +26,6 @@ const JobAddress = (props) => {
             props.setErrorAddressZip(false)
             props.setErrorAddressZipLabel("")
         }
-
-        console.log(rgxZIP.test(e))
     }
     const changeCity = (e) => {
         props.setCity(e)

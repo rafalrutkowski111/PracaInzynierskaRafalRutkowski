@@ -83,7 +83,7 @@ const Summary = (props) => {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
             jobId: props.action === 'editJob' ? props.jobId : null, city: props.city, street: props.street, number: props.number, zip: props.zip,
-            name: props.nameInvestor, surname: props.surnameInvestor, estimate: props.estimate, isEstimate: props.isEstimate
+            name: props.nameInvestor, surname: props.surnameInvestor, estimate: estimate, isEstimate: props.isEstimate
         })
             .then(props.setModalOpenConfirmAdd(true))
     }

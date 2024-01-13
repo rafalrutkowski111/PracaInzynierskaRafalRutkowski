@@ -21,7 +21,8 @@ namespace inzRafalRutowski.DTO.Job
         public string Zip { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-
+        public bool isEstimate { get; set; }
+        public Estimate? Estimate { get; set; }
     }
 
     public class ListEmployeeAddToJob
@@ -38,5 +39,23 @@ namespace inzRafalRutowski.DTO.Job
 
     }
 
+    public class Estimate
+    {
+        public string NameJob { get; set; }
+        public string AddressJob { get; set; }
+        public string Investor { get; set; }
+        public string TypeJob { get; set; }
+        public double moneyPerHour { get; set; }
+        public DateTime CreateDate { get; set; }
+        public string Create { get; set; }
+        public string Phone { get; set; }
+        public int FullCost { get; set; }
+        public List<CostInSpecialization> ListCost { get; set; }
+    }
 
+    public class CostInSpecialization
+    {
+        public string SpecializationName { get; set;}
+        public int Cost { get; set;}
+    }
 }
