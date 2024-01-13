@@ -203,6 +203,12 @@ const Employee = () => {
             let listEmployeeAddToJob = []
             let endWorkDay
             let title
+            let city
+            let street
+            let number
+            let zip
+            let name
+            let surname
 
             if (data.removeSpecialist) //przy usuwaniu + przy edycji jeżeli specjalista zejdzie poniżej wymaganej wartośći
               response.data.listEmployeeAddToJob.map(x => {
@@ -236,6 +242,12 @@ const Employee = () => {
             dataStart = dayjs(response.data.start);
             dataEnd = dayjs(response.data.end);
             title = response.data.title
+            city = response.data.city
+            street = response.data.street
+            number = response.data.number
+            zip = response.data.zip
+            name = response.data.name
+            surname = response.data.surname
 
             let needChangeHours = false
 
@@ -377,10 +389,27 @@ const Employee = () => {
                                   })
 
                                 //edycja pracy
+                                let currentDate = new Date().toJSON().slice(0, 10);
+                                
+                                var estimate = { //w maperze pozniej konwertujemy to więc nie może być nullwoalne
+                                  nameJob: '',
+                                  addressJob: '',
+                                  investor: '',
+                                  typeJob: '',
+                                  moneyPerHour: 0,
+                                  createDate: currentDate,
+                                  create: '',
+                                  phone: '',
+                                  fullCost: 0,
+                                  listCost: [{ specializationName: "brak", cost: 0 }]
+                                }
+
+
                                 axios.post('http://localhost:5000/api/Job/editJob', {
                                   title: title, desc: "description", listEmployeeAddToJob: listEmployeeAddToJob, color: "",
                                   start: dayjs(dataStart), end: dayjs(dataEnd), EmployerId: userId, currentEnd: dayjs(endWorkDay),
-                                  jobId: x.jobId
+                                  jobId: x.jobId, city: city, street: street, number: number, zip: zip,
+                                  name: name, surname: surname, estimate: estimate, isEstimate: false
                                 })
                                   .then(() => {
                                     if (isRemove === true)

@@ -56,7 +56,18 @@ const Summary = (props) => {
         let currentDate = new Date().toJSON().slice(0, 10);
 
 
-        var estimate = null
+        var estimate = { //w maperze pozniej konwertujemy to więc nie może być nullwoalne
+            nameJob: '',
+            addressJob: '',
+            investor: '',
+            typeJob: '',
+            moneyPerHour: 0,
+            createDate: currentDate,
+            create: '',
+            phone: '',
+            fullCost: 0,
+            listCost: [{ specializationName: "brak", cost: 0 }]
+        }
         if (props.isEstimate === true) {
             let updateEstimate = {
                 nameJob: props.title,
@@ -72,7 +83,7 @@ const Summary = (props) => {
             }
 
             props.listEmployeeAddToJob.map(x => {
-                updateEstimate.listCost.push({specializationName: x.specializationName, cost:x.cost})
+                updateEstimate.listCost.push({ specializationName: x.specializationName, cost: x.cost })
             })
 
             estimate = updateEstimate

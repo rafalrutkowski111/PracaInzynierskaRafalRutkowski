@@ -29,7 +29,7 @@ namespace inzRafalRutowski.Mapper
               .ForMember(m => m.Start, c => c.MapFrom(s => s.TimeStartJob))
               .ForMember(m => m.CurrentEnd, c => c.MapFrom(s => s.CurrentTimeFinishJob))
               .ForMember(m => m.ListEmployeeAddToJob, c => c.MapFrom((s,_) => JsonSerializer.Deserialize<List<ListEmployeeAddToJob>>(s.ListEmployeeAddToJob)))
-              .ForMember(m => m.Estimate, c => c.MapFrom((s, _) => JsonSerializer.Deserialize<List<Estimate>>(s.Estimate)));
+              .ForMember(m => m.Estimate, c => c.MapFrom((s, _) => JsonSerializer.Deserialize<Estimate>(s.Estimate)));
 
             CreateMap<JobDTO, JobHistory>()
                 .ForMember(m => m.TimeFinishJob, c => c.MapFrom(s => s.End))
@@ -43,7 +43,7 @@ namespace inzRafalRutowski.Mapper
               .ForMember(m => m.Start, c => c.MapFrom(s => s.TimeStartJob))
               .ForMember(m => m.CurrentEnd, c => c.MapFrom(s => s.CurrentTimeFinishJob))
               .ForMember(m => m.ListEmployeeAddToJob, c => c.MapFrom((s, _) => JsonSerializer.Deserialize<List<ListEmployeeAddToJob>>(s.ListEmployeeAddToJob)))
-              .ForMember(m => m.Estimate, c => c.MapFrom((s, _) => JsonSerializer.Deserialize<List<Estimate>>(s.Estimate)));
+              .ForMember(m => m.Estimate, c => c.MapFrom((s, _) => JsonSerializer.Deserialize<Estimate>(s.Estimate)));
 
             CreateMap<Job, Job>();
 
