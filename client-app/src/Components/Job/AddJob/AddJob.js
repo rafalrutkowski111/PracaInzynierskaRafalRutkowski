@@ -113,8 +113,6 @@ const AddJob = () => {
     const [errorSurnameInvestor, setErrorSurnameInvestor] = useState(false)
     const [errorSurnameInvestorLabel, setErrorSurnameInvestorLabel] = useState('')
 
-
-
     const userId = sessionStorage.getItem("userId");
     const rgxZIP = /^[0-9]{2}[-][0-9]{3}(-[0-9]{2}[-][0-9]{2})?$/;
 
@@ -282,6 +280,7 @@ const AddJob = () => {
                 setIdSpecializationToChangeEmployee={setIdSpecializationToChangeEmployee} action={"addJob"} isUpdate={false}
                 city={city} street={street} number={number} zip={zip} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
                 nameInvestor={nameInvestor} surnameInvestor={surnameInvestor} isEstimate={isEstimate} setIsEstimate={setIsEstimate}
+                moneyPerHour={moneyPerHour} employer={employer} fullCost={fullCost}
             />
         )
     }
@@ -362,7 +361,7 @@ const AddJob = () => {
                 moneyPerHour={moneyPerHour} setMoneyPerHour={setMoneyPerHour} errorMoneyPerHour={errorMoneyPerHour}
                 setErrorMoneyPerHour={setErrorMoneyPerHour} errorMoneyPerHourLabel={errorMoneyPerHourLabel}
                 setErrorMoneyPerHourLabel={setErrorMoneyPerHourLabel} setModalOpenEstimate={setModalOpenEstimate}
-                listEmployeeAddToJob={listEmployeeAddToJob} setListEmployeeAddToJob={setListEmployeeAddToJob} setFullCost={setFullCost}/>
+                listEmployeeAddToJob={listEmployeeAddToJob} setListEmployeeAddToJob={setListEmployeeAddToJob} setFullCost={setFullCost} />
         )
     }
     const renderModalEstimate = () => {
@@ -370,7 +369,7 @@ const AddJob = () => {
             <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
                 setIsEstimate={setIsEstimate} title={title} city={city} street={street} number={number} zip={zip} nameInvestor={nameInvestor}
                 surnameInvestor={surnameInvestor} moneyPerHour={moneyPerHour} employer={employer} listEmployeeAddToJob={listEmployeeAddToJob}
-                fullCost={fullCost}/>
+                fullCost={fullCost} />
         )
     }
     const renderNameAndSurnameInvestor = () => {

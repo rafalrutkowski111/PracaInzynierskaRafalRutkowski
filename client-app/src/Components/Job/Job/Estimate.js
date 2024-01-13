@@ -257,7 +257,7 @@ return (
             <br />
             <b>Zleceniodawca:</b> {props.nameInvestor} {props.surnameInvestor}
             <br />
-            <b>Rodzaj pracy:</b> prace remontowe
+            <b>Rodzaj pracy:</b> Prace remontowe
             <br />
             <b>Stawka roboczogodziny:</b> {props.moneyPerHour}
             <br />

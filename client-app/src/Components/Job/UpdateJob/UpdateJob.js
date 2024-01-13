@@ -517,6 +517,7 @@ const UpdateJob = () => {
                 dataListSpecialization={dataListSpecialization} setDataSpecialization={setDataSpecialization} dataSpecialization={dataSpecialization}
                 city={city} street={street} number={number} zip={zip} nameInvestor={nameInvestor} surnameInvestor={surnameInvestor}
                 isEstimate={isEstimate} setIsEstimate={setIsEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour} startDataInUpdate={startDataInUpdate}
+                moneyPerHour={moneyPerHour} employer={employer} fullCost={fullCost}
             />
         )
     }

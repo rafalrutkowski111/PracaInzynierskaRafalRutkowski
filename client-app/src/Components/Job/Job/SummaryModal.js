@@ -13,6 +13,10 @@ import axios from 'axios';
 
 const Summary = (props) => {
 
+
+
+
+
     const addNewJob = () => {
         const updatelistEmployeeAddToJob = props.listEmployeeAddToJob.map(x => {
             const temp = props.dataEmployeeWithSpecialization.find(x2 => x2.specializationId === x.specializationId);
@@ -49,11 +53,37 @@ const Summary = (props) => {
 
         props.setListEmployeeAddToJob(sendlistEmployeeAddToJob)
 
+        let currentDate = new Date().toJSON().slice(0, 10);
+
+
+        var estimate = null
+        if (props.isEstimate === true) {
+            let updateEstimate = {
+                nameJob: props.title,
+                addressJob: props.city + " " + props.street + " " + props.number + " " + props.zip,
+                investor: props.nameInvestor + " " + props.surnameInvestor,
+                typeJob: "Prace remontowe",
+                moneyPerHour: props.moneyPerHour,
+                createDate: currentDate,
+                create: props.employer.name + " " + props.employer.surname,
+                phone: props.employer.phone,
+                fullCost: props.fullCost,
+                listCost: []
+            }
+
+            props.listEmployeeAddToJob.map(x => {
+                updateEstimate.listCost.push({specializationName: x.specializationName, cost:x.cost})
+            })
+
+            estimate = updateEstimate
+
+        }
+
         axios.post('http://localhost:5000/api/Job/' + props.action, {
             title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
             start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
             jobId: props.action === 'editJob' ? props.jobId : null, city: props.city, street: props.street, number: props.number, zip: props.zip,
-            name: props.nameInvestor, surname: props.surnameInvestor
+            name: props.nameInvestor, surname: props.surnameInvestor, estimate: props.estimate, isEstimate: props.isEstimate
         })
             .then(props.setModalOpenConfirmAdd(true))
     }
@@ -95,8 +125,8 @@ const Summary = (props) => {
         props.setListEmployeeAddToJob(removeListEmployeeAddToJob)
 
         var start
-        if(props.isUpdate === true)
-        start = props.startDataInUpdate
+        if (props.isUpdate === true)
+            start = props.startDataInUpdate
         else start = dayjs(props.dataStart)
 
         axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
