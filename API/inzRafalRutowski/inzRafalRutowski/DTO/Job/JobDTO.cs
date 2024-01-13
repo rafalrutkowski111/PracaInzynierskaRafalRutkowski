@@ -22,7 +22,7 @@ namespace inzRafalRutowski.DTO.Job
         public string Name { get; set; }
         public string Surname { get; set; }
         public bool isEstimate { get; set; }
-        public Estimate? Estimate { get; set; }
+        public Estimate Estimate { get; set; }
     }
 
     public class ListEmployeeAddToJob

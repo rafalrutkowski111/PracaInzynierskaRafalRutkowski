@@ -18,7 +18,7 @@ namespace inzRafalRutowski.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public bool isEstimate { get; set; }
-        public string? Estimate { get; set; }
+        public string Estimate { get; set; }
 
         public int EmployerId { get; set; }
         public Employer Employer { get; set; }
