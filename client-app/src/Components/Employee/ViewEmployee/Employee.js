@@ -170,9 +170,11 @@ const Employee = () => {
     {
       axios.delete('http://localhost:5000/api/Employee', { params: { employeeId: employeeId } })
         .then(() => {
-          const index = dataListEmployee.findIndex(x => x.employeeId === employeeId)
-          const updateDataListEmployee = dataListEmployee.slice(0, index).concat(dataListEmployee.slice(index + 1))
-          setDataListEmployee(updateDataListEmployee)
+          axios.get('http://localhost:5000/api/Employee/getEmployees', { params: { employerId: userId } })
+            .then(response => {
+              setDataListEmployee(response.data)
+              setEditModal(false)
+            })
         })
     }
     else //edycja pracownika
@@ -390,7 +392,7 @@ const Employee = () => {
 
                                 //edycja pracy
                                 let currentDate = new Date().toJSON().slice(0, 10);
-                                
+
                                 var estimate = { //w maperze pozniej konwertujemy to więc nie może być nullwoalne
                                   nameJob: '',
                                   addressJob: '',

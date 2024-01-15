@@ -28,11 +28,11 @@ const AlertAction = (props) => {
         return (
             <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
                 Pracownik używa tych specjalizacji w pracach (zaktualizuje je):
-                {props.employeInJobList.employeeModifylist.map(x => " " + x.jobName)} <br /><br />
+                {props.employeInJobList.employeeModifylist.map(x => " " + x.jobName + ", ")} <br /><br />
                 {(props.employeInJobList.removeSpecialist === true ? message : '')}
                 {(props.employeInJobList.removeSpecialist === true ?
                     props.employeInJobList.employeeModifylist.map(x =>
-                        x.removeSpecialist === true ? x.jobName : '') : '')}
+                        x.removeSpecialist === true ? x.jobName + ", " : '') : '')}
                 {(props.employeInJobList.removeSpecialist === true ? <br /> : '')}
                 {(props.employeInJobList.removeSpecialist === true ? <br /> : '')}
             </Typography>

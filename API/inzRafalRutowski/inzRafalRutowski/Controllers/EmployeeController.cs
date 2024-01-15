@@ -270,7 +270,7 @@ namespace inzRafalRutowski.Controllers
                         int.Equals(x2.SpecializationId, x.SpecializationId) && x2.ExperienceId != x.ExperienceId);
                     }
 
-                    if (changeSpecializationOrExperriance != null)
+                    if (changeSpecializationOrExperriance != null || request.IsEdit == false)
                     {
                         modifyWorks = true;
                         var employeeModify = new EmployeeModifyDTO();

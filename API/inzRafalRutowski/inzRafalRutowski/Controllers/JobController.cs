@@ -79,7 +79,7 @@ namespace inzRafalRutowski.Controllers
                 {
                     EmployeeSpecialization? EmployeeSpecialization;
 
-                    if( request.RemoveSpecialist == true)
+                    if (request.RemoveSpecialist == true)
                     {
                         EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                         && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
@@ -897,7 +897,7 @@ namespace inzRafalRutowski.Controllers
         [HttpGet("GetLastEstimate")]
         public IActionResult GetLastEstimate([FromQuery] int jobId)
         {
-            var result = _context.JobHistorys.OrderByDescending(x=> x.TimeAddHistory).FirstOrDefault(x => int.Equals(x.JobId, jobId) && bool.Equals(x.isEstimate, true));
+            var result = _context.JobHistorys.OrderByDescending(x => x.TimeAddHistory).FirstOrDefault(x => int.Equals(x.JobId, jobId) && bool.Equals(x.isEstimate, true));
             var resultDTO = _mapper.Map<JobDTO>(result);
             return Ok(resultDTO);
         }

@@ -97,7 +97,7 @@ const AddEmployee = () => {
         // // używam tego jak chce dodać pracowników do szukania
         // axios.post('http://localhost:5000/api/Employee/addEmployeeWithoutEmployer', {
         // employerId: userId, name: name, surname: surname,
-        // isEmployed: true, listSpecializationAndExperience: dataListSpecializationAndExperience
+        // isEmployed: false, listSpecializationAndExperience: dataListSpecializationAndExperience
         // })
 
         setConfirmModal(true)
