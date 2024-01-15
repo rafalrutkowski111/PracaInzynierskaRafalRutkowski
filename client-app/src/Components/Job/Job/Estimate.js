@@ -8,6 +8,8 @@ import TextField from '@mui/material/TextField';
 import { jsPDF } from "jspdf";
 import Table from '@mui/joy/Table';
 import autoTable from 'jspdf-autotable'
+import * as dayjs from 'dayjs'
+import axios from "axios";
 
 const ButtonContainer = styled.div`
     widht:60%;
@@ -156,9 +158,38 @@ const Estimate = (props) => {
         props.setModalOpenMoneyPerHour(false)
     }
     const add = () => {
-        props.setIsEstimate(true)
-        props.setModalOpenEstimate(false)
-        props.setModalOpenMoneyPerHour(false)
+        if (props.notShow === true) {
+            props.setIsEstimate(true)
+            props.setModalOpenEstimate(false)
+            props.setModalOpenMoneyPerHour(false)
+        }
+        else {
+            var updateEstimate = props.estimate
+
+            updateEstimate.moneyPerHour = props.moneyPerHour
+            updateEstimate.createDate = dayjs(currentDate)
+            updateEstimate.fullCost = props.fullCost
+
+            updateEstimate.listCost = []
+
+            props.listEmployeeAddToJob.map(item => {
+                updateEstimate.listCost.push({ specializationName: item.specializationName, cost: item.cost })
+            })
+            props.setEstimate(updateEstimate)
+            props.setIsEstimate(true)
+
+            axios.post('http://localhost:5000/api/Job/editJob', {
+                title: props.title, desc: "description", listEmployeeAddToJob: props.listEmployeeAddToJob, color: "",
+                start: dayjs(props.dataStart), end: dayjs(props.dataEnd), EmployerId: props.userId, currentEnd: dayjs(props.endDayWork),
+                jobId: props.jobId, city: props.city, street: props.street, number: props.number, zip: props.zip,
+                name: props.nameInvestor, surname: props.surnameInvestor, estimate: props.estimate, isEstimate: true
+            })
+
+            props.setModalOpenEstimate(false)
+            props.setModalOpenMoneyPerHour(false)
+            props.setConfirmModal(true)
+        }
+
     }
 
     const generatePDF = () => {
@@ -204,12 +235,6 @@ const Estimate = (props) => {
                         item.cost]
                     )
                 })
-
-            ,
-            columns: [
-            { header: 'Europe', dataKey: 'europe' },
-            { header: 'Asia', dataKey: 'asia' },
-        ],
         })
         autoTable(pdf, {
             body: [
@@ -218,125 +243,125 @@ const Estimate = (props) => {
         })
 
 
-    pdf.save(props.title + '_kosztorys.pdf');
-}
+        pdf.save(props.title + '_kosztorys.pdf');
+    }
 
-return (
-    <Modal
-        aria-labelledby="modal-title"
-        aria-describedby="modal-desc"
-        open={props.modalOpenEstimate}
-        onClose={() => props.setModalOpenEstimate(false)}
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-    >
-        <Sheet
-            variant="outlined"
-            sx={{
-                width: 600,
-                maxWidth: 1200,
-                borderRadius: 'md',
-                p: 3,
-                boxShadow: 'lg',
-            }}
+    return (
+        <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={props.modalOpenEstimate}
+            onClose={() => props.setModalOpenEstimate(false)}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
-            <ModalClose variant="plain" sx={{ m: 1 }} />
-            <Typography
-                component="h2"
-                id="modal-title"
-                level="h4"
-                textColor="inherit"
-                fontWeight="lg"
-                mb={3}
+            <Sheet
+                variant="outlined"
+                sx={{
+                    width: 600,
+                    maxWidth: 1200,
+                    borderRadius: 'md',
+                    p: 3,
+                    boxShadow: 'lg',
+                }}
             >
-                Dane do kosztorysu
-            </Typography>
-
-            <b>Nazwa pracy:</b> {props.title}
-            <br />
-            <b>Adres pracy:</b> {props.city}, {props.street} {props.number} {props.zip}
-            <br />
-            <b>Zleceniodawca:</b> {props.nameInvestor} {props.surnameInvestor}
-            <br />
-            <b>Rodzaj pracy:</b> Prace remontowe
-            <br />
-            <b>Stawka roboczogodziny:</b> {props.moneyPerHour}
-            <br />
-            <b>Data opracownia:</b> {currentDate}
-            <br />
-            <b>Sporządził:</b> {props.employer.name} {props.employer.surname}
-            <br />
-            <b>Telefon:</b> {props.employer.phone}
-            <br />
-            <br />
-
-            <Sheet >
-                < Table
-                    variant="outlined"
-                    borderAxis="x"
-                    stickyHeader >
-                    <thead>
-                        <tr>
-                            <th>Specializacja</th>
-                            <th>Robocizna</th>
-                        </tr>
-                    </thead>
-                    {props.listEmployeeAddToJob.map((item) => {
-                        return (
-                            <>
-                                <tbody>
-                                    <tr>
-                                        <td>{item.specializationName}</td>
-                                        <td>{item.cost}</td>
-                                    </tr>
-                                </tbody>
-                            </>
-                        )
-                    })}
-                </Table >
-            </Sheet>
-
-            <Sheet>
-                < Table
-                    stickyHeader
-                    stripe="odd"
+                <ModalClose variant="plain" sx={{ m: 1 }} />
+                <Typography
+                    component="h2"
+                    id="modal-title"
+                    level="h4"
+                    textColor="inherit"
+                    fontWeight="lg"
+                    mb={3}
                 >
-                    <thead>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>RAZEM</td>
-                            <td>{props.fullCost} PLN</td>
-                        </tr>
-                    </tbody>
-                </Table>
+                    Dane do kosztorysu
+                </Typography>
+
+                <b>Nazwa pracy:</b> {props.title}
+                <br />
+                <b>Adres pracy:</b> {props.city}, {props.street} {props.number} {props.zip}
+                <br />
+                <b>Zleceniodawca:</b> {props.nameInvestor} {props.surnameInvestor}
+                <br />
+                <b>Rodzaj pracy:</b> Prace remontowe
+                <br />
+                <b>Stawka roboczogodziny:</b> {props.moneyPerHour}
+                <br />
+                <b>Data opracownia:</b> {currentDate}
+                <br />
+                <b>Sporządził:</b> {props.employer.name} {props.employer.surname}
+                <br />
+                <b>Telefon:</b> {props.employer.phone}
+                <br />
+                <br />
+
+                <Sheet >
+                    < Table
+                        variant="outlined"
+                        borderAxis="x"
+                        stickyHeader >
+                        <thead>
+                            <tr>
+                                <th>Specializacja</th>
+                                <th>Robocizna</th>
+                            </tr>
+                        </thead>
+                        {props.listEmployeeAddToJob.map((item) => {
+                            return (
+                                <>
+                                    <tbody>
+                                        <tr>
+                                            <td>{item.specializationName}</td>
+                                            <td>{item.cost}</td>
+                                        </tr>
+                                    </tbody>
+                                </>
+                            )
+                        })}
+                    </Table >
+                </Sheet>
+
+                <Sheet>
+                    < Table
+                        stickyHeader
+                        stripe="odd"
+                    >
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>RAZEM</td>
+                                <td>{props.fullCost} PLN</td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                </Sheet>
+                <br />
+
+
+                < ButtonContainer >
+                    <ButtonBootstrap
+                        type="submit"
+                        id="button"
+                        value="Dodaj"
+                        onClick={() => add()}
+                    />
+                    <ButtonBootstrap
+                        type="submit"
+                        id="button"
+                        value="Generuj pdf"
+                        onClick={() => { generatePDF(); }}
+                    />
+                    <ButtonBootstrapBack
+                        type="submit"
+                        id="button"
+                        value="Anuluj"
+                        onClick={() => back()}
+                    />
+                </ButtonContainer >
+
             </Sheet>
-            <br />
-
-
-            < ButtonContainer >
-                <ButtonBootstrap
-                    type="submit"
-                    id="button"
-                    value="Dodaj"
-                    onClick={() => add()}
-                />
-                <ButtonBootstrap
-                    type="submit"
-                    id="button"
-                    value="Generuj pdf"
-                    onClick={() => { generatePDF(); }}
-                />
-                <ButtonBootstrapBack
-                    type="submit"
-                    id="button"
-                    value="Anuluj"
-                    onClick={() => back()}
-                />
-            </ButtonContainer >
-
-        </Sheet>
-    </Modal >
-)
+        </Modal >
+    )
 }
 
 export { MoneyPerHour }

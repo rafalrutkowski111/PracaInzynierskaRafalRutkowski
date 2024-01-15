@@ -47,7 +47,7 @@ const MyCalendar = () => {
   const userId = sessionStorage.getItem("userId");
   const [selectJob, setSelectJob] = useState("Nie wybrano pracy");
   const [disableButtonUpdateJob, setDisableButtonUpdateJob] = useState(true);
-  const [disableButtonStory, setDisableButtonStory] = useState(true);
+  const [disableButtonStoryAndShow, setDisableButtonStoryAndShow] = useState(true);
   const [eventData, setEventData] = useState();
   const localizer = momentLocalizer(moment)
 
@@ -64,13 +64,16 @@ const MyCalendar = () => {
   const updateJob = () => {
     window.location.pathname = '/inzRafalRutkowski/calendar/updateJob/' + eventData.id;
   }
-  const storyJob = () =>{
+  const storyJob = () => {
     window.location.pathname = '/inzRafalRutkowski/calendar/storyJob/' + eventData.id;
+  }
+  const showJob = () => {
+    window.location.pathname = '/inzRafalRutkowski/calendar/showJob/' + eventData.id;
   }
 
   const eventSelect = useCallback(
     (event) => {
-      setDisableButtonStory(false)
+      setDisableButtonStoryAndShow(false)
       if (dayjs(event.currentEnd).format('YYYY/MM/DD') > dayjs(new Date()).format('YYYY/MM/DD')) {
         setDisableButtonUpdateJob(false)
       }
@@ -105,7 +108,14 @@ const MyCalendar = () => {
           onClick={() => { addNewJob(); }}
         />
         <Button
-          disabled={disableButtonStory}
+          disabled={disableButtonStoryAndShow}
+          type="submit"
+          id="button"
+          value="Podgląd pracy"
+          onClick={() => { showJob(); }}
+        />
+        <Button
+          disabled={disableButtonStoryAndShow}
           type="submit"
           id="button"
           value="Historia"

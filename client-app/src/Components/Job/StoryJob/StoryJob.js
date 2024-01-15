@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import * as dayjs from 'dayjs'
+import Form from 'react-bootstrap/Form';
 
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -18,6 +19,17 @@ const StoryTitleContainer = styled.div`
     display: flex;
     justify-content: center;
     margin-bottom:2%;
+`
+const ButtonBootstrapBack = styled(Form.Control)`
+    width:150px;
+    background-color: red;
+    color: white;
+`
+const ButtonBootstrapContainer = styled.div`
+    widht:60%;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
 `
 
 const StoryJob = () => {
@@ -45,6 +57,8 @@ const StoryJob = () => {
             x.style.display = "none";
         }
     }
+
+    const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
     // moze sformatowac wygląd ,zrobic jakeiś tabelki czy coś żeby to ładnie wyglądało
     return (
         <>
@@ -122,6 +136,15 @@ const StoryJob = () => {
                     </span>
                 </>
             ))}
+
+            < ButtonBootstrapContainer >
+                <ButtonBootstrapBack
+                    type="submit"
+                    id="button"
+                    value="Powrót"
+                    onClick={() => { back(); }}
+                />
+            </ButtonBootstrapContainer >
         </>
     )
 }

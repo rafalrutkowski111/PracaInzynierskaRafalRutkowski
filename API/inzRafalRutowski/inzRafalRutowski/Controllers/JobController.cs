@@ -893,5 +893,13 @@ namespace inzRafalRutowski.Controllers
             });
             return Ok(resultDTO);
         }
+
+        [HttpGet("GetLastEstimate")]
+        public IActionResult GetLastEstimate([FromQuery] int jobId)
+        {
+            var result = _context.JobHistorys.OrderByDescending(x=> x.TimeAddHistory).FirstOrDefault(x => int.Equals(x.JobId, jobId) && bool.Equals(x.isEstimate, true));
+            var resultDTO = _mapper.Map<JobDTO>(result);
+            return Ok(resultDTO);
+        }
     }
 }

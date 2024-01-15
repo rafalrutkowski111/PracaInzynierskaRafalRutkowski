@@ -369,7 +369,7 @@ const AddJob = () => {
             <Estimate modalOpenEstimate={modalOpenEstimate} setModalOpenEstimate={setModalOpenEstimate} setModalOpenMoneyPerHour={setModalOpenMoneyPerHour}
                 setIsEstimate={setIsEstimate} title={title} city={city} street={street} number={number} zip={zip} nameInvestor={nameInvestor}
                 surnameInvestor={surnameInvestor} moneyPerHour={moneyPerHour} employer={employer} listEmployeeAddToJob={listEmployeeAddToJob}
-                fullCost={fullCost} />
+                fullCost={fullCost} notShow={true}/>
         )
     }
     const renderNameAndSurnameInvestor = () => {
