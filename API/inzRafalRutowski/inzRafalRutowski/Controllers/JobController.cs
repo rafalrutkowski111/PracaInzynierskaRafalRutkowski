@@ -388,14 +388,19 @@ namespace inzRafalRutowski.Controllers
                 var specializationMostHoursList = specializationsWithHours.OrderByDescending(x2 => x2.Hours).ToList();
                 EmployeeSpecialization? employeeSpecialization = null;
                 bool hoursNonNegative = false;
+                List<ListJobSpecialization> specializationMostHoursListPositiveHours = new List<ListJobSpecialization>();
 
                 if (specializationMostHoursList.First().Hours > 0)
+                {
+                    specializationMostHoursListPositiveHours = specializationMostHoursList.Where(x => x.Hours > 0).ToList();
                     hoursNonNegative = true;
+                }
+
 
 
                 if (hoursNonNegative)
                 {
-                    specializationMostHoursList.ForEach(x =>
+                    specializationMostHoursListPositiveHours.ForEach(x =>
                     {
                         var employeeSpecializationTemp = employeeSpecializationList.FirstOrDefault(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
 
@@ -408,7 +413,7 @@ namespace inzRafalRutowski.Controllers
                         }
                         else if (employeeSpecialization != null && employeeSpecializationTemp == null)
                         {
-                            // else if wykona się, kiedy już mamy specjalizację, ale kolejny aktualny obiekt z listy nie ma specjalizacji, więc nic nie obliczamy
+                            // else if wykona się, kiedy już mamy specjalizację, ale kolejny aktualny obiekt z listy nie ma specjalizacji, więc nic nie zmieniamy
                         }
                         else
                             employeeSpecialization = employeeSpecializationTemp;
