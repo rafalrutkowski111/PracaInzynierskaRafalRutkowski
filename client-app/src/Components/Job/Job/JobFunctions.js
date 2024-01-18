@@ -33,7 +33,7 @@ const VerificationEmployeeToJob = (props) => {
 
             axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
                 {
-                    listEmployeeInJobDTOList: response2.data.listEmployeeInJob, start: dayjs(props.dataStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+                    listEmployeeInJobDTOList: response2.data.listEmployeeInJob, start: dayjs(props.realStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
                 })
                 .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 
