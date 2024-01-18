@@ -200,12 +200,16 @@ const ShowEstimate = (props) => {
                             />
                             : null
                     }
-                    <ButtonBootstrap
-                        type="submit"
-                        id="button"
-                        value={"Dodaj nowy"}
-                        onClick={() => props.setModalOpenMoneyPerHour(true)}
-                    />
+                    {
+                        props.notNew !== true ?
+                            <ButtonBootstrap
+                                type="submit"
+                                id="button"
+                                value={"Dodaj nowy"}
+                                onClick={() => props.setModalOpenMoneyPerHour(true)}
+                            /> : null
+                    }
+
                     <ButtonBootstrapBack
                         type="submit"
                         id="button"

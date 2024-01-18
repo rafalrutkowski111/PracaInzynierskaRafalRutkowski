@@ -88,7 +88,6 @@ const ShowJob = () => {
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetJob', { params: { jobId: params.id } })
             .then(response => {
-                console.log(response.data)
                 setTitle(response.data.title)
                 setStartDayWork(dayjs(response.data.start).format('DD/MM/YYYY'));
                 setDataEnd(dayjs(response.data.end));
