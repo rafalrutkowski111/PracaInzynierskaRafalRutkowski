@@ -31,9 +31,11 @@ const VerificationEmployeeToJob = (props) => {
                 setDataEmployeeWithSpecialization: props.setDataEmployeeWithSpecialization
             }); // aktualizacja specjalistów, też dane do rozpoczecia pracy
 
+            
             axios.post('http://localhost:5000/api/Job/UpdateTimeJob',
                 {
-                    listEmployeeInJobDTOList: response2.data.listEmployeeInJob, start: dayjs(props.realStart), listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
+                    listEmployeeInJobDTOList: response2.data.listEmployeeInJob, start: props.isUpdate === true ? props.realStart : dayjs(props.dataStart),
+                     listSpecialisationListEmployeeRemoveDTO: props.dataEmployeeWithSpecialization
                 })
                 .then(response => { props.setEndDayWork(response.data.endWorkDay); props.setListEmployeeAddToJob(response.data.listEmployeeInJob) })
 

@@ -44,9 +44,9 @@ const AddSpecializationAndHours = (props) => {
     return (
         <SelectContainer>
             <FormControl sx={{ minWidth: 222 }}>
-                <InputLabel>Specjazlizacja</InputLabel>
+                <InputLabel>Specjalizacja</InputLabel>
                 <Select
-                    label="Specjazlizacja"
+                    label="Specjalizacja"
                     onChange={(e) => changeSpecialization(e.target.value)}
                     value={props.specializationValue}
                 >

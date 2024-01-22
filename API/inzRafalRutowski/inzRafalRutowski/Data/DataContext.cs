@@ -1,4 +1,5 @@
 ﻿using inzRafalRutowski.Models;
+using inzRafalRutowski.ModelsAnother;
 using Microsoft.EntityFrameworkCore;
 
 namespace inzRafalRutowski.Data
@@ -15,7 +16,9 @@ namespace inzRafalRutowski.Data
         public DbSet<EmployeeSpecialization> EmployeeSpecializations { get; set; }
         public DbSet<JobEmployee> JobEmployees { get; set; }
         public DbSet<JobHistory> JobHistorys { get; set; }
-        public DbSet<EmployeeWithoutEmployer> EmployeeWithoutEmployers { get; set; }
-        public DbSet<EmployeeWithoutEmployerSpecialization> EmployeeWithoutEmployerSpecializations { get; set; }
+        public DbSet<EmployeeAnother> EmployeeAnothers { get; set; }
+        public DbSet<EmployeeSpecializationAnother> EmployeeSpecializationAnothers { get; set; }
+        public DbSet<ExperianceAnother> ExperianceAnothers { get; set; }
+        public DbSet<SpecializationAnother> SpecializationAnothers { get; set; }
     }
 }

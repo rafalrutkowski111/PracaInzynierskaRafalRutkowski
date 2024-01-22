@@ -1,6 +1,7 @@
 ﻿using inzRafalRutowski.Data;
 using inzRafalRutowski.DTO.Employee;
 using inzRafalRutowski.Models;
+using inzRafalRutowski.ModelsAnother;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ namespace inzRafalRutowski.Controllers
             var result = new List<EmployeeDTO>();
 
             Employee? employeeSearch;
-            var employeeWithoutEmployerSearch = _context.EmployeeWithoutEmployers.FirstOrDefault(e => Guid.Equals(e.Id, id));
+            var employeeWithoutEmployerSearch = _context.EmployeeAnothers.FirstOrDefault(e => Guid.Equals(e.Id, id));
 
             if (employeeWithoutEmployerSearch == null)
             {
@@ -45,25 +46,24 @@ namespace inzRafalRutowski.Controllers
                     employee.Surname = employeeSearch.Surname;
                     employee.EmployeeId = employeeSearch.Id;
                     employee.SpecializationId = e2.SpecializationId;
-                    employee.IsEmployed = employeeSearch.IsEmployed;
                     result.Add(employee);
                 });
             }
             else
             {
-                var employeeSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, employeeWithoutEmployerSearch.Id)).ToList();
+                var employeeSpecialization = _context.EmployeeSpecializationAnothers.Where(e2 => Guid.Equals(e2.EmployeeAnotherId, employeeWithoutEmployerSearch.Id)).ToList();
                 employeeSpecialization.ForEach(e2 =>
                 {
                     var employee = new EmployeeDTO();
-                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationId));
+                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationAnotherId));
                     employee.SpecializationName = specializations.Select(e3 => e3.Name).First();
 
-                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperienceId));
+                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperianceAnotherId));
                     employee.ExperienceName = experiences.Select(e3 => e3.ExperienceName).First();
                     employee.Name = employeeWithoutEmployerSearch.Name;
                     employee.Surname = employeeWithoutEmployerSearch.Surname;
                     employee.EmployeeId = employeeWithoutEmployerSearch.Id;
-                    employee.SpecializationId = e2.SpecializationId;
+                    employee.SpecializationId = e2.SpecializationAnotherId;
                     employee.IsEmployed = employeeWithoutEmployerSearch.IsEmployed;
                     result.Add(employee);
                 });
@@ -77,20 +77,20 @@ namespace inzRafalRutowski.Controllers
         {
             var result = new List<EmployeeDTO>();
 
-            var employees = _context.EmployeeWithoutEmployers.Where(e => bool.Equals(e.IsEmployed, false)).ToList();
+            var employees = _context.EmployeeAnothers.Where(e => bool.Equals(e.IsEmployed, false)).ToList();
 
 
             employees.ForEach(e =>
             {
 
-                var employeeSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, e.Id)).ToList();
+                var employeeSpecialization = _context.EmployeeSpecializationAnothers.Where(e2 => Guid.Equals(e2.EmployeeAnotherId, e.Id)).ToList();
                 employeeSpecialization.ForEach(e2 =>
                 {
                     var employee = new EmployeeDTO();
-                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationId));
+                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationAnotherId));
                     employee.SpecializationName = specializations.Select(e3 => e3.Name).First();
 
-                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperienceId));
+                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperianceAnotherId));
                     employee.ExperienceName = experiences.Select(e3 => e3.ExperienceName).First();
                     employee.Name = e.Name;
                     employee.Surname = e.Surname;
@@ -149,7 +149,7 @@ namespace inzRafalRutowski.Controllers
         [HttpPut]
         public IActionResult AddEmployeeToEmployer([FromQuery] Guid employeeId, [FromQuery] int employerId)
         {
-            var employee = _context.EmployeeWithoutEmployers.First(e => Guid.Equals(e.Id, employeeId));
+            var employee = _context.EmployeeAnothers.First(e => Guid.Equals(e.Id, employeeId));
 
             employee.IsEmployed = true;
 
@@ -158,21 +158,20 @@ namespace inzRafalRutowski.Controllers
                 Name = employee.Name,
                 Surname = employee.Surname,
                 Id = employee.Id,
-                IsEmployed = true,
                 EmployerId = employerId,
             };
             _context.Employees.Add(newEmployee);
 
 
-            var listSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(x => Guid.Equals(x.EmployeeWithoutEmployerId, employeeId)).ToList();
+            var listSpecialization = _context.EmployeeSpecializationAnothers.Where(x => Guid.Equals(x.EmployeeAnotherId, employeeId)).ToList();
 
             listSpecialization.ForEach(x =>
             {
                 var newSpecialist = new EmployeeSpecialization()
                 {
-                    EmployeeId = x.EmployeeWithoutEmployerId,
-                    SpecializationId = x.SpecializationId,
-                    ExperienceId = x.ExperienceId,
+                    EmployeeId = x.EmployeeAnotherId,
+                    SpecializationId = x.SpecializationAnotherId,
+                    ExperienceId = x.ExperianceAnotherId,
                 };
                 _context.EmployeeSpecializations.Add(newSpecialist);
             });
@@ -189,7 +188,6 @@ namespace inzRafalRutowski.Controllers
             {
                 Name = request.Name,
                 Surname = request.Surname,
-                IsEmployed = request.IsEmployed,
                 EmployerId = request.EmployerId,
                 Id = Guid.NewGuid()
             };
@@ -219,27 +217,27 @@ namespace inzRafalRutowski.Controllers
         public IActionResult AddEmployeeWithoutEmployer([FromBody] EmployeeAddDTO request)
         {
 
-            var newEmployee = new EmployeeWithoutEmployer
+            var newEmployee = new EmployeeAnother
             {
                 Name = request.Name,
                 Surname = request.Surname,
                 IsEmployed = request.IsEmployed,
                 Id = Guid.NewGuid()
             };
-            _context.EmployeeWithoutEmployers.Add(newEmployee);
+            _context.EmployeeAnothers.Add(newEmployee);
 
             var employeeSpecialization = request.ListSpecializationAndExperience.Select(
-                e => new EmployeeWithoutEmployerSpecialization
+                e => new EmployeeSpecializationAnother
                 {
-                    EmployeeWithoutEmployerId = newEmployee.Id,
-                    SpecializationId = e.SpecializationId,
-                    ExperienceId = e.ExperienceId
+                    EmployeeAnotherId = newEmployee.Id,
+                    SpecializationAnotherId = e.SpecializationId,
+                    ExperianceAnotherId = e.ExperienceId
                 }
                 ).ToList();
 
             employeeSpecialization.ForEach(e =>
             {
-                _context.EmployeeWithoutEmployerSpecializations.Add(e);
+                _context.EmployeeSpecializationAnothers.Add(e);
             });
 
             _context.SaveChanges();
@@ -365,7 +363,6 @@ namespace inzRafalRutowski.Controllers
             var employee = _context.Employees.First(x => Guid.Equals(x.Id, request.EmployeeId));
             employee.Name = request.Name;
             employee.Surname = request.Surname;
-            employee.IsEmployed = request.IsEmployed;
             employee.EmployerId = request.EmployerId;
 
             //usunieciewczesniejszych specjalizacji

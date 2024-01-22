@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inzRafalRutowski.Data;
 
@@ -11,9 +12,11 @@ using inzRafalRutowski.Data;
 namespace inzRafalRutowski.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240122140132_UpdateAnotherTables")]
+    partial class UpdateAnotherTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -403,7 +406,7 @@ namespace inzRafalRutowski.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExperianceAnothers");
+                    b.ToTable("ExperianceAnotherS");
                 });
 
             modelBuilder.Entity("inzRafalRutowski.ModelsAnother.SpecializationAnother", b =>

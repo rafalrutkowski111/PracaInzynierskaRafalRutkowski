@@ -18,22 +18,22 @@ namespace inzRafalRutowski.Class
         {
             var employeeSpecializationListDTO = new EmployeeSpecializationListDTO();
 
-            var employees = _context.EmployeeWithoutEmployers.Where(e => int.Equals(e.IsEmployed, false)).ToList();
+            var employees = _context.EmployeeAnothers.Where(e => int.Equals(e.IsEmployed, false)).ToList();
 
             var employeeDTOList = new List<EmployeeDTO>();
             employees.ForEach(x =>
             {
 
-                var employeeSpecialization = _context.EmployeeWithoutEmployerSpecializations.Where(e2 => Guid.Equals(e2.EmployeeWithoutEmployerId, x.Id) && int.Equals(e2.SpecializationId, e.SpecializationId)
-                && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, e2.ExperienceId)).ExperienceValue >= 70 // 70 stała waga- średniozaawansowany
+                var employeeSpecialization = _context.EmployeeSpecializationAnothers.Where(e2 => Guid.Equals(e2.ExperianceAnotherId, x.Id) && int.Equals(e2.SpecializationAnotherId, e.SpecializationId)
+                && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, e2.ExperianceAnotherId)).ExperienceValue >= 70 // 70 stała waga- średniozaawansowany
                 ).ToList();
                 employeeSpecialization.ForEach(e2 =>
                 {
                     var employee = new EmployeeDTO();
-                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationId));
+                    var specializations = _context.Specializations.Where(e3 => int.Equals(e3.Id, e2.SpecializationAnotherId));
                     employee.SpecializationName = specializations.Select(e3 => e3.Name).First();
 
-                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperienceId));
+                    var experiences = _context.Experiences.Where(e3 => int.Equals(e3.Id, e2.ExperianceAnotherId));
                     employee.ExperienceName = experiences.Select(e3 => e3.ExperienceName).First();
                     employee.Name = x.Name;
                     employee.Surname = x.Surname;
