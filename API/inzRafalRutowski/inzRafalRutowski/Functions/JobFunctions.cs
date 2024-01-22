@@ -24,7 +24,7 @@ namespace inzRafalRutowski.Class
             employees.ForEach(x =>
             {
 
-                var employeeSpecialization = _context.EmployeeSpecializationAnothers.Where(e2 => Guid.Equals(e2.ExperianceAnotherId, x.Id) && int.Equals(e2.SpecializationAnotherId, e.SpecializationId)
+                var employeeSpecialization = _context.EmployeeSpecializationAnothers.Where(e2 => Guid.Equals(e2.EmployeeAnotherId, x.Id) && int.Equals(e2.SpecializationAnotherId, e.SpecializationId)
                 && _context.Experiences.FirstOrDefault(y => int.Equals(y.Id, e2.ExperianceAnotherId)).ExperienceValue >= 70 // 70 stała waga- średniozaawansowany
                 ).ToList();
                 employeeSpecialization.ForEach(e2 =>

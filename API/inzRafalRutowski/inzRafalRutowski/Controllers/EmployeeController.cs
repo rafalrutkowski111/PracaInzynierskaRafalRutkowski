@@ -145,7 +145,7 @@ namespace inzRafalRutowski.Controllers
             return Ok(result);
         }
 
-        // kopiowanie z danych z EmployeeWithoutEmployers i robienie nowego pracowniak z nimi w Emplyee, analogicznie z specjalziacjami pracowników
+        // kopiowanie z danych z EmployeeAnother i robienie nowego pracowniak z nimi w Emplyee, analogicznie z specjalziacjami pracowników
         [HttpPut]
         public IActionResult AddEmployeeToEmployer([FromQuery] Guid employeeId, [FromQuery] int employerId)
         {
