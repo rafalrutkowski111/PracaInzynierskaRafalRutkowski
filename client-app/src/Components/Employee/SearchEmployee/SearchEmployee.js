@@ -9,6 +9,8 @@ import Sheet from '@mui/joy/Sheet';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import { AddEmployeeModal } from './AddEmployeeModal';
+import { ConfirmModal } from '../../Global/ConfirmModal';
+import Typography from '@mui/joy/Typography';
 
 const H1Container = styled.h1`
     margin-top: 1%;
@@ -30,6 +32,14 @@ const ButtonBootstrapBack = styled(Form.Control)`
     background-color: red;
     color: white;
 `
+const addText = () => {
+    return (
+        <Typography id="modal-desc" textColor="text.tertiary" mb={3}>
+            <p>Dodano poprawnie nowego pracownika.</p>
+        </Typography>
+    )
+}
+
 const SearchEmployee = () => {
 
     const [dataListEmployee, setDataListEmployee] = useState([]);
@@ -39,6 +49,8 @@ const SearchEmployee = () => {
     const [searchExperience, setSearchExperience] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [dataEmployee, setDataEmployee] = useState([{ name: '', surname: '', specializationName: '', experienceName: '', employeeId: '' }]);
+    const [confirmModal, setConfirmModal] = useState(false)
+    const [message, setMessage] = useState(addText);
 
     const userId = sessionStorage.getItem("userId");
 
@@ -63,12 +75,19 @@ const SearchEmployee = () => {
     const renderAddEmployeeModal = () => {
         return (
             <AddEmployeeModal modalOpen={modalOpen} setModalOpen={setModalOpen} dataEmployee={dataEmployee} userId={userId}
-            setDataListEmployee={setDataListEmployee} />
+                setDataListEmployee={setDataListEmployee} setConfirmModal={setConfirmModal}/>
+        )
+    }
+    const renderConfirmModal = () => {
+        return (
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message}
+                nameTitle={"Poziom doświadczenia"} />
         )
     }
 
     return (
         <>
+            {renderConfirmModal()}
             {renderAddEmployeeModal()}
 
             <Container>

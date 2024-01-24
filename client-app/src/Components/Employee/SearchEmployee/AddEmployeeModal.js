@@ -27,6 +27,7 @@ const AddEmployeeModal = (props) => {
                     .then(response => {
                         props.setDataListEmployee(response.data);
                         props.setModalOpen(false);
+                        props.setConfirmModal(true)
                     })
             })
     }
