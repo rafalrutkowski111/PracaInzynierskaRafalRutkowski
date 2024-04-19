@@ -397,7 +397,7 @@ const AddJob = () => {
 
 
             <TittleContainer>
-                <h1>Dodaj nową prace</h1>
+                <h1>Dodaj nową pracę</h1>
             </TittleContainer>
 
             {renderJobTitle()}

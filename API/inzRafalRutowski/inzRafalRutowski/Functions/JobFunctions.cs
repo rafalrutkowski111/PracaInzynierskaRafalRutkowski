@@ -58,6 +58,11 @@ namespace inzRafalRutowski.Class
 
         public int NumberOfWorkDays(DateTime start, int numberOfDays)
         {
+            if (numberOfDays <= 0) throw new ArgumentOutOfRangeException();
+
+            if (start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday)
+                throw new ArgumentOutOfRangeException();
+
             int workDays = 0;
 
             DateTime end = start.AddDays(numberOfDays);
