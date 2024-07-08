@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using inzRafalRutowski.Data;
+using inzRafalRutowski.Models;
+using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -15,31 +17,23 @@ namespace inzRafalRutowski.Controllers
     public class EmployerController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IEmployerService _service;
 
-        public EmployerController(DataContext context)
+        public EmployerController(DataContext context, IEmployerService service)
         {
             _context = context;
+            _service = service;
         }
 
         [HttpGet("login")]
         public IActionResult Login([FromQuery] string login, [FromQuery] string password)
         {
 
-            var employer = _context.Employers.FirstOrDefault(x => string.Equals(x.Login, login) && string.Equals(x.Password, password));
-
+            var employer = _service.Login(login, password);
+            
             if (employer == null) { return BadRequest(); }
 
-            //hash
-            byte[] data = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes($"{employer.Id}_{employer.Login}_{employer.Password}"));
-            var builder = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
-            {
-                builder.Append(data[i].ToString("x2"));
-            }
-
-            //dynamic result = new JObject();
-            //result.hash = ;
-            //result.userId ;
+            var builder = _service.Hush(employer);
 
             return Ok(new { hash = builder.ToString(), userId = employer.Id });
         }

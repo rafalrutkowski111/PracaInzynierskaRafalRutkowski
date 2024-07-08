@@ -12,6 +12,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddTransient<ITestApiService, TestApiService>();
+builder.Services.AddTransient<IEmployerService, EmployerService>();
 
 
 // start mapper
