@@ -16,12 +16,10 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployerController : ControllerBase
     {
-        private readonly DataContext _context;
         private readonly IEmployerService _service;
 
-        public EmployerController(DataContext context, IEmployerService service)
+        public EmployerController( IEmployerService service)
         {
-            _context = context;
             _service = service;
         }
 
@@ -41,18 +39,11 @@ namespace inzRafalRutowski.Controllers
         [HttpGet("veryfieLogin")]
         public IActionResult VeryfieLogin([FromQuery] int userId, [FromQuery] string hash)
         {
-
-            var employer = _context.Employers.FirstOrDefault(x => string.Equals(x.Id, userId));
+            var employer = _service.VeryfieLogin(userId);
 
             if (employer == null) { return BadRequest(); }
 
-            //hash
-            byte[] data = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes($"{employer.Id}_{employer.Login}_{employer.Password}"));
-            var builder = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
-            {
-                builder.Append(data[i].ToString("x2"));
-            }
+            var builder = _service.Hush(employer);
 
             if (string.Equals(builder.ToString(), hash)) return Ok();
             return BadRequest();
@@ -61,7 +52,7 @@ namespace inzRafalRutowski.Controllers
         [HttpGet]
         public IActionResult GetEmployer([FromQuery] int employerId)
         {
-            var employer = _context.Employers.FirstOrDefault(x => string.Equals(x.Id, employerId));
+            var employer = _service.GetEmployer(employerId);
 
             return Ok(new
             {

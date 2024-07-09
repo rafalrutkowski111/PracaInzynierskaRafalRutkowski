@@ -7,8 +7,8 @@ namespace inzRafalRutowski.Service
     public interface IEmployerService
     {
         Employer Login(string login, string password);
-        IActionResult VeryfieLogin(int userId, string hash);
-        IActionResult GetEmployer(int employerId);
+        Employer VeryfieLogin(int userId);
+        Employer GetEmployer(int employerId);
         StringBuilder Hush(Employer employer);
     }
 }

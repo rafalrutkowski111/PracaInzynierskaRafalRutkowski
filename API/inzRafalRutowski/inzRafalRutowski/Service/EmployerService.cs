@@ -14,9 +14,9 @@ namespace inzRafalRutowski.Service
         {
             _context = context;
         }
-        public IActionResult GetEmployer(int employerId)
+        public Employer GetEmployer(int employerId)
         {
-            throw new NotImplementedException();
+            return _context.Employers.FirstOrDefault(x => string.Equals(x.Id, employerId));
         }
 
         public Employer Login(string login, string password)
@@ -24,9 +24,9 @@ namespace inzRafalRutowski.Service
             return _context.Employers.FirstOrDefault(x => string.Equals(x.Login, login) && string.Equals(x.Password, password));
         }
 
-        public IActionResult VeryfieLogin(int userId, string hash)
+        public Employer VeryfieLogin(int userId)
         {
-            throw new NotImplementedException();
+            return _context.Employers.FirstOrDefault(x => string.Equals(x.Id, userId));
         }
 
         public StringBuilder Hush(Employer employer)
