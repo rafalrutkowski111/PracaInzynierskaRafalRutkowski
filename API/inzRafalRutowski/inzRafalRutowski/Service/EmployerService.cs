@@ -10,12 +10,6 @@ namespace inzRafalRutowski.Service
     {
         // zrobić testy jednostkowe
 
-        // czym sie rozni np ActionResult<Employer> or samego Employer w controllerach, czy powinno sie uzywac zawsze actionresult lub iactionresult w controllerach?
-
-        // czy jak zorbie np. ActionResult<Employer> i robie do niej metode w serwisie (np ten serwis) to czy powinienem robic tez ActionResult<Employer>
-        // cz może jednak wystarczy samo Employer?, a jeżeli ActionResult<Employer> to co jak zwrot to musi byc Employer(bo się potem), to powinienem potem to zmapowac?
-
-        // lepiej uzywac actionresult czy iactionresult?
         private readonly DataContext _context;
 
         public EmployerService(DataContext context)
