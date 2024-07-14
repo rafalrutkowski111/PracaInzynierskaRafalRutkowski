@@ -1,4 +1,5 @@
-﻿using inzRafalRutowski.DTO.Specialization;
+﻿using inzRafalRutowski.Data;
+using inzRafalRutowski.DTO.Specialization;
 using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,9 +7,27 @@ namespace inzRafalRutowski.Service
 {
     public class SpecializationService : ISpecializationService
     {
-        public IActionResult AddSpecialization(SpecializationAddDTO request)
+        private readonly DataContext _context;
+        public SpecializationService(DataContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public bool AddSpecialization(SpecializationAddDTO request)
+        {
+            var employer = _context.Employers.FirstOrDefault(x => Equals(x.Id, request.EmployerId));
+
+            if (employer == null || request.Name == "") return false;
+
+            Specialization specialization = new Specialization()
+            {
+                EmployerId = request.EmployerId,
+                Name = request.Name
+            };
+
+            _context.Specializations.Add(specialization);
+            _context.SaveChanges();
+            return true;
+
         }
 
         public ActionResult<Specialization> CheckCanModify(int specializationId, int employerId)
@@ -21,14 +40,21 @@ namespace inzRafalRutowski.Service
             throw new NotImplementedException();
         }
 
-        public ActionResult<Specialization> Edit(SpecializationEditDTO request)
+        public bool Edit(SpecializationEditDTO request)
         {
-            throw new NotImplementedException();
+            var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, request.Id));
+
+            if (specialization == null) return false;
+            else specialization.Name = request.Name;
+
+            _context.SaveChanges();
+
+            return true;
         }
 
         public ActionResult<List<Specialization>> GetSpecializations(int EmployerId)
         {
-            throw new NotImplementedException();
+            return _context.Specializations.Where(x => int.Equals(x.EmployerId, EmployerId) || int.Equals(x.EmployerId, null)).ToList();
         }
     }
 }

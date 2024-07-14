@@ -7,8 +7,8 @@ namespace inzRafalRutowski.Service
     public interface ISpecializationService
     {
         ActionResult<List<Specialization>> GetSpecializations(int EmployerId);
-        IActionResult AddSpecialization(SpecializationAddDTO request);
-        ActionResult<Specialization> Edit(SpecializationEditDTO request);
+        bool AddSpecialization(SpecializationAddDTO request);
+        bool Edit(SpecializationEditDTO request);
         ActionResult<Specialization> CheckCanModify(int specializationId, int employerId);
         ActionResult<Specialization> Delete(int specializationId);
     }

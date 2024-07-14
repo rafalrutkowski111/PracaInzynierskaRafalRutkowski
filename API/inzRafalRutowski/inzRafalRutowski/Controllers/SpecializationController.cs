@@ -2,6 +2,7 @@
 using inzRafalRutowski.DTO;
 using inzRafalRutowski.DTO.Specialization;
 using inzRafalRutowski.Models;
+using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +14,23 @@ namespace inzRafalRutowski.Controllers
     public class SpecializationController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly ISpecializationService _service;
 
-        public SpecializationController(DataContext context)
+        public SpecializationController(DataContext context, ISpecializationService service)
         {
             _context = context;
+            _service = service;
         }
 
         [HttpGet]
         public  ActionResult<List<Specialization>> GetSpecializations([FromQuery] int EmployerId)
         {
 
-            var result = _context.Specializations.Where(x => int.Equals(x.EmployerId, EmployerId) || int.Equals(x.EmployerId, null)).ToList();
+            var result = _service.GetSpecializations(EmployerId);
+
+            if(result == null) return BadRequest(); //nie pamietam
+            // czy wynikiem dla where moze bedzie null czy pusta tablica
+            // przy testkach jednostkowych sprawdzic i dac poprawny warunek
 
             return Ok(result);
         }
@@ -31,24 +38,20 @@ namespace inzRafalRutowski.Controllers
         [HttpPut]
         public IActionResult AddSpecialization([FromBody] SpecializationAddDTO request)
         {
-            Specialization specialization = new Specialization()
-            {
-                EmployerId = request.EmployerId,
-                Name = request.Name
-            };
+            var result = _service.AddSpecialization(request);
 
-            _context.Specializations.Add(specialization);
-            _context.SaveChanges();
-
-            return Ok();
+            if (result) return Ok();
+            else return BadRequest();
+            
         }
 
         [HttpPost]
         public ActionResult<Specialization> Edit([FromBody] SpecializationEditDTO request)
         {
-            _context.Specializations.First(x=> int.Equals(x.Id, request.Id)).Name = request.Name;
-            _context.SaveChanges();
-            return Ok();
+            var result = _service.Edit(request);
+
+            if (result) return Ok();
+            else return BadRequest();
         }
 
         [HttpGet("checkCanModify")]
