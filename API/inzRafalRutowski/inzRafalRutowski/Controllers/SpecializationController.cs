@@ -1,4 +1,5 @@
-﻿using inzRafalRutowski.Data;
+﻿using Azure.Core;
+using inzRafalRutowski.Data;
 using inzRafalRutowski.DTO;
 using inzRafalRutowski.DTO.Specialization;
 using inzRafalRutowski.Models;
@@ -13,68 +14,63 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class SpecializationController : ControllerBase
     {
-        private readonly DataContext _context;
         private readonly ISpecializationService _service;
 
-        public SpecializationController(DataContext context, ISpecializationService service)
+        public SpecializationController(ISpecializationService service)
         {
-            _context = context;
             _service = service;
         }
 
         [HttpGet]
         public  ActionResult<List<Specialization>> GetSpecializations([FromQuery] int EmployerId)
         {
+            var resultExist = _service.CheckEmployerExist(EmployerId);
+            if (!resultExist) return BadRequest();
 
             var result = _service.GetSpecializations(EmployerId);
-
-            if(result == null) return BadRequest(); //nie pamietam
-            // czy wynikiem dla where moze bedzie null czy pusta tablica
-            // przy testkach jednostkowych sprawdzic i dac poprawny warunek
-
             return Ok(result);
         }
 
         [HttpPut]
         public IActionResult AddSpecialization([FromBody] SpecializationAddDTO request)
         {
-            var result = _service.AddSpecialization(request);
-
-            if (result) return Ok();
-            else return BadRequest();
+            var resultExist = _service.CheckEmployerExist(request.EmployerId);
+            if (!resultExist) return BadRequest();
+            
+            _service.AddSpecialization(request);
+            return Ok();
             
         }
 
         [HttpPost]
-        public ActionResult<Specialization> Edit([FromBody] SpecializationEditDTO request)
+        public ActionResult<Specialization> EditSpecialization([FromBody] SpecializationEditDTO request)
         {
-            var result = _service.Edit(request);
+            var resultExist = _service.CheckSpecializationExist(request.Id);
+            if (!resultExist) return BadRequest();
+
+            _service.EditSpecialization(request);
+            return Ok();
+        }
+
+        [HttpGet("checkCanModify")]
+        public ActionResult<Specialization> CheckIfCanModifySpecialization([FromQuery] int specializationId, int employerId)
+        {
+            var requestExist = _service.CheckEmployerAndSpecializationExist(specializationId, employerId);
+            if(!requestExist) return BadRequest();
+
+            var result = _service.CheckIfSpecializationIsWithoutEmployee(specializationId, employerId);
 
             if (result) return Ok();
             else return BadRequest();
         }
 
-        [HttpGet("checkCanModify")]
-        public ActionResult<Specialization> CheckCanModify([FromQuery] int specializationId, int employerId)
-        {
-            var canModify = true;
-            var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
-
-            listEmployees.ForEach(x =>
-            {
-                if (_context.EmployeeSpecializations.FirstOrDefault(x2 => Guid.Equals(x2.EmployeeId, x.Id) &&
-                int.Equals(x2.SpecializationId, specializationId)) != null)
-                    canModify = false;
-            });
-
-            return Ok(canModify);
-        }
-
         [HttpDelete]
-        public ActionResult<Specialization> Delete([FromQuery] int specializationId)
+        public ActionResult<Specialization> DeleteSpecialization([FromQuery] int specializationId)
         {
-            _context.Specializations.Remove(_context.Specializations.First(x => int.Equals(x.Id, specializationId)));
-            _context.SaveChanges();
+            var resultExist = _service.CheckSpecializationExist(specializationId);
+            if(!resultExist) return BadRequest();
+
+            _service.DeleteSpecialization(specializationId);
             return Ok();
         }
 

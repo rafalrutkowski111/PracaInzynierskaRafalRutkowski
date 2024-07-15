@@ -7,9 +7,12 @@ namespace inzRafalRutowski.Service
     public interface ISpecializationService
     {
         ActionResult<List<Specialization>> GetSpecializations(int EmployerId);
-        bool AddSpecialization(SpecializationAddDTO request);
-        bool Edit(SpecializationEditDTO request);
-        ActionResult<Specialization> CheckCanModify(int specializationId, int employerId);
-        ActionResult<Specialization> Delete(int specializationId);
+        void AddSpecialization(SpecializationAddDTO request);
+        void EditSpecialization(SpecializationEditDTO request);
+        bool CheckIfSpecializationIsWithoutEmployee(int specializationId, int employerId);
+        void DeleteSpecialization(int specializationId);
+        bool CheckEmployerAndSpecializationExist(int specializationId, int employerId);
+        bool CheckSpecializationExist(int specializationId);
+        bool CheckEmployerExist(int employerId);
     }
 }

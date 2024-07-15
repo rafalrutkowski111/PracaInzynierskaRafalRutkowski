@@ -14,6 +14,36 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
+        //refaktoryzacja (zacznijmy od specjalizacji)
+
+        //poprawiać od razu nazwy
+
+        // zamiast badrequestów zrobienie zwracana błędna informacja
+
+        //walidacja wstpna dla controllerów
+        // np sprawdzająca czy to lcizba dodatnia
+        // albo tez zeby nie mozna wyslac zapytań
+
+        // to można dodać przy refaktowyzaji (tylko w specjalizacji aby przecwiczyc dodawanie klas statycznych)
+        //w interface, klasie statycznej i klasie metody powinny sie nazywac tak samo
+        // interface
+        // klasa statyczna : interface
+        // kalse : interface
+
+
+
+        // przy testach jednostkowych zrobienie code coverage
+
+        //testy jednostkowe
+
+
+        // dodanie logów zapisywanych do bazy danych
+
+        // zrobienie usługi(do logów) która komrpesuje nasze logi i zapisuje je na dysku
+
+
+        // zrobienie autoryzacji
+
         private readonly DataContext _context;
 
         public EmployeeController(DataContext context)

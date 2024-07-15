@@ -12,12 +12,8 @@ namespace inzRafalRutowski.Service
         {
             _context = context;
         }
-        public bool AddSpecialization(SpecializationAddDTO request)
+        public void AddSpecialization(SpecializationAddDTO request)
         {
-            var employer = _context.Employers.FirstOrDefault(x => Equals(x.Id, request.EmployerId));
-
-            if (employer == null || request.Name == "") return false;
-
             Specialization specialization = new Specialization()
             {
                 EmployerId = request.EmployerId,
@@ -26,30 +22,56 @@ namespace inzRafalRutowski.Service
 
             _context.Specializations.Add(specialization);
             _context.SaveChanges();
-            return true;
-
         }
 
-        public ActionResult<Specialization> CheckCanModify(int specializationId, int employerId)
+        public bool CheckIfSpecializationIsWithoutEmployee( int specializationId, int employerId)
         {
-            throw new NotImplementedException();
+            var canModify = true;
+            var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
+
+            listEmployees.ForEach(x =>
+            {
+                if (_context.EmployeeSpecializations.FirstOrDefault(x2 => Guid.Equals(x2.EmployeeId, x.Id) &&
+                int.Equals(x2.SpecializationId, specializationId)) != null)
+                    canModify = false;
+            });
+            return canModify;
         }
 
-        public ActionResult<Specialization> Delete(int specializationId)
+        public bool CheckEmployerAndSpecializationExist(int specializationId, int employerId)
         {
-            throw new NotImplementedException();
-        }
+            var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
+            var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, specializationId));
 
-        public bool Edit(SpecializationEditDTO request)
+            if (employer == null || specialization == null) return false;
+            else return true;
+        }
+        public bool CheckSpecializationExist(int specializationId)
         {
-            var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, request.Id));
+            var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, specializationId));
 
             if (specialization == null) return false;
-            else specialization.Name = request.Name;
+            else return true;
+        }
 
+        public bool CheckEmployerExist(int employerId)
+        {
+            var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
+
+            if (employer == null) return false;
+            else return true;
+        }
+        public void DeleteSpecialization(int specializationId)
+        {
+            _context.Specializations.Remove(_context.Specializations.First(x => int.Equals(x.Id, specializationId)));
             _context.SaveChanges();
+        }
 
-            return true;
+        public void EditSpecialization(SpecializationEditDTO request)
+        {
+            var specialization = _context.Specializations.First(x => int.Equals(x.Id, request.Id));
+            specialization.Name = request.Name;
+            _context.SaveChanges();
         }
 
         public ActionResult<List<Specialization>> GetSpecializations(int EmployerId)
