@@ -114,7 +114,7 @@ const Specialization = () => {
   const removeExperiance = (specializationId) => {
     axios.get('http://localhost:5000/api/specialization/checkCanModify', { params: { specializationId: specializationId, employerId: userId} })
         .then(response => {
-            if (response.data === true) {
+            if (response.data === 0) {
                 axios.delete('http://localhost:5000/api/specialization', { params: { specializationId: specializationId } })
                     .then(
                         setConfirmModal(true),
@@ -124,7 +124,7 @@ const Specialization = () => {
                 let updateListSpecializations = listSpecializations.slice(0, index).concat(listSpecializations.slice(index + 1))
                 setListSpecializations(updateListSpecializations)
             }
-            else {
+            else if(response.data === 1) {
                 setConfirmModal(true)
                 setMessage(errorText)
             }

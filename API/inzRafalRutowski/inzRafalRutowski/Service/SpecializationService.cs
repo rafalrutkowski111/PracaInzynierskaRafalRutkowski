@@ -12,8 +12,13 @@ namespace inzRafalRutowski.Service
         {
             _context = context;
         }
-        public void AddSpecialization(SpecializationAddDTO request)
+
+        public bool AddSpecialization(SpecializationAddDTO request)
         {
+            var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, request.EmployerId));
+
+            if (employer == null) return false;
+
             Specialization specialization = new Specialization()
             {
                 EmployerId = request.EmployerId,
@@ -22,60 +27,59 @@ namespace inzRafalRutowski.Service
 
             _context.Specializations.Add(specialization);
             _context.SaveChanges();
+            return true;
         }
 
-        public bool CheckIfSpecializationIsWithoutEmployee( int specializationId, int employerId)
+        public int CheckIfSpecializationIsWithoutEmployee( int specializationId, int employerId)
         {
-            var canModify = true;
+
+            var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
+            var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, specializationId));
+
+            if (employer == null && specialization == null) return -1;
+            else if (employer == null) return -2;
+            else if (specialization == null) return -3;
+
+            var canModify = 0;
             var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
 
             listEmployees.ForEach(x =>
             {
                 if (_context.EmployeeSpecializations.FirstOrDefault(x2 => Guid.Equals(x2.EmployeeId, x.Id) &&
                 int.Equals(x2.SpecializationId, specializationId)) != null)
-                    canModify = false;
+                    canModify = 1;
             });
             return canModify;
         }
 
-        public bool CheckEmployerAndSpecializationExist(int specializationId, int employerId)
-        {
-            var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
-            var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, specializationId));
-
-            if (employer == null || specialization == null) return false;
-            else return true;
-        }
-        public bool CheckSpecializationExist(int specializationId)
+        public bool DeleteSpecialization(int specializationId)
         {
             var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, specializationId));
 
             if (specialization == null) return false;
-            else return true;
-        }
 
-        public bool CheckEmployerExist(int employerId)
-        {
-            var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
-
-            if (employer == null) return false;
-            else return true;
-        }
-        public void DeleteSpecialization(int specializationId)
-        {
             _context.Specializations.Remove(_context.Specializations.First(x => int.Equals(x.Id, specializationId)));
             _context.SaveChanges();
+            return true;
         }
 
-        public void EditSpecialization(SpecializationEditDTO request)
+        public bool EditSpecialization(SpecializationEditDTO request)
         {
-            var specialization = _context.Specializations.First(x => int.Equals(x.Id, request.Id));
+            var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, request.Id));
+
+            if (specialization == null) return false;
+
             specialization.Name = request.Name;
             _context.SaveChanges();
+            return true;
         }
 
         public ActionResult<List<Specialization>> GetSpecializations(int EmployerId)
         {
+            var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, EmployerId));
+
+            if (employer == null) return null;
+
             return _context.Specializations.Where(x => int.Equals(x.EmployerId, EmployerId) || int.Equals(x.EmployerId, null)).ToList();
         }
     }

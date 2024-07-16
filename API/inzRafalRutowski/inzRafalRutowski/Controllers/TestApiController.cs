@@ -26,7 +26,8 @@ namespace inzRafalRutowski.Controllers
         {
             if (false)
             {
-                return BadRequest();
+                return BadRequest("testowa wiadomość"); // można potem wiadomość odczytać z axiosa w catchu
+                // .catch((error)=>{alert(error.response.data)})
             }
 
             var result = await _service.GetEmployers();

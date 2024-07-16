@@ -26,12 +26,9 @@ namespace inzRafalRutowski.Controllers
         [HttpGet("login")]
         public IActionResult Login([FromQuery] string login, [FromQuery] string password)
         {
-            //hmm jeżeli zrobie testy dla loginu i husha to jakie tu powinienem zobić?
-            // takie same drugi raz z innymi wynikami?
-            // (zamiast nulla w loginie to przechodizmy do 2 wyrazenia i Wynikiem jest BadRequest?)
             var employer = _service.Login(login, password);
             
-            if (employer == null) { return BadRequest(); }
+            if (employer == null) { return BadRequest("Nieprawidłowy login lub hasło"); }
 
             var builder = _service.Hush(employer);
 
