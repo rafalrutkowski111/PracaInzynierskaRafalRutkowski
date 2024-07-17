@@ -8,8 +8,6 @@ namespace inzRafalRutowski.Service
 {
     public class EmployerService : IEmployerService
     {
-        // zrobić testy jednostkowe
-
         private readonly DataContext _context;
 
         public EmployerService(DataContext context)
@@ -33,6 +31,8 @@ namespace inzRafalRutowski.Service
 
         public StringBuilder Hush(Employer employer)
         {
+            if (employer == null) return null;
+
             byte[] data = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes($"{employer.Id}_{employer.Login}_{employer.Password}"));
             var builder = new StringBuilder();
             for (int i = 0; i < data.Length; i++)

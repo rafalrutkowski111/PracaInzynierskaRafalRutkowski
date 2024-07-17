@@ -27,11 +27,9 @@ namespace inzRafalRutowski.Controllers
         public IActionResult Login([FromQuery] string login, [FromQuery] string password)
         {
             var employer = _service.Login(login, password);
-            
             if (employer == null) { return BadRequest("Nieprawidłowy login lub hasło"); }
 
             var builder = _service.Hush(employer);
-
             return Ok(new { hash = builder.ToString(), userId = employer.Id });
         }
 
@@ -39,19 +37,18 @@ namespace inzRafalRutowski.Controllers
         public IActionResult VeryfieLogin([FromQuery] int userId, [FromQuery] string hash)
         {
             var employer = _service.VeryfieLogin(userId);
-
-            if (employer == null) { return BadRequest(); }
+            if (employer == null) { return BadRequest("Id użytkownika jest niepoprawne"); }
 
             var builder = _service.Hush(employer);
-
             if (string.Equals(builder.ToString(), hash)) return Ok();
-            return BadRequest();
+            return BadRequest("Utracono token, proszę się zalogować ponownie.");
         }
 
         [HttpGet]
         public IActionResult GetEmployer([FromQuery] int employerId)
         {
             var employer = _service.GetEmployer(employerId);
+            if(employer == null) return BadRequest("Id pracodawcy niepoprawne.");
 
             return Ok(new
             {
