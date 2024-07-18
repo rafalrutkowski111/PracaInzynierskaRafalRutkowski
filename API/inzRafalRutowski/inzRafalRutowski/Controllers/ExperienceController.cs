@@ -1,8 +1,10 @@
 ﻿using inzRafalRutowski.Data;
 using inzRafalRutowski.DTO.Experiance;
 using inzRafalRutowski.Models;
+using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -11,30 +13,39 @@ namespace inzRafalRutowski.Controllers
     public class ExperienceController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IExperienceService _service;
 
-        public ExperienceController(DataContext context)
+        public ExperienceController(DataContext context, IExperienceService service)
         {
             _context = context;
-        }
-
-        [HttpPut]
-        public IActionResult AddExperience([FromBody] Experience request)
-        {
-            _context.Experiences.Add(request);
-            _context.SaveChanges();
-            return Ok(request);
+            _service = service;
         }
 
         [HttpGet]
         public ActionResult<List<Experience>> GetExperience([FromQuery] int employerId)
         {
-            var result = _context.Experiences.Where(x => int.Equals(x.EmployerId, employerId) || int.Equals(x.EmployerId, null)).ToList();
+            var result = _service.GetExperience(employerId);
+            if (result == null) return BadRequest("Id pracodawny jest niepoprawne");
+            else return Ok(result);
+        }
 
-            return Ok(result);
+        [HttpPut]
+        public IActionResult AddExperience([FromBody] Experience request)
+        {       
+            return Ok(_service.AddExperience(request));
+        }
+        [HttpPost]
+
+        public ActionResult<Experience> EditExperience([FromBody] EditExperianceDTO request)
+        {
+            var result = _service.EditExperience(request);
+
+            if(!result) return BadRequest("Id doświadczenai jest niepoprawne")
+            return Ok();
         }
 
         [HttpGet("checkCanModify")]
-        public ActionResult<Experience> CheckCanModify([FromQuery] int experianceId, int employerId, int value, bool edit)
+        public ActionResult<Experience> CheckIfCanModifyExperience([FromQuery] int experianceId, int employerId, int value, bool edit)
         {
             var canModify = true;
             var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
@@ -52,21 +63,8 @@ namespace inzRafalRutowski.Controllers
             return Ok(canModify);
         }
 
-        [HttpPost]
-        public ActionResult<Experience> Edit([FromBody] EditExperianceDTO request)
-        {
-            var experianceItem = _context.Experiences.First(x => int.Equals(x.Id, request.ExperianceId));
-
-            experianceItem.ExperienceName = request.Name;
-            experianceItem.ExperienceValue = request.Value;
-
-            _context.SaveChanges();
-
-            return Ok();
-        }
-
         [HttpDelete]
-        public ActionResult<Experience> Delete(int experianceId)
+        public ActionResult<Experience> DeleteExperience(int experianceId)
         {
             var result = _context.Experiences.First(x => int.Equals(x.Id, experianceId));
             _context.Experiences.Remove(result);

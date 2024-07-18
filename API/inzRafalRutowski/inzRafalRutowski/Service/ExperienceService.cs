@@ -1,4 +1,5 @@
-﻿using inzRafalRutowski.DTO.Experiance;
+﻿using inzRafalRutowski.Data;
+using inzRafalRutowski.DTO.Experiance;
 using inzRafalRutowski.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,9 +7,19 @@ namespace inzRafalRutowski.Service
 {
     public class ExperienceService : IExperienceService
     {
-        public IActionResult AddExperience(Experience request)
+        private readonly DataContext _context;
+
+        public ExperienceService(DataContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public ActionResult<Experience> AddExperience(Experience request)
+        {
+            if (request == null) return null;
+            _context.Experiences.Add(request);
+            _context.SaveChanges();
+
+            return request;
         }
 
         public ActionResult<Experience> CheckCanModify(int experianceId, int employerId, int value, bool edit)
@@ -21,14 +32,24 @@ namespace inzRafalRutowski.Service
             throw new NotImplementedException();
         }
 
-        public ActionResult<Experience> Edit(EditExperianceDTO request)
+        public bool EditExperience(EditExperianceDTO request)
         {
-            throw new NotImplementedException();
+            var experiance = _context.Experiences.FirstOrDefault(x => int.Equals(x.Id, request.ExperianceId));
+            if (experiance == null) return false;
+
+            experiance.ExperienceName = request.Name;
+            experiance.ExperienceValue = request.Value;
+
+            _context.SaveChanges();
+            return true;
         }
 
         public ActionResult<List<Experience>> GetExperience(int employerId)
         {
-            throw new NotImplementedException();
+            var employer = _context.Employers.FirstOrDefault(x=> int.Equals(x.Id, employerId));
+            if (employer == null) return null;
+
+            return _context.Experiences.Where(x => int.Equals(x.EmployerId, employerId) || int.Equals(x.EmployerId, null)).ToList();
         }
     }
 }
