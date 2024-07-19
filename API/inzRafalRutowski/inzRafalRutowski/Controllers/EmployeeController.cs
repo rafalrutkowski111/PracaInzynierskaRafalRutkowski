@@ -20,6 +20,11 @@ namespace inzRafalRutowski.Controllers
 
         // zamiast badrequestów zrobienie zwracana błędna informacja
 
+        // zrobienie autoryzacji
+        // jwt (package jwt)
+        // TO NIE WIEM CZY TERAZ CZY PRZY EDYCJI REJESTRACJI - dodać pole admina i osoby z nim moglyby robic wszystkie operacje
+        // ,bo normalnie tylko beda mogly osoby wykonywac operacje tylko dla swoich kont
+
         //walidacja wstpna dla controllerów
         // np sprawdzająca czy to lcizba dodatnia
         // albo tez zeby nie mozna wyslac zapytań
@@ -36,13 +41,28 @@ namespace inzRafalRutowski.Controllers
 
         //testy jednostkowe
 
+        // zrobić rejestracje
+        //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"
+
+        //zrobić logout
+
+        // przy hasle w rejestracji zrobic hashowane haslo(mozna uzyc package bccrypt)
+        // uzywa sie go "password = BCrypt.Net.BCrypt.HashPassword(password);"
+        // sprawdza się BCrypt.Net.BCrypt.Verifity(password,password) - zwraca true jesli prawda
+        // przy storzenei uczegoś zamiast OK() mozna uzyc Create("wiadomosc", wartosc)
+
+        // dodac email do pracodawcy, ustawic go i login unikalny
+        // w DataContext zakomentowane jak dla loginu zrobić
+
+        // logowanie zrobić za pomocą email + haslo lub login + haslo
+
+        // zrobic przy rejestracji prozbe o potwierzenie prez email
+
+        // Uwierzytelnianie wieloskładnikowe (MFA) np sms + haslo
 
         // dodanie logów zapisywanych do bazy danych
 
         // zrobienie usługi(do logów) która komrpesuje nasze logi i zapisuje je na dysku
-
-
-        // zrobienie autoryzacji
 
         private readonly DataContext _context;
 

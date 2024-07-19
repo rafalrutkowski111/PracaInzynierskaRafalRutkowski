@@ -37,7 +37,7 @@ const Login = () => {
                 sessionStorage.setItem("userId", response.data.userId)
                 sessionStorage.setItem("userHashToken", response.data.hash);
                 window.location.pathname = '/inzRafalRutkowski/';
-            }).catch((error)=>{alert(error.response.data)})
+            }).catch((error)=>{alert(error.response.data.message)})
     }
 
 

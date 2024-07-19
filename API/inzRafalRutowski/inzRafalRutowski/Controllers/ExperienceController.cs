@@ -40,7 +40,7 @@ namespace inzRafalRutowski.Controllers
         {
             var result = _service.EditExperience(request);
 
-            if(!result) return BadRequest("Id doświadczenai jest niepoprawne")
+            if (!result) return BadRequest("Id doświadczenia jest niepoprawne");
             return Ok();
         }
 

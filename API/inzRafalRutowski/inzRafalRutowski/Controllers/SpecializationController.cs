@@ -25,7 +25,7 @@ namespace inzRafalRutowski.Controllers
         public ActionResult<List<Specialization>> GetSpecializations([FromQuery] int EmployerId)
         {
             var result = _service.GetSpecializations(EmployerId);
-            if (result == null) return BadRequest("Id pracodawcy jest niepoprawne");
+            if (result == null) return BadRequest(new { message = "Id pracodawcy jest niepoprawne" });
             else return Ok(result);
         }
 
@@ -33,7 +33,7 @@ namespace inzRafalRutowski.Controllers
         public IActionResult AddSpecialization([FromBody] SpecializationAddDTO request)
         {    
             var result = _service.AddSpecialization(request);
-            if(!result) return BadRequest("Id pracodawcy jest niepoprawne");
+            if(!result) return BadRequest(new { message = "Id pracodawcy jest niepoprawne" });
             else return Ok();
         }
 
@@ -41,7 +41,7 @@ namespace inzRafalRutowski.Controllers
         public ActionResult<Specialization> EditSpecialization([FromBody] SpecializationEditDTO request)
         {
             var result = _service.EditSpecialization(request);
-            if(!result) return BadRequest("Id pracodawcy jest niepoprawne");
+            if(!result) return BadRequest(new { message = "Id pracodawcy jest niepoprawne" });
             else return Ok();
         }
 
@@ -51,18 +51,21 @@ namespace inzRafalRutowski.Controllers
             var result = _service.CheckIfSpecializationIsWithoutEmployee(specializationId, employerId);
 
             if (result == 0) return Ok();
-            else if (result == 1) return Ok(
-                "Nie można dokonać zmian. Istnieje jeden lub więcej pracowników przypisanych do specjalizacji");
-            else if (result == -1) return BadRequest("Id pracodawcy i id specjalizacji jest niepoprawne");
-            else if (result == -2) return BadRequest("Id pracodawcy jest niepoprawne");
-            else return BadRequest("Id specjalizacji jest niepoprawne");
+            else if (result == 1) return Ok( new
+            {
+                message =
+                "Nie można dokonać zmian. Istnieje jeden lub więcej pracowników przypisanych do specjalizacji"
+            });
+            else if (result == -1) return BadRequest(new { message = "Id pracodawcy i id specjalizacji jest niepoprawne" });
+            else if (result == -2) return BadRequest(new { message = "Id pracodawcy jest niepoprawne" });
+            else return BadRequest(new { messgae = "Id specjalizacji jest niepoprawne" });
         }
 
         [HttpDelete]
         public ActionResult<Specialization> DeleteSpecialization([FromQuery] int specializationId)
         {
             var restult = _service.DeleteSpecialization(specializationId);
-            if(!restult) return BadRequest("Id pracodawcy jest niepoprawne");
+            if(!restult) return BadRequest(new { message = "Id pracodawcy jest niepoprawne" });
             return Ok();
         }
 

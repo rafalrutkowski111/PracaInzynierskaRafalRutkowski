@@ -17,6 +17,7 @@ builder.Services.AddTransient<IExperienceService, ExperienceService>();
 builder.Services.AddTransient<ISpecializationService, SpecializationService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IJobService, JobService>();
+builder.Services.AddTransient<IJwtService, JwtService>();
 
 
 
