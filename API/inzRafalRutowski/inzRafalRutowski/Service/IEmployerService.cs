@@ -8,7 +8,7 @@ namespace inzRafalRutowski.Service
     {
         Employer Login(string login, string password);
         Employer VeryfieLogin(int userId);
-        Employer GetEmployer(int employerId);
+        Employer GetEmployerById(int employerId);
         StringBuilder Hush(Employer employer);
     }
 }

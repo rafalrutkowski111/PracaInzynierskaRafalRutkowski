@@ -14,7 +14,7 @@ namespace inzRafalRutowski.Service
         {
             _context = context;
         }
-        public Employer GetEmployer(int employerId)
+        public Employer GetEmployerById(int employerId)
         {
             return _context.Employers.FirstOrDefault(x => string.Equals(x.Id, employerId));
         }

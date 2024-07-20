@@ -17,10 +17,12 @@ namespace inzRafalRutowski.Controllers
     public class EmployerController : ControllerBase
     {
         private readonly IEmployerService _service;
+        private readonly IJwtService _jwtService;
 
-        public EmployerController( IEmployerService service)
+        public EmployerController( IEmployerService service, IJwtService jwtService)
         {
             _service = service;
+            _jwtService = jwtService;
         }
 
         [HttpGet("login")]
@@ -30,9 +32,23 @@ namespace inzRafalRutowski.Controllers
             if (employer == null) { return BadRequest(new {message = "Nieprawidłowy login lub hasło" }); }
 
             var builder = _service.Hush(employer);
+
+
+
+            // dodana zmiana, w przyszłości przenieść do servisu
+            // i zastąpić to z uzywaniem husha
+            var jwt = _jwtService.Generate(employer.Id);
+
+            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            {
+                HttpOnly = true
+            });
+            //
+
             return Ok(new { hash = builder.ToString(), userId = employer.Id });
         }
 
+        //po autentykazcji za pomoca jwt po stronie fronta usunac VeryfieLogin
         [HttpGet("veryfieLogin")]
         public IActionResult VeryfieLogin([FromQuery] int userId, [FromQuery] string hash)
         {
@@ -44,10 +60,11 @@ namespace inzRafalRutowski.Controllers
             return BadRequest(new {message = "Utracono token, proszę się zalogować ponownie."});
         }
 
+        // po przerobieniu fronta zamieni się z GetEmployerJwt
         [HttpGet]
         public IActionResult GetEmployer([FromQuery] int employerId)
         {
-            var employer = _service.GetEmployer(employerId);
+            var employer = _service.GetEmployerById(employerId);
             if(employer == null) return BadRequest(new { message = "Id pracodawcy niepoprawne." });
 
             return Ok(new
@@ -56,6 +73,34 @@ namespace inzRafalRutowski.Controllers
                 surname = employer.Surname,
                 phone = employer.Phone,
             });
+        }
+
+        //pobieranie pracownika za pomocą jwt cookie
+        [HttpGet("getEmployer")]
+        public IActionResult GetEmployerJwt()
+        {
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+
+                var token = _jwtService.Verify(jwt);
+
+                int employerId = int.Parse(token.Issuer);
+
+                var employer = _service.GetEmployerById(employerId);
+
+                return Ok(new
+                {
+                    name = employer.Name,
+                    surname = employer.Surname,
+                    phone = employer.Phone,
+                });
+            }
+            catch(Exception _)
+            {
+                return Unauthorized();
+            }
+
         }
     }
 }
