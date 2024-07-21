@@ -21,6 +21,7 @@ const Router = () => {
 
 
   const [isLogged, setIsLogged] = React.useState(false);
+  const [test111, setTest111] = React.useState(false);
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
     const userHashToken = sessionStorage.getItem("userHashToken")
@@ -34,11 +35,22 @@ const Router = () => {
         sessionStorage.removeItem("userHashToken");
         setIsLogged(false);
       })
+      //moglbym zrobic getEmployer jako varyfilogin i sprawdzac czy istnieje token
+      // po testach wychodzi ze lepiej nie przechowywac nic w sesji bo to stracimimy otwierajac nowa karte
+      // jak zmieni sie sposób pozyskiwania id (albio pobierania podobnie jak gerEmployer, albo robienie tego bezposrednio w backu )
+      // to wywali się rzeczy z sesji i , usunie niepotrzebne rzeczy w logowaniu i usunie veryfieLogin na becku i tu i zamiast isLogged uzyje test111
+    axios.get('http://localhost:5000/api/Employer/getEmployer', {withCredentials: true} )
+    .then(response => {
+      console.log(response)
+      setTest111(true);
+    }).catch(() => {
+      setTest111(false);
+    })
   }, []);
 
 
 
-  return !isLogged ? (
+  return !(isLogged)? (
     <Login />
   ) : (
     <>

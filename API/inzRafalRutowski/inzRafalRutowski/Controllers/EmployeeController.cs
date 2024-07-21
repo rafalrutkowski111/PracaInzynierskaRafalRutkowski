@@ -41,6 +41,8 @@ namespace inzRafalRutowski.Controllers
 
         //testy jednostkowe
 
+        // zrobic zeby cookie usuwaly sie po czasie bezczynnosci na aplikacji
+
         // zrobić rejestracje
         //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"
 

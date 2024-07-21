@@ -74,7 +74,7 @@ namespace inzRafalRutowski.Service
             return true;
         }
 
-        public ActionResult<List<Specialization>> GetSpecializations(int EmployerId)
+        public List<Specialization> GetSpecializations(int EmployerId)
         {
             var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, EmployerId));
 

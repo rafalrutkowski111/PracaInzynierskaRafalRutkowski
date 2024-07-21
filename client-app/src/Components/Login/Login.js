@@ -32,7 +32,11 @@ const Login = () => {
     const [password, setPassword] = useState(undefined);
 
     const doLogin = () => {
-        axios.get('http://localhost:5000/api/Employer/login', {params: {login: login, password: password}})
+        axios.get('http://localhost:5000/api/Employer/login', 
+            {
+                params: {login: login, password: password},
+                withCredentials: true
+            })
             .then(response => {
                 sessionStorage.setItem("userId", response.data.userId)
                 sessionStorage.setItem("userHashToken", response.data.hash);

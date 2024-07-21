@@ -13,7 +13,7 @@ namespace inzRafalRutowski.Service
         {
             _context = context;
         }
-        public ActionResult<Experience> AddExperience(Experience request)
+        public Experience AddExperience(Experience request)
         {
             if (request == null) return null;
             _context.Experiences.Add(request);
@@ -22,12 +22,12 @@ namespace inzRafalRutowski.Service
             return request;
         }
 
-        public ActionResult<Experience> CheckCanModify(int experianceId, int employerId, int value, bool edit)
+        public Experience CheckCanModify(int experianceId, int employerId, int value, bool edit)
         {
             throw new NotImplementedException();
         }
 
-        public ActionResult<Experience> Delete(int experianceId)
+        public Experience Delete(int experianceId)
         {
             throw new NotImplementedException();
         }
@@ -44,7 +44,7 @@ namespace inzRafalRutowski.Service
             return true;
         }
 
-        public ActionResult<List<Experience>> GetExperience(int employerId)
+        public List<Experience> GetExperience(int employerId)
         {
             var employer = _context.Employers.FirstOrDefault(x=> int.Equals(x.Id, employerId));
             if (employer == null) return null;
