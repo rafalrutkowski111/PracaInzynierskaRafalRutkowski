@@ -20,6 +20,8 @@ namespace inzRafalRutowski.Controllers
 
         // zamiast badrequestów zrobienie zwracana błędna informacja
 
+        // dodać autoryzcje do programu, zeby controllery ich wymagały (trzbea dac nagłówek [Authorize])
+        // aby usprawnić powyższy proces i nie pisać wszędzie [Authorize] dodać policy
         // zrobienie autoryzacji
         // jwt (package jwt)
         // TO NIE WIEM CZY TERAZ CZY PRZY EDYCJI REJESTRACJI - dodać pole admina i osoby z nim moglyby robic wszystkie operacje
@@ -65,6 +67,11 @@ namespace inzRafalRutowski.Controllers
         // dodanie logów zapisywanych do bazy danych
 
         // zrobienie usługi(do logów) która komrpesuje nasze logi i zapisuje je na dysku
+
+        // zrobic Data Seeding - wypełniania bazy danych początkowym zestawem danych w przypadku braku danych
+
+        //IdentityUser można zrobić do autoryzacji. Wiele rzeczy ktorych tu zrobie ona automatyzuje, mozliwe ze przetestuje w odzielnym
+        //projekce. Jeszcze do przemyślenia.
 
         private readonly DataContext _context;
 
