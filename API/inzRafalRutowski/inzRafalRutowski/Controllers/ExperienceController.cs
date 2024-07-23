@@ -2,6 +2,7 @@
 using inzRafalRutowski.DTO.Experiance;
 using inzRafalRutowski.Models;
 using inzRafalRutowski.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
@@ -14,16 +15,39 @@ namespace inzRafalRutowski.Controllers
     {
         private readonly DataContext _context;
         private readonly IExperienceService _service;
+        private readonly IJwtService _jwtService;
 
-        public ExperienceController(DataContext context, IExperienceService service)
+        public ExperienceController(DataContext context, IExperienceService service, IJwtService jwtService)
         {
             _context = context;
             _service = service;
+            _jwtService = jwtService;   
         }
-
+        [Authorize]
         [HttpGet]
         public ActionResult<List<Experience>> GetExperience([FromQuery] int employerId)
         {
+
+            //try
+            //{
+            //    var jwt = Request.Cookies["jwt"];
+
+            //    var token = _jwtService.Verify(jwt);
+
+            //    int employerIdFromToken = int.Parse(token.Issuer);
+
+            //    if(employerId != employerIdFromToken ) return Unauthorized();
+
+            //    var resultAction = _service.GetExperience(employerId);
+            //    if (resultAction == null) return BadRequest("Id pracodawny jest niepoprawne");
+            //    return Ok(resultAction);
+            //}
+            //catch (Exception _)
+            //{
+            //    return Unauthorized();
+            //}
+
+
             var result = _service.GetExperience(employerId);
             if (result == null) return BadRequest("Id pracodawny jest niepoprawne");
             else return Ok(result);

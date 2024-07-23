@@ -44,6 +44,7 @@ namespace inzRafalRutowski.Controllers
         //testy jednostkowe
 
         // zrobic zeby cookie usuwaly sie po czasie bezczynnosci na aplikacji
+        //dodać zeby tokeny nie żyly przez 1 dzień tylko krótko i żeby usuwały się stare i tworzyły nowe
 
         // zrobić rejestracje
         //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"
