@@ -1,5 +1,7 @@
 using AutoMapper;
+using inzRafalRutowski.Controllers;
 using inzRafalRutowski.Data;
+using inzRafalRutowski.Identity;
 using inzRafalRutowski.Mapper;
 using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,6 +34,11 @@ builder.Services.AddAuthentication(options=>
         };
     });
 builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy(IdentityData.AdminUserPolicyName, p =>
+//        p.RequireClaim(IdentityData.AdminUserClaimName, "True"));
+//});
 // end Authentication
 
 // Add services to the container.

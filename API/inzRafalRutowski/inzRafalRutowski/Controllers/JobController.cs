@@ -22,7 +22,7 @@ namespace inzRafalRutowski.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class JobController : ControllerBase
+    public class JobController : HomeController
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;

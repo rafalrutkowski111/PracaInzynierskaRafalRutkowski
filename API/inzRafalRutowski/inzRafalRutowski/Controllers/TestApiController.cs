@@ -11,7 +11,7 @@ namespace inzRafalRutowski.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestApiController : ControllerBase
+    public class TestApiController : HomeController
     {
         private readonly ITestApiService _service;
 

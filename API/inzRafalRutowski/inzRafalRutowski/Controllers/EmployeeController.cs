@@ -12,7 +12,7 @@ namespace inzRafalRutowski.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class EmployeeController : HomeController
     {
         //refaktoryzacja (zacznijmy od specjalizacji)
 
@@ -43,8 +43,16 @@ namespace inzRafalRutowski.Controllers
 
         //testy jednostkowe
 
+        // zrobic po stronie fronta obsługe tokenów w memory(state) albo przez zewnetrzny program (teraz bedzie localstorage)
+        // do tego stworzyc refreshtoken z zywotnoscia na 30 dni i access token na 15 minut
+
         // zrobic zeby cookie usuwaly sie po czasie bezczynnosci na aplikacji
         //dodać zeby tokeny nie żyly przez 1 dzień tylko krótko i żeby usuwały się stare i tworzyły nowe
+        // to i to optymalnie jest zroibc zeby usuwaly sie co 15 minut w podobnym czasie
+        // "Na koniec, używając tokenów odświeżania, upewnij się, że przechowujesz je w ich własnych plikach cookie.
+        // Nie ma potrzeby wysyłania ich z każdym żądaniem API, więc upewnij się, że tak nie jest. 
+        // okeny odświeżania należy dodawać tylko podczas odświeżania wygasłych tokenów dostępu. 
+        // Oznacza to, że pliki cookie zawierające tokeny odświeżania mają nieco inne ustawienia niż pliki cookie z tokenami dostępu."
 
         // zrobić rejestracje
         //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"

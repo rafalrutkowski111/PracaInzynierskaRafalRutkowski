@@ -14,7 +14,7 @@ namespace inzRafalRutowski.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployerController : ControllerBase
+    public class EmployerController : HomeController
     {
         private readonly IEmployerService _service;
         private readonly IJwtService _jwtService;
@@ -24,7 +24,6 @@ namespace inzRafalRutowski.Controllers
             _service = service;
             _jwtService = jwtService;
         }
-
         [HttpGet("login")]
         public IActionResult Login([FromQuery] string login, [FromQuery] string password)
         {
@@ -37,7 +36,7 @@ namespace inzRafalRutowski.Controllers
 
             // dodana zmiana, w przyszłości przenieść do servisu
             // i zastąpić to z uzywaniem husha
-            var jwt = _jwtService.Generate(employer.Id);
+            var jwt = _jwtService.Generate(employer);
 
             Response.Cookies.Append("jwt", jwt, new CookieOptions
             {

@@ -12,7 +12,7 @@ namespace inzRafalRutowski.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SpecializationController : ControllerBase
+    public class SpecializationController : HomeController
     {
         private readonly ISpecializationService _service;
 

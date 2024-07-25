@@ -11,7 +11,7 @@ namespace inzRafalRutowski.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExperienceController : ControllerBase
+    public class ExperienceController : HomeController
     {
         private readonly DataContext _context;
         private readonly IExperienceService _service;
@@ -21,12 +21,40 @@ namespace inzRafalRutowski.Controllers
         {
             _context = context;
             _service = service;
-            _jwtService = jwtService;   
+            _jwtService = jwtService;
         }
+        public bool CheckAuthoriationOwnUserOrAdmin(int employerId)
+        {
+            var jwt = Request.Cookies["jwt"];
+
+            var token = _jwtService.Verify(jwt);
+
+            var claimId = int.Parse(token.Claims.First(c => c.Type == "nameid").Value);
+            var claimAdmin = token.Claims.First(c => c.Type == "admin").Value;
+
+            if (claimId == employerId || claimAdmin == "True")
+                return true;
+            else return false;
+        }
+
+        //[Authorize(Policy = IdentityData.AdminUserPolicyName)]
+        //[Authorize]
+        //[RequiresClaim(IdentityData.AdminUserClaimName, "False")]
+        //rhtgegyhrtgyhe("asdasd")]
         [Authorize]
         [HttpGet]
         public ActionResult<List<Experience>> GetExperience([FromQuery] int employerId)
         {
+            //Zapytać sie przy okazji jak rozwiązać sprawe autoryzacji po stronie fronta
+            // bo jezeli uzywamy [Authorize] to przy zapytaniu musimy wyslac token
+            // a zeby to zrobic trzeba go gdzies przetrzymywac na froncie
+            // mozna zrobic to w local storage, ale to chyba nie jest najlepsze miejsce do przechowywania takich rzeczy
+
+            if (!CheckAuthoriationOwnUserOrAdmin(employerId)) return Unauthorized();
+
+            var result = _service.GetExperience(employerId);
+            if (result == null) return BadRequest("Id pracodawny jest niepoprawne");
+            else return Ok(result);
 
             //try
             //{
@@ -36,7 +64,7 @@ namespace inzRafalRutowski.Controllers
 
             //    int employerIdFromToken = int.Parse(token.Issuer);
 
-            //    if(employerId != employerIdFromToken ) return Unauthorized();
+            //    if (employerId != employerIdFromToken) return Unauthorized();
 
             //    var resultAction = _service.GetExperience(employerId);
             //    if (resultAction == null) return BadRequest("Id pracodawny jest niepoprawne");
@@ -48,9 +76,9 @@ namespace inzRafalRutowski.Controllers
             //}
 
 
-            var result = _service.GetExperience(employerId);
-            if (result == null) return BadRequest("Id pracodawny jest niepoprawne");
-            else return Ok(result);
+            //var result = _service.GetExperience(employerId);
+            //if (result == null) return BadRequest("Id pracodawny jest niepoprawne");
+            //else return Ok(result);
         }
 
         [HttpPut]

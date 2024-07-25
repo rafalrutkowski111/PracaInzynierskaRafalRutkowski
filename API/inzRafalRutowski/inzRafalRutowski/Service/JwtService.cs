@@ -15,8 +15,8 @@ namespace inzRafalRutowski.Service
         {
             _config = config;
         }
-      
-        public string Generate(int id)
+
+        public string Generate(Employer employer)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_config["TokenKey"]);
@@ -24,9 +24,10 @@ namespace inzRafalRutowski.Service
 
             var claims = new List<Claim>
             {
-                 new Claim(ClaimTypes.Name, "Test nazwa123"),
-                 new Claim(ClaimTypes.NameIdentifier, id.ToString()), //(employer.Id).ToString()
-                 //new Claim(ClaimTypes.Name, employer.Email),
+                 new Claim(ClaimTypes.NameIdentifier, employer.Id.ToString()),
+                 new Claim(type: "admin", value: employer.Admin.ToString())
+                 // jakbym miał wiecej rol to zrobić zamiast pola admin role i tam dodawac jaka rola by była a potem
+                 // wstawic zamist admina new Claim(ClaimTypes.Role, employer.Role.ToString()),
             };
 
             var tokenDescription = new SecurityTokenDescriptor
@@ -34,7 +35,7 @@ namespace inzRafalRutowski.Service
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = credentials,
-                Issuer = id.ToString()
+                Issuer = employer.Id.ToString()
             };
 
             var token = tokenHandler.CreateToken(tokenDescription);
