@@ -5,6 +5,8 @@ using inzRafalRutowski.Identity;
 using inzRafalRutowski.Mapper;
 using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
@@ -44,7 +46,12 @@ builder.Services.AddAuthorization();
 // Add services to the container.
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddControllers();
+// autorization user for every controller
+builder.Services.AddControllers(options =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
 
 builder.Services.AddTransient<ITestApiService, TestApiService>();
 builder.Services.AddTransient<IEmployerService, EmployerService>();

@@ -15,12 +15,13 @@ namespace inzRafalRutowski.Controllers
     {
         private readonly ITestApiService _service;
 
-        public TestApiController(ITestApiService service)
+        public TestApiController(ITestApiService service, IJwtService jwtService) :base(jwtService)
         {
             _service = service;
         }
 
-        
+
+
         [HttpGet] //api/testApi
         public async Task<ActionResult<List<Employer>>> GetEmployers()
         {

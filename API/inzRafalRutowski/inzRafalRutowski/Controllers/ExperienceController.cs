@@ -1,5 +1,6 @@
 ﻿using inzRafalRutowski.Data;
 using inzRafalRutowski.DTO.Experiance;
+using inzRafalRutowski.Identity;
 using inzRafalRutowski.Models;
 using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -17,39 +18,19 @@ namespace inzRafalRutowski.Controllers
         private readonly IExperienceService _service;
         private readonly IJwtService _jwtService;
 
-        public ExperienceController(DataContext context, IExperienceService service, IJwtService jwtService)
+        public ExperienceController(DataContext context, IExperienceService service, IJwtService jwtService) :base (jwtService)
         {
             _context = context;
             _service = service;
             _jwtService = jwtService;
         }
-        public bool CheckAuthoriationOwnUserOrAdmin(int employerId)
-        {
-            var jwt = Request.Cookies["jwt"];
-
-            var token = _jwtService.Verify(jwt);
-
-            var claimId = int.Parse(token.Claims.First(c => c.Type == "nameid").Value);
-            var claimAdmin = token.Claims.First(c => c.Type == "admin").Value;
-
-            if (claimId == employerId || claimAdmin == "True")
-                return true;
-            else return false;
-        }
 
         //[Authorize(Policy = IdentityData.AdminUserPolicyName)]
-        //[Authorize]
-        //[RequiresClaim(IdentityData.AdminUserClaimName, "False")]
-        //rhtgegyhrtgyhe("asdasd")]
-        [Authorize]
+        //[Authorize(Roles = _context)]
+        //[RequiresClaim(IdentityData.AdminUserClaimName, "True")]
         [HttpGet]
         public ActionResult<List<Experience>> GetExperience([FromQuery] int employerId)
         {
-            //Zapytać sie przy okazji jak rozwiązać sprawe autoryzacji po stronie fronta
-            // bo jezeli uzywamy [Authorize] to przy zapytaniu musimy wyslac token
-            // a zeby to zrobic trzeba go gdzies przetrzymywac na froncie
-            // mozna zrobic to w local storage, ale to chyba nie jest najlepsze miejsce do przechowywania takich rzeczy
-
             if (!CheckAuthoriationOwnUserOrAdmin(employerId)) return Unauthorized();
 
             var result = _service.GetExperience(employerId);

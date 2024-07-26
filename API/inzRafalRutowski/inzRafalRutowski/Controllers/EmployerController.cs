@@ -2,6 +2,7 @@
 using inzRafalRutowski.Data;
 using inzRafalRutowski.Models;
 using inzRafalRutowski.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -19,11 +20,12 @@ namespace inzRafalRutowski.Controllers
         private readonly IEmployerService _service;
         private readonly IJwtService _jwtService;
 
-        public EmployerController( IEmployerService service, IJwtService jwtService)
+        public EmployerController( IEmployerService service, IJwtService jwtService) :base(jwtService)
         {
             _service = service;
             _jwtService = jwtService;
         }
+        [AllowAnonymous]
         [HttpGet("login")]
         public IActionResult Login([FromQuery] string login, [FromQuery] string password)
         {

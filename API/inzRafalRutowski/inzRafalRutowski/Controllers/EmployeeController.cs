@@ -2,6 +2,7 @@
 using inzRafalRutowski.DTO.Employee;
 using inzRafalRutowski.Models;
 using inzRafalRutowski.ModelsAnother;
+using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -83,8 +84,7 @@ namespace inzRafalRutowski.Controllers
         //projekce. Jeszcze do przemyślenia.
 
         private readonly DataContext _context;
-
-        public EmployeeController(DataContext context)
+        public EmployeeController(DataContext context , JwtService jwtService) : base(jwtService)
         {
             _context = context;
         }

@@ -18,9 +18,8 @@ namespace inzRafalRutowski.Identity
         }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
- 
 
-            if(!context.HttpContext.User.HasClaim(_claimName, _claimValue))
+            if (!context.HttpContext.User.HasClaim(_claimName, _claimValue))
             {
                 context.Result = new ForbidResult();
             }
