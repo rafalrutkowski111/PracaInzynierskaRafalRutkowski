@@ -48,7 +48,7 @@ namespace inzRafalRutowski.Controllers
 
             return Ok(new { hash = builder.ToString(), userId = employer.Id });
         }
-
+        [AllowAnonymous]
         //po autentykazcji za pomoca jwt po stronie fronta usunac VeryfieLogin
         [HttpGet("veryfieLogin")]
         public IActionResult VeryfieLogin([FromQuery] int userId, [FromQuery] string hash)
@@ -61,6 +61,7 @@ namespace inzRafalRutowski.Controllers
             return BadRequest(new {message = "Utracono token, proszę się zalogować ponownie."});
         }
 
+        [AllowAnonymous]
         // po przerobieniu fronta zamieni się z GetEmployerJwt
         [HttpGet]
         public IActionResult GetEmployer([FromQuery] int employerId)

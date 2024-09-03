@@ -27,9 +27,15 @@ namespace inzRafalRutowski.Service
             throw new NotImplementedException();
         }
 
-        public Experience Delete(int experianceId)
+        public bool Delete(int experianceId)
         {
-            throw new NotImplementedException();
+            var result = _context.Experiences.FirstOrDefault(x => int.Equals(x.Id, experianceId));
+            if(result == null) return false;
+
+            _context.Experiences.Remove(result);
+            _context.SaveChanges();
+
+            return true;
         }
 
         public bool EditExperience(EditExperianceDTO request)
@@ -39,8 +45,8 @@ namespace inzRafalRutowski.Service
 
             experiance.ExperienceName = request.Name;
             experiance.ExperienceValue = request.Value;
-
             _context.SaveChanges();
+
             return true;
         }
 

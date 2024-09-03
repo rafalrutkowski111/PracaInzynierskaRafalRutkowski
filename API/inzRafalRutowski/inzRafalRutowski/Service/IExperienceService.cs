@@ -10,6 +10,6 @@ namespace inzRafalRutowski.Service
         List<Experience> GetExperience(int employerId);
         Experience CheckCanModify(int experianceId, int employerId, int value, bool edit);
         bool EditExperience(EditExperianceDTO request);
-        Experience Delete(int experianceId);
+        bool Delete(int experianceId);
     }
 }

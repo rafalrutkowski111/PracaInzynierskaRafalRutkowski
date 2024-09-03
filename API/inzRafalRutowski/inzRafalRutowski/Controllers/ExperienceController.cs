@@ -31,35 +31,11 @@ namespace inzRafalRutowski.Controllers
         [HttpGet]
         public ActionResult<List<Experience>> GetExperience([FromQuery] int employerId)
         {
-            if (!CheckAuthoriationOwnUserOrAdmin(employerId)) return Unauthorized();
+            if (!CheckAuthoriationOwnUserOrAdmin(employerId)) return Unauthorized(); // ustawienie dostepu do zalogowanej osoby lub admina
 
             var result = _service.GetExperience(employerId);
             if (result == null) return BadRequest("Id pracodawny jest niepoprawne");
             else return Ok(result);
-
-            //try
-            //{
-            //    var jwt = Request.Cookies["jwt"];
-
-            //    var token = _jwtService.Verify(jwt);
-
-            //    int employerIdFromToken = int.Parse(token.Issuer);
-
-            //    if (employerId != employerIdFromToken) return Unauthorized();
-
-            //    var resultAction = _service.GetExperience(employerId);
-            //    if (resultAction == null) return BadRequest("Id pracodawny jest niepoprawne");
-            //    return Ok(resultAction);
-            //}
-            //catch (Exception _)
-            //{
-            //    return Unauthorized();
-            //}
-
-
-            //var result = _service.GetExperience(employerId);
-            //if (result == null) return BadRequest("Id pracodawny jest niepoprawne");
-            //else return Ok(result);
         }
 
         [HttpPut]
@@ -77,6 +53,7 @@ namespace inzRafalRutowski.Controllers
             return Ok();
         }
 
+        // zrefaktoryzowac
         [HttpGet("checkCanModify")]
         public ActionResult<Experience> CheckIfCanModifyExperience([FromQuery] int experianceId, int employerId, int value, bool edit)
         {
@@ -99,9 +76,10 @@ namespace inzRafalRutowski.Controllers
         [HttpDelete]
         public ActionResult<Experience> DeleteExperience(int experianceId)
         {
-            var result = _context.Experiences.First(x => int.Equals(x.Id, experianceId));
-            _context.Experiences.Remove(result);
-            _context.SaveChanges();
+
+            var result = _service.Delete(experianceId);
+
+            if(!result) return BadRequest("Id doświadczenia jest niepoprawne");
             return Ok();
         }
     }
