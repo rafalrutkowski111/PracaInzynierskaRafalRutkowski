@@ -8,7 +8,7 @@ namespace inzRafalRutowski.Service
     {
         Experience AddExperience(Experience request);
         List<Experience> GetExperience(int employerId);
-        Experience CheckCanModify(int experianceId, int employerId, int value, bool edit);
+        int CheckCanModify(int experianceId, int employerId, int value, bool edit);
         bool EditExperience(EditExperianceDTO request);
         bool Delete(int experianceId);
     }

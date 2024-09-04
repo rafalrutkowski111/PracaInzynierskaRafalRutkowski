@@ -22,9 +22,27 @@ namespace inzRafalRutowski.Service
             return request;
         }
 
-        public Experience CheckCanModify(int experianceId, int employerId, int value, bool edit)
+        public int CheckCanModify(int experianceId, int employerId, int value, bool edit)
         {
-            throw new NotImplementedException();
+            var experiences = _context.Experiences.FirstOrDefault(x => int.Equals(x.Id, experianceId));
+            if (experiences == null) return -1;
+            var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
+            if (employer == null) return -2;
+
+            var canModify = 0;
+            var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
+
+            listEmployees.ForEach(x =>
+            {
+                if (_context.EmployeeSpecializations.FirstOrDefault(x2 => Guid.Equals(x2.EmployeeId, x.Id) &&
+                int.Equals(x2.ExperienceId, experianceId)) != null)
+                    canModify = 1;
+
+            });
+
+            if (edit && (_context.Experiences.First(x => int.Equals(x.Id, experianceId)).ExperienceValue == value))
+                canModify = 0;
+            return canModify;
         }
 
         public bool Delete(int experianceId)

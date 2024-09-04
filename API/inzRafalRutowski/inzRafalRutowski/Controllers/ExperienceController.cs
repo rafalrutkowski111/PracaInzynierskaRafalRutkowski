@@ -53,24 +53,15 @@ namespace inzRafalRutowski.Controllers
             return Ok();
         }
 
-        // zrefaktoryzowac
         [HttpGet("checkCanModify")]
         public ActionResult<Experience> CheckIfCanModifyExperience([FromQuery] int experianceId, int employerId, int value, bool edit)
         {
-            var canModify = true;
-            var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
+            var result = _service.CheckCanModify(experianceId, employerId, value, edit);
+            if (result == -1) return BadRequest("Id doświadczenia jest niepoprawne");
+            else if (result == -2) return BadRequest("Id pracownika jest niepoprawne");
+            else if (result == 0) return Ok(true);
+            return Ok(false);
 
-            listEmployees.ForEach(x =>
-            {
-                if (_context.EmployeeSpecializations.FirstOrDefault(x2 => Guid.Equals(x2.EmployeeId, x.Id) &&
-                int.Equals(x2.ExperienceId, experianceId)) != null)
-                    canModify = false;
-
-            });
-
-            if (edit && (_context.Experiences.First(x => int.Equals(x.Id, experianceId)).ExperienceValue == value))
-                canModify = true;
-            return Ok(canModify);
         }
 
         [HttpDelete]
