@@ -61,25 +61,8 @@ namespace inzRafalRutowski.Controllers
             return BadRequest(new {message = "Utracono token, proszę się zalogować ponownie."});
         }
 
-        [AllowAnonymous]
-        // po przerobieniu fronta zamieni się z GetEmployerJwt
-        [HttpGet]
-        public IActionResult GetEmployer([FromQuery] int employerId)
-        {
-            var employer = _service.GetEmployerById(employerId);
-            if(employer == null) return BadRequest(new { message = "Id pracodawcy niepoprawne." });
-
-            return Ok(new
-            {
-                name = employer.Name,
-                surname = employer.Surname,
-                phone = employer.Phone,
-            });
-        }
-
         //pobieranie pracownika za pomocą jwt cookie
-        [HttpGet("getEmployer")]
-        public IActionResult GetEmployerJwt()
+        public IActionResult GetEmployer()
         {
             try
             {

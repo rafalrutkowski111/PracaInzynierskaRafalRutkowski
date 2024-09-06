@@ -139,7 +139,7 @@ const ShowJob = () => {
     }, [])
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/employer', { params: { EmployerId: userId } })
+        axios.get('http://localhost:5000/api/employer')
             .then(response => {
                 var employer = {
                     name: response.data.name,
