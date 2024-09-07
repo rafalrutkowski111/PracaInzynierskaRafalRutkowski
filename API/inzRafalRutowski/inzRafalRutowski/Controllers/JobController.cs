@@ -27,13 +27,13 @@ namespace inzRafalRutowski.Controllers
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        private readonly EmployeeController _employeeController;
+        private readonly IJwtService _jwtService;
 
-        public JobController(DataContext context, IMapper mapper, JwtService jwtService, EmployeeController employeeController) : base(jwtService)
+        public JobController(DataContext context, IMapper mapper, IJwtService jwtService) : base(jwtService)
         {
             _context = context;
             _mapper = mapper;
-            _employeeController = employeeController;
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -700,13 +700,13 @@ namespace inzRafalRutowski.Controllers
             //złe podajście. Poprwanie - tranzakcjia dla dodania nowych pracowników sprawdzając czy podczas procesu tworzenia pracy nie zmieniła się ich dostępność i niepowodzenie badrequest
 
             //dodamy niezatrudnionych pracwoników(z 1 tabeli przeniesiemy do drugiej to samo z specjalizacjami)
-            //EmployeeController employeeController = new EmployeeController(_context);
+            EmployeeController employeeController = new EmployeeController(_context, _jwtService);
             employeeList.ForEach(x =>
             {
                 var employee = _context.EmployeeAnothers.FirstOrDefault(x2 => Guid.Equals(x2.Id, x.Id) && bool.Equals(x2.IsEmployed, false));
                 if (employee != null)
                 {
-                    _employeeController.AddEmployeeToEmployer(employee.Id, request.EmployerId);
+                    employeeController.AddEmployeeToEmployer(employee.Id, request.EmployerId);
                 }
             });
 
@@ -799,13 +799,13 @@ namespace inzRafalRutowski.Controllers
                 });
             });
 
-            //EmployeeController employeeController = new EmployeeController(_context);
+            EmployeeController employeeController = new EmployeeController(_context, _jwtService);
             employeeList.ForEach(x =>
             {
                 var employee = _context.EmployeeAnothers.FirstOrDefault(x2 => Guid.Equals(x2.Id, x.Id) && bool.Equals(x2.IsEmployed, false));
                 if (employee != null)
                 {
-                    _employeeController.AddEmployeeToEmployer(employee.Id, request.EmployerId);
+                    employeeController.AddEmployeeToEmployer(employee.Id, request.EmployerId);
                 }
             });
 

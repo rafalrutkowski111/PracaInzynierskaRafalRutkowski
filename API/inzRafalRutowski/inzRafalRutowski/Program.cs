@@ -47,11 +47,12 @@ builder.Services.AddAuthorization();
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // autorization user for every controller
-builder.Services.AddControllers(options =>
-{
-    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-    options.Filters.Add(new AuthorizeFilter(policy));
-});
+//builder.Services.AddControllers(options =>
+//{
+//    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+//    options.Filters.Add(new AuthorizeFilter(policy));
+//});
+builder.Services.AddControllers();
 
 builder.Services.AddTransient<ITestApiService, TestApiService>();
 builder.Services.AddTransient<IEmployerService, EmployerService>();

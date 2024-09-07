@@ -39,7 +39,7 @@ const Router = () => {
       // po testach wychodzi ze lepiej nie przechowywac nic w sesji bo to stracimimy otwierajac nowa karte
       // jak zmieni sie sposób pozyskiwania id (albio pobierania podobnie jak gerEmployer, albo robienie tego bezposrednio w backu )
       // to wywali się rzeczy z sesji i , usunie niepotrzebne rzeczy w logowaniu i usunie veryfieLogin na becku i tu i zamiast isLogged uzyje test111
-    axios.get('http://localhost:5000/api/Employer/getEmployer', {withCredentials: true} )
+    axios.get('http://localhost:5000/api/Employer', {withCredentials: true} )
     .then(response => {
       console.log(response)
       setTest111(true);

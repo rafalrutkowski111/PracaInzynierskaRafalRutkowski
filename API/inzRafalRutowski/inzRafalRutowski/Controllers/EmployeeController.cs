@@ -84,7 +84,7 @@ namespace inzRafalRutowski.Controllers
         //projekce. Jeszcze do przemyślenia.
 
         private readonly DataContext _context;
-        public EmployeeController(DataContext context , JwtService jwtService) : base(jwtService)
+        public EmployeeController(DataContext context , IJwtService jwtService) : base(jwtService)
         {
             _context = context;
         }
