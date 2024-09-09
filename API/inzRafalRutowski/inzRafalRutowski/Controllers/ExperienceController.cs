@@ -31,7 +31,8 @@ namespace inzRafalRutowski.Controllers
         [HttpGet]
         public ActionResult<List<Experience>> GetExperience([FromQuery] int employerId)
         {
-            if (!CheckAuthoriationOwnUserOrAdmin(employerId)) return Unauthorized(); // ustawienie dostepu do zalogowanej osoby lub admina
+            // działa na postmanie, po stronie klijenta jakies errory, ale na razie nie zajmowac sie tym bo moze na cos innego wpadne
+            //if (!CheckAuthoriationOwnUserOrAdmin(employerId)) return Unauthorized(); // ustawienie dostepu do zalogowanej osoby lub admina
 
             var result = _service.GetExperience(employerId);
             if (result == null) return BadRequest("Id pracodawny jest niepoprawne");

@@ -15,6 +15,8 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // ustawić żeby w axiosie nie było trzeba za każdym razem pisać przy autoryzacji {withCredentials: true}
+
         //refaktoryzacja (zacznijmy od specjalizacji)
 
         //poprawiać od razu nazwy

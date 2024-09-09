@@ -16,7 +16,7 @@ namespace inzRafalRutowski.Controllers
     {
         private readonly ISpecializationService _service;
 
-        public SpecializationController(ISpecializationService service, JwtService jwtService) : base(jwtService)
+        public SpecializationController(ISpecializationService service, IJwtService jwtService) : base(jwtService)
         {
             _service = service;
         }

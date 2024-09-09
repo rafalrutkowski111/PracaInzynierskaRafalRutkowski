@@ -123,7 +123,7 @@ const AddJob = () => {
             })
     }, [])
     useEffect(() => {
-        axios.get('http://localhost:5000/api/employer')
+        axios.get('http://localhost:5000/api/employer' , {withCredentials: true})
             .then(response => {
                 var employer = {
                     name: response.data.name,
