@@ -22,14 +22,13 @@ namespace inzRafalRutowski.Data
         public DbSet<SpecializationAnother> SpecializationAnothers { get; set; }
 
 
-        // przykład jak można zorbić unikalny login, pozniej sie doda jak zrobi sie email
-
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Employer>(entity =>
-        //    {
-        //        entity.HasIndex(e => e.Login).IsUnique();
-        //    });
-        //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Employer>(entity =>
+            {
+                entity.HasIndex(e => e.Login).IsUnique();
+                entity.HasIndex(e => e.Email).IsUnique();
+            });
+        }
     }
 }

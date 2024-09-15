@@ -15,7 +15,33 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // dodać kolumny email i potwierdzony email(true/false) do tabeli employers
+        //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"
+        // dodać rejestracje gdzie bedziemy prosić o login hasło email
+        // dodać walidajce po stronie fronta do tego
+        // dodać 2 strone jerestracji gdzie będziemy prosić o dodatkowe informacje
+        // dodać walidajce po stronie fronta do tego
+        // dodać do emplercontroller rejestracje (login i email muszą być unikatowe)
+
+        // przy hasle w rejestracji zrobic hashowane haslo(mozna uzyc package bccrypt)
+        // uzywa sie go "password = BCrypt.Net.BCrypt.HashPassword(password);"
+        // sprawdza się BCrypt.Net.BCrypt.Verifity(password,password) - zwraca true jesli prawda
+        // przy storzenei uczegoś zamiast OK() mozna uzyc Create("wiadomosc", wartosc)
+
+        // zaktualizować rejestracne o dodanie potwierdzenia rejestracji przez emaila
+
         // ustawić żeby w axiosie nie było trzeba za każdym razem pisać przy autoryzacji {withCredentials: true}
+
+
+        // logowanie zrobić za pomocą email + haslo lub login + haslo
+
+        // Uwierzytelnianie wieloskładnikowe (MFA) np sms + haslo
+
+        // odzyskiwanie konta za pomocą maila
+
+        // zrobić walidacje po stronie becka
+
+
 
         //refaktoryzacja (zacznijmy od specjalizacji)
 
@@ -57,25 +83,6 @@ namespace inzRafalRutowski.Controllers
         // okeny odświeżania należy dodawać tylko podczas odświeżania wygasłych tokenów dostępu. 
         // Oznacza to, że pliki cookie zawierające tokeny odświeżania mają nieco inne ustawienia niż pliki cookie z tokenami dostępu."
 
-        // zrobić rejestracje
-        //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"
-
-        //zrobić logout
-
-        // przy hasle w rejestracji zrobic hashowane haslo(mozna uzyc package bccrypt)
-        // uzywa sie go "password = BCrypt.Net.BCrypt.HashPassword(password);"
-        // sprawdza się BCrypt.Net.BCrypt.Verifity(password,password) - zwraca true jesli prawda
-        // przy storzenei uczegoś zamiast OK() mozna uzyc Create("wiadomosc", wartosc)
-
-        // dodac email do pracodawcy, ustawic go i login unikalny
-        // w DataContext zakomentowane jak dla loginu zrobić
-
-        // logowanie zrobić za pomocą email + haslo lub login + haslo
-
-        // zrobic przy rejestracji prozbe o potwierzenie prez email
-
-        // Uwierzytelnianie wieloskładnikowe (MFA) np sms + haslo
-
         // dodanie logów zapisywanych do bazy danych
 
         // zrobienie usługi(do logów) która komrpesuje nasze logi i zapisuje je na dysku
@@ -84,6 +91,7 @@ namespace inzRafalRutowski.Controllers
 
         //IdentityUser można zrobić do autoryzacji. Wiele rzeczy ktorych tu zrobie ona automatyzuje, mozliwe ze przetestuje w odzielnym
         //projekce. Jeszcze do przemyślenia.
+
 
         private readonly DataContext _context;
         public EmployeeController(DataContext context , IJwtService jwtService) : base(jwtService)
