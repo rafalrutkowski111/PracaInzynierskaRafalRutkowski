@@ -16,6 +16,7 @@ import StoryJob from "../../Components/Job/StoryJob/StoryJob";
 import AddEmployee from "../../Components/Employee/AddEmployee/AddEmployee";
 import Employee from "../../Components/Employee/ViewEmployee/Employee";
 import ShowJob from "../../Components/Job/ShowJob/ShowJob";
+import Registration from "../../Components/Registration/Registration";
 
 const Router = () => {
 
@@ -35,23 +36,26 @@ const Router = () => {
         sessionStorage.removeItem("userHashToken");
         setIsLogged(false);
       })
-      //moglbym zrobic getEmployer jako varyfilogin i sprawdzac czy istnieje token
-      // po testach wychodzi ze lepiej nie przechowywac nic w sesji bo to stracimimy otwierajac nowa karte
-      // jak zmieni sie sposób pozyskiwania id (albio pobierania podobnie jak gerEmployer, albo robienie tego bezposrednio w backu )
-      // to wywali się rzeczy z sesji i , usunie niepotrzebne rzeczy w logowaniu i usunie veryfieLogin na becku i tu i zamiast isLogged uzyje test111
-    axios.get('http://localhost:5000/api/Employer', {withCredentials: true} )
-    .then(response => {
-      console.log(response)
-      setTest111(true);
-    }).catch(() => {
-      setTest111(false);
-    })
+    //moglbym zrobic getEmployer jako varyfilogin i sprawdzac czy istnieje token
+    // po testach wychodzi ze lepiej nie przechowywac nic w sesji bo to stracimimy otwierajac nowa karte
+    // jak zmieni sie sposób pozyskiwania id (albio pobierania podobnie jak gerEmployer, albo robienie tego bezposrednio w backu )
+    // to wywali się rzeczy z sesji i , usunie niepotrzebne rzeczy w logowaniu i usunie veryfieLogin na becku i tu i zamiast isLogged uzyje test111
+    axios.get('http://localhost:5000/api/Employer', { withCredentials: true })
+      .then(response => {
+        console.log(response)
+        setTest111(true);
+      }).catch(() => {
+        setTest111(false);
+      })
   }, []);
 
 
+  return !(isLogged) ? (
 
-  return !(isLogged)? (
-    <Login />
+    (window.location.pathname) == "/inzRafalRutkowski/registration"
+      ? <Registration />
+      : <Login />
+
   ) : (
     <>
       <Toolbar />
@@ -70,6 +74,7 @@ const Router = () => {
           <Route path="/specialization/addSpecialization" element={<AddSpecialization />}></Route>
           <Route path="/experience" element={<Experience />}></Route>
           <Route path="/experience/addExperience" element={<AddExperience />}></Route>
+          <Route path="/registration" element={<Registration />}></Route>
         </Routes>
       </BrowserRouter>
     </>

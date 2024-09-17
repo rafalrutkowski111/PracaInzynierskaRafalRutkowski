@@ -27,24 +27,8 @@ const Button = styled(Form.Control)`
     background-color: green;
     color: white;
 `
-const Login = () => {
-    const [login, setLogin] = useState(undefined);
-    const [password, setPassword] = useState(undefined);
 
-    const doLogin = () => {
-        axios.get('http://localhost:5000/api/Employer/login', 
-            {
-                params: {login: login, password: password},
-                withCredentials: true
-            })
-            .then(response => {
-                sessionStorage.setItem("userId", response.data.userId)
-                sessionStorage.setItem("userHashToken", response.data.hash);
-                window.location.pathname = '/inzRafalRutkowski/';
-            }).catch((error)=>{alert(error.response.data.message)})
-    }
-
-
+const Registration = ()=>{
     return (
         <MainCompontent>
             <Row>
@@ -52,7 +36,15 @@ const Login = () => {
                 <Form.Control
                     type="text"
                     id="login"
-                    onChange={(e) => { setLogin(e.target.value) }}
+                    //onChange={(e) => { setLogin(e.target.value) }}
+                />
+            </Row>
+            <Row>
+                <CenteredLabel htmlFor="login">Email</CenteredLabel>
+                <Form.Control
+                    type="text"
+                    id="login"
+                    //onChange={(e) => { setLogin(e.target.value) }}
                 />
             </Row>
             <Row>
@@ -60,28 +52,28 @@ const Login = () => {
                 <Form.Control
                     type="password"
                     id="password"
-                    onChange={(e) => { setPassword(e.target.value) }}
+                    //onChange={(e) => { setPassword(e.target.value) }}
+                />
+            </Row>
+            <Row>
+                <CenteredLabel htmlFor="password">Potwierdź hasło</CenteredLabel>
+                <Form.Control
+                    type="password"
+                    id="password"
+                    //onChange={(e) => { setPassword(e.target.value) }}
                 />
             </Row>
             <ButtonContainer>
                 <Button
                     type="submit"
                     id="button"
-                    value="Zaloguj"
-                    onClick={() => {doLogin();}}
+                    value="Dalej"
+                    //onClick={() => {doLogin();}}
                 />
                 
-            </ButtonContainer>
-                        <ButtonContainer>
-                <Button
-                    type="submit"
-                    id="button"
-                    value="Rejestracja"
-                    onClick={() => window.location.pathname = '/inzRafalRutkowski/registration'}
-                />
             </ButtonContainer>
         </MainCompontent>
     )
 }
 
-export default Login;
+export default Registration;

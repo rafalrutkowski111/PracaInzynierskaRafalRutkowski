@@ -15,13 +15,12 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // dodać kolumny email i potwierdzony email(true/false) do tabeli employers
-        //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"
-        // dodać rejestracje gdzie bedziemy prosić o login hasło email
+        //poprawić wygląd logowania i rejestracji
         // dodać walidajce po stronie fronta do tego
         // dodać 2 strone jerestracji gdzie będziemy prosić o dodatkowe informacje
         // dodać walidajce po stronie fronta do tego
         // dodać do emplercontroller rejestracje (login i email muszą być unikatowe)
+        //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"
 
         // przy hasle w rejestracji zrobic hashowane haslo(mozna uzyc package bccrypt)
         // uzywa sie go "password = BCrypt.Net.BCrypt.HashPassword(password);"
