@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Button } from '../Styled/StyledGlobal';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -22,11 +23,11 @@ const ButtonContainer = styled.div`
     display: flex;
     justify-content: center;
 `
-const Button = styled(Form.Control)`
-    width:100px;
-    background-color: green;
-    color: white;
-`
+// const Button = styled(Form.Control)`
+//     width:100px;
+//     background-color: green;
+//     color: white;
+// `
 const Login = () => {
     const [login, setLogin] = useState(undefined);
     const [password, setPassword] = useState(undefined);
