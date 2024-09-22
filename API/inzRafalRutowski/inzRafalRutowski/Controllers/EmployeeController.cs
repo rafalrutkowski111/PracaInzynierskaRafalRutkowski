@@ -15,7 +15,7 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        //poprawić wygląd logowania i rejestracji
+        // zamiast praca inzynierska dac nazwe uzytkownika lub imie i naswisko
         // dodać walidajce po stronie fronta do tego
         // dodać 2 strone jerestracji gdzie będziemy prosić o dodatkowe informacje
         // dodać walidajce po stronie fronta do tego

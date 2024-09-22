@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
 import axios from 'axios';
-import { Button } from '../Styled/StyledGlobal';
+import { Button, ButtonWrapper, ButtonContainer, ButtonWithoutBorder, ButtonWithoutBorderWrapper, Label } from '../Styled/StyledGlobal';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -13,43 +13,35 @@ const Row = styled.div`
 width: 60%;
     margin-bottom: 3%;
 `
-const CenteredLabel = styled(Form.Label)`
-    font-weight:500;
-    display: flex;
-    justify-content: center;
+const RowSpace = styled.div`
+height: 30px;
 `
-const ButtonContainer = styled.div`
-    widht:60%;
-    display: flex;
-    justify-content: center;
+const ColumnSpace = styled.div`
+width: 20px;
 `
-// const Button = styled(Form.Control)`
-//     width:100px;
-//     background-color: green;
-//     color: white;
-// `
+
 const Login = () => {
     const [login, setLogin] = useState(undefined);
     const [password, setPassword] = useState(undefined);
 
     const doLogin = () => {
-        axios.get('http://localhost:5000/api/Employer/login', 
+        axios.get('http://localhost:5000/api/Employer/login',
             {
-                params: {login: login, password: password},
+                params: { login: login, password: password },
                 withCredentials: true
             })
             .then(response => {
                 sessionStorage.setItem("userId", response.data.userId)
                 sessionStorage.setItem("userHashToken", response.data.hash);
                 window.location.pathname = '/inzRafalRutkowski/';
-            }).catch((error)=>{alert(error.response.data.message)})
+            }).catch((error) => { alert(error.response.data.message) })
     }
 
 
     return (
         <MainCompontent>
             <Row>
-                <CenteredLabel htmlFor="login">Login</CenteredLabel>
+                <Label htmlFor="login">Login</Label>
                 <Form.Control
                     type="text"
                     id="login"
@@ -57,30 +49,49 @@ const Login = () => {
                 />
             </Row>
             <Row>
-                <CenteredLabel htmlFor="password">Hasło</CenteredLabel>
+                <Label htmlFor="password">Hasło</Label>
                 <Form.Control
                     type="password"
                     id="password"
                     onChange={(e) => { setPassword(e.target.value) }}
                 />
             </Row>
-            <ButtonContainer>
-                <Button
-                    type="submit"
-                    id="button"
-                    value="Zaloguj"
-                    onClick={() => {doLogin();}}
-                />
-                
-            </ButtonContainer>
-                        <ButtonContainer>
-                <Button
-                    type="submit"
-                    id="button"
-                    value="Rejestracja"
-                    onClick={() => window.location.pathname = '/inzRafalRutkowski/registration'}
-                />
-            </ButtonContainer>
+            <Row>
+                <ButtonContainer>
+                    <ButtonWrapper>
+                        <Button
+                            type="submit"
+                            id="button"
+                            value="Zaloguj"
+                            onClick={() => { doLogin(); }}
+                        />
+                    </ButtonWrapper>
+
+                </ButtonContainer>
+            </Row>
+            <RowSpace></RowSpace>
+            <Row>
+                <ButtonContainer>
+                    <ButtonWithoutBorderWrapper>
+                        <ButtonWithoutBorder
+                            type="submit"
+                            id="button"
+                            value="Przypomnij"
+                        //onClick={}
+                        />
+                    </ButtonWithoutBorderWrapper>
+                    <ColumnSpace></ColumnSpace>
+                    <ButtonWithoutBorderWrapper>
+                        <ButtonWithoutBorder
+                            type="submit"
+                            id="button"
+                            value="Rejestracja"
+                            onClick={() => window.location.pathname = '/inzRafalRutkowski/registration'}
+                        />
+                    </ButtonWithoutBorderWrapper>
+
+                </ButtonContainer>
+            </Row>
         </MainCompontent>
     )
 }

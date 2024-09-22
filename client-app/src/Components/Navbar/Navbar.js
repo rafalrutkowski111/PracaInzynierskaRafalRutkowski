@@ -3,27 +3,36 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
+import {ButtonContainer } from '../Styled/StyledGlobal';
 
-const ButtonContainer = styled.div`
-  widht:60%;
-  height:50%;
-  display: flex;
-  justify-content: center;
+const ButtonWithoutBorder = styled(Form.Control)`
+    border:none;
+    width:100px;
+    background-color: #f8f8f8; 
+    color: black; 
 `
-const Button = styled(Form.Control)`
-  width:100px;
-  background-color: white; 
-  color: black; 
-  border: 1px solid #cccccc;
-`
-const ButtonWrapper = styled.div`
-  &:hover ${Button} {
-    background-color: #e6e6e6;
+const ButtonWithoutBorderWrapper = styled.div`
+  &:hover ${ButtonWithoutBorder} {
+    border:none;
     color: black;
-    border: 1px solid #adadad;
+    text-shadow: 1px 1px 10px #000000;
+    background-color: #f8f8f8; 
   }
 `
-
+const NavLink = styled(Nav.Link)`
+`
+const NavLinkWrapper  = styled.div`
+  &:hover ${NavLink} {
+    color: black;
+  }
+`
+const NavbarBrand = styled(Navbar.Brand)`
+`
+const NavbarBrandWrapper = styled.div`
+  &:hover ${NavbarBrand} {
+      color: #575757;
+  }
+`
 
 const Toolbar = () => {
 
@@ -38,23 +47,23 @@ const logout = () =>{
     <>
       <Navbar collapseOnSelect bg="light" data-bs-theme="light">
         <Container>
-          <Navbar.Brand href="/inzRafalRutkowski/calendar">Praca inżynierska Rafał Rutkowski</Navbar.Brand>
+          <NavbarBrandWrapper><NavbarBrand href="/inzRafalRutkowski/calendar">Praca inżynierska Rafał Rutkowski</NavbarBrand></NavbarBrandWrapper>
           <Nav className="me-auto">
-            <Nav.Link href="/inzRafalRutkowski/calendar">Harmonogram</Nav.Link>
-            <Nav.Link href="/inzRafalRutkowski/employee">Pracownicy</Nav.Link>
-            <Nav.Link href="/inzRafalRutkowski/specialization">Specjalizacje</Nav.Link>
-            <Nav.Link href="/inzRafalRutkowski/experience">Poziomy doświaczenia</Nav.Link>
+            <NavLinkWrapper><NavLink href="/inzRafalRutkowski/calendar">Harmonogram</NavLink></NavLinkWrapper>
+            <NavLinkWrapper><NavLink href="/inzRafalRutkowski/employee">Pracownicy</NavLink></NavLinkWrapper>
+            <NavLinkWrapper><NavLink href="/inzRafalRutkowski/specialization">Specjalizacje</NavLink></NavLinkWrapper>
+            <NavLinkWrapper><NavLink href="/inzRafalRutkowski/experience">Poziomy doświaczenia</NavLink></NavLinkWrapper>
           </Nav>
         </Container>
             <ButtonContainer>
-              <ButtonWrapper>
-                <Button
+              <ButtonWithoutBorderWrapper>
+                <ButtonWithoutBorder
                   type="submit"
                   id="button"
                   value="Wyloguj"
                   onClick={() => {logout() }}
                 />
-              </ButtonWrapper>
+              </ButtonWithoutBorderWrapper>
             </ButtonContainer>
       </Navbar>
     </>
