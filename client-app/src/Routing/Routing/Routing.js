@@ -22,6 +22,7 @@ const Router = () => {
 
 
   const [isLogged, setIsLogged] = React.useState(false);
+  const [userName, setUserName] = React.useState("");
   const [test111, setTest111] = React.useState(false);
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
@@ -42,6 +43,7 @@ const Router = () => {
     // to wywali się rzeczy z sesji i , usunie niepotrzebne rzeczy w logowaniu i usunie veryfieLogin na becku i tu i zamiast isLogged uzyje test111
     axios.get('http://localhost:5000/api/Employer', { withCredentials: true })
       .then(response => {
+        setUserName(response.data.name + " " + response.data.surname)
         console.log(response)
         setTest111(true);
       }).catch(() => {
@@ -58,7 +60,7 @@ const Router = () => {
 
   ) : (
     <>
-      <Toolbar />
+      <Toolbar userName={userName}/>
       <BrowserRouter basename="/inzRafalRutkowski">
         <Routes>
           <Route path="/" element={<Home />}></Route>

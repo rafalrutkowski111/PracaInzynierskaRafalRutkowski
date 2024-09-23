@@ -33,8 +33,11 @@ const NavbarBrandWrapper = styled.div`
       color: #575757;
   }
 `
+const ColumnSpace = styled.div`
+width: 30px;
+`
 
-const Toolbar = () => {
+const Toolbar = (props) => {
 
 const logout = () =>{
   // na razie czyszcze sesje bo nie mam dodanych tokenów po stronie fronta i wszystko opiera sie na sesji
@@ -47,7 +50,7 @@ const logout = () =>{
     <>
       <Navbar collapseOnSelect bg="light" data-bs-theme="light">
         <Container>
-          <NavbarBrandWrapper><NavbarBrand href="/inzRafalRutkowski/calendar">Praca inżynierska Rafał Rutkowski</NavbarBrand></NavbarBrandWrapper>
+          <NavbarBrandWrapper><NavbarBrand href="/inzRafalRutkowski/calendar">{props.userName}</NavbarBrand></NavbarBrandWrapper>
           <Nav className="me-auto">
             <NavLinkWrapper><NavLink href="/inzRafalRutkowski/calendar">Harmonogram</NavLink></NavLinkWrapper>
             <NavLinkWrapper><NavLink href="/inzRafalRutkowski/employee">Pracownicy</NavLink></NavLinkWrapper>
@@ -55,6 +58,7 @@ const logout = () =>{
             <NavLinkWrapper><NavLink href="/inzRafalRutkowski/experience">Poziomy doświaczenia</NavLink></NavLinkWrapper>
           </Nav>
         </Container>
+        <Navbar.Collapse className="justify-content-end">
             <ButtonContainer>
               <ButtonWithoutBorderWrapper>
                 <ButtonWithoutBorder
@@ -65,6 +69,7 @@ const logout = () =>{
                 />
               </ButtonWithoutBorderWrapper>
             </ButtonContainer>
+        </Navbar.Collapse>
       </Navbar>
     </>
   );
