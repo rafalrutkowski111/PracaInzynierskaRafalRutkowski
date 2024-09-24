@@ -1,13 +1,11 @@
-import { useState } from 'react';
-import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
-import { Button, ButtonWrapper, ButtonContainer, Label } from '../Styled/StyledGlobal';
-import { redirect } from 'react-router-dom';
+import { Button, ButtonWrapper, CenterContainer, Label } from '../Styled/StyledGlobal';
+import TextField from '@mui/material/TextField';
 
 const MainCompontent = styled.div`
 width: 30%;
     margin-left: 40%;
-    margin-top: 10%;
+    margin-top: 5%;
 `
 const Row = styled.div`
 width: 60%;
@@ -22,38 +20,42 @@ const Registration = () => {
         <MainCompontent>
             <Row>
                 <Label htmlFor="login">Login</Label>
-                <Form.Control
-                    type="text"
-                    id="login"
-                //onChange={(e) => { setLogin(e.target.value) }}
-                />
+                <CenterContainer>
+                    <TextField
+                        //onChange={}
+                        size="small"
+                        variant="outlined" />
+                </CenterContainer>
             </Row>
             <Row>
-                <Label htmlFor="login">Email</Label>
-                <Form.Control
-                    type="text"
-                    id="login"
-                //onChange={(e) => { setLogin(e.target.value) }}
-                />
+                <Label htmlFor="email">Email</Label>
+                <CenterContainer>
+                    <TextField
+                        //onChange={}
+                        size="small"
+                        variant="outlined" />
+                </CenterContainer>
             </Row>
             <Row>
                 <Label htmlFor="password">Hasło</Label>
-                <Form.Control
-                    type="password"
-                    id="password"
-                //onChange={(e) => { setPassword(e.target.value) }}
-                />
+                <CenterContainer>
+                    <TextField
+                        //onChange={}
+                        size="small"
+                        variant="outlined" />
+                </CenterContainer>
             </Row>
             <Row>
-                <Label htmlFor="password">Potwierdź hasło</Label>
-                <Form.Control
-                    type="password"
-                    id="password"
-                //onChange={(e) => { setPassword(e.target.value) }}
-                />
+                <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
+                <CenterContainer>
+                    <TextField
+                        //onChange={}
+                        size="small"
+                        variant="outlined" />
+                </CenterContainer>
             </Row>
             <Row>
-                <ButtonContainer>
+                <CenterContainer>
                     <ButtonWrapper>
                         <Button
                             type="submit"
@@ -68,10 +70,10 @@ const Registration = () => {
                             type="submit"
                             id="button"
                             value="Powrót"
-                            onClick={() => window.location.pathname = '/'} 
+                            onClick={() => window.location.pathname = '/'}
                         />
                     </ButtonWrapper>
-                </ButtonContainer>
+                </CenterContainer>
             </Row>
         </MainCompontent>
     )

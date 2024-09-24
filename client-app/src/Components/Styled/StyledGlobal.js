@@ -14,7 +14,7 @@ const ButtonWrapper = styled.div`
     border: 1px solid #adadad;
   }
 `
-const ButtonContainer = styled.div`
+const CenterContainer = styled.div`
     widht:100%;
     display: flex;
     justify-content: center;
@@ -37,7 +37,7 @@ const Label = styled(Form.Label)`
     display: flex;
     justify-content: center;
 `
-
-export { Button, ButtonWrapper, ButtonContainer };
+export { CenterContainer }
+export { Button, ButtonWrapper };
 export { ButtonWithoutBorder, ButtonWithoutBorderWrapper };
 export { Label };

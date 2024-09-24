@@ -3,7 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
-import {ButtonContainer } from '../Styled/StyledGlobal';
+import {CenterContainer } from '../Styled/StyledGlobal';
 
 const ButtonWithoutBorder = styled(Form.Control)`
     border:none;
@@ -59,7 +59,7 @@ const logout = () =>{
           </Nav>
         </Container>
         <Navbar.Collapse className="justify-content-end">
-            <ButtonContainer>
+            <CenterContainer>
               <ButtonWithoutBorderWrapper>
                 <ButtonWithoutBorder
                   type="submit"
@@ -68,7 +68,7 @@ const logout = () =>{
                   onClick={() => {logout() }}
                 />
               </ButtonWithoutBorderWrapper>
-            </ButtonContainer>
+            </CenterContainer>
         </Navbar.Collapse>
       </Navbar>
     </>

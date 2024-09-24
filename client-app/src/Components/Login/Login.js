@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
 import axios from 'axios';
-import { Button, ButtonWrapper, ButtonContainer, ButtonWithoutBorder, ButtonWithoutBorderWrapper, Label } from '../Styled/StyledGlobal';
+import { Button, ButtonWrapper, CenterContainer, ButtonWithoutBorder, ButtonWithoutBorderWrapper, Label } from '../Styled/StyledGlobal';
+import TextField from '@mui/material/TextField';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -37,27 +37,31 @@ const Login = () => {
             }).catch((error) => { alert(error.response.data.message) })
     }
 
-
     return (
         <MainCompontent>
             <Row>
                 <Label htmlFor="login">Login</Label>
-                <Form.Control
-                    type="text"
-                    id="login"
-                    onChange={(e) => { setLogin(e.target.value) }}
-                />
+                <CenterContainer>
+                    <TextField
+                        onChange={(e) => { setLogin(e.target.value) }}
+                        size="small"
+                        id="outlined-basic"
+                        variant="outlined" />
+                </CenterContainer>
             </Row>
             <Row>
                 <Label htmlFor="password">Hasło</Label>
-                <Form.Control
-                    type="password"
-                    id="password"
-                    onChange={(e) => { setPassword(e.target.value) }}
-                />
+                <CenterContainer>
+                    <TextField
+                        onChange={(e) => { setPassword(e.target.value) }}
+                        size="small"
+                        id="outlined-basic"
+                        type={showPassword ? 'text' : 'password'}
+                        variant="outlined" />
+                </CenterContainer>
             </Row>
             <Row>
-                <ButtonContainer>
+                <CenterContainer>
                     <ButtonWrapper>
                         <Button
                             type="submit"
@@ -66,12 +70,11 @@ const Login = () => {
                             onClick={() => { doLogin(); }}
                         />
                     </ButtonWrapper>
-
-                </ButtonContainer>
+                </CenterContainer>
             </Row>
             <RowSpace></RowSpace>
             <Row>
-                <ButtonContainer>
+                <CenterContainer>
                     <ButtonWithoutBorderWrapper>
                         <ButtonWithoutBorder
                             type="submit"
@@ -89,8 +92,7 @@ const Login = () => {
                             onClick={() => window.location.pathname = '/inzRafalRutkowski/registration'}
                         />
                     </ButtonWithoutBorderWrapper>
-
-                </ButtonContainer>
+                </CenterContainer>
             </Row>
         </MainCompontent>
     )
