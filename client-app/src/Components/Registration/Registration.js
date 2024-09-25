@@ -1,6 +1,14 @@
 import styled from 'styled-components';
 import { Button, ButtonWrapper, CenterContainer, Label } from '../Styled/StyledGlobal';
 import TextField from '@mui/material/TextField';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import * as React from 'react';
+import { useState } from 'react';
+import FormControl from '@mui/material/FormControl';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -16,6 +24,10 @@ width: 20px;
 `
 
 const Registration = () => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
     return (
         <MainCompontent>
             <Row>
@@ -23,6 +35,7 @@ const Registration = () => {
                 <CenterContainer>
                     <TextField
                         //onChange={}
+                        sx={{ width: '25ch' }}
                         size="small"
                         variant="outlined" />
                 </CenterContainer>
@@ -32,6 +45,7 @@ const Registration = () => {
                 <CenterContainer>
                     <TextField
                         //onChange={}
+                        sx={{ width: '25ch' }}
                         size="small"
                         variant="outlined" />
                 </CenterContainer>
@@ -39,19 +53,49 @@ const Registration = () => {
             <Row>
                 <Label htmlFor="password">Hasło</Label>
                 <CenterContainer>
-                    <TextField
-                        //onChange={}
-                        size="small"
-                        variant="outlined" />
+                    <FormControl sx={{ width: '25ch' }} variant="outlined">
+                        <OutlinedInput
+                            //onChange={}
+                            size="small"
+                            id="outlined-adornment-password"
+                            type={showPassword ? 'text' : 'password'}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
                 </CenterContainer>
             </Row>
             <Row>
                 <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
                 <CenterContainer>
-                    <TextField
-                        //onChange={}
-                        size="small"
-                        variant="outlined" />
+                    <FormControl sx={{ width: '25ch' }} variant="outlined">
+                        <OutlinedInput
+                            //onChange={}
+                            size="small"
+                            id="outlined-adornment-password"
+                            type={showPassword ? 'text' : 'password'}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
                 </CenterContainer>
             </Row>
             <Row>

@@ -15,7 +15,6 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // dodać pokazanie/ukrycie hasła (jest w mui)
         // zmienic komunikat nieprawidłowego logowania na error czerwony u dołu albo góra
         // dodać logowanie za pomocą emaila lub hasła
         // napisac regexa hasło min 8 znaków, znak specjalny, mała litera i dużą litera i liczba
@@ -25,7 +24,6 @@ namespace inzRafalRutowski.Controllers
         // dodać 2 strone jerestracji gdzie będziemy prosić o dodatkowe informacje
         // dodać walidajce po stronie fronta do tego
         // dodać do emplercontroller rejestracje (login i email muszą być unikatowe)
-        //przy rejestracji przechadzac do logina mozna uzyc "return <Redirect to="/login"/>"
 
         // przy hasle w rejestracji zrobic hashowane haslo(mozna uzyc package bccrypt)
         // uzywa sie go "password = BCrypt.Net.BCrypt.HashPassword(password);"

@@ -3,6 +3,13 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { Button, ButtonWrapper, CenterContainer, ButtonWithoutBorder, ButtonWithoutBorderWrapper, Label } from '../Styled/StyledGlobal';
 import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import * as React from 'react';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -23,6 +30,9 @@ width: 20px;
 const Login = () => {
     const [login, setLogin] = useState(undefined);
     const [password, setPassword] = useState(undefined);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const doLogin = () => {
         axios.get('http://localhost:5000/api/Employer/login',
@@ -43,6 +53,7 @@ const Login = () => {
                 <Label htmlFor="login">Login</Label>
                 <CenterContainer>
                     <TextField
+                        sx={{ m: 0, width: '25ch' }} // m sktór od marginesu
                         onChange={(e) => { setLogin(e.target.value) }}
                         size="small"
                         id="outlined-basic"
@@ -52,12 +63,25 @@ const Login = () => {
             <Row>
                 <Label htmlFor="password">Hasło</Label>
                 <CenterContainer>
-                    <TextField
-                        onChange={(e) => { setPassword(e.target.value) }}
-                        size="small"
-                        id="outlined-basic"
-                        type={showPassword ? 'text' : 'password'}
-                        variant="outlined" />
+                    <FormControl sx={{ width: '25ch' }} variant="outlined">
+                        <OutlinedInput
+                            onChange={(e) => { setPassword(e.target.value) }}
+                            size="small"
+                            id="outlined-adornment-password"
+                            type={showPassword ? 'text' : 'password'}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
                 </CenterContainer>
             </Row>
             <Row>
