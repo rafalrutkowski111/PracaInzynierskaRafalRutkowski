@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import * as React from 'react';
+import FormHelperText from '@mui/material/FormHelperText';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -31,6 +32,8 @@ const Login = () => {
     const [login, setLogin] = useState(undefined);
     const [password, setPassword] = useState(undefined);
     const [showPassword, setShowPassword] = useState(false);
+    const [errorHelperText, setErrorHelperText] = useState("");
+    const [loginError, setLoginError] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -44,7 +47,10 @@ const Login = () => {
                 sessionStorage.setItem("userId", response.data.userId)
                 sessionStorage.setItem("userHashToken", response.data.hash);
                 window.location.pathname = '/inzRafalRutkowski/';
-            }).catch((error) => { alert(error.response.data.message) })
+            }).catch((error) => {
+                setErrorHelperText("Nieprawidłowe dane")
+                setLoginError(true)
+            })
     }
 
     return (
@@ -53,6 +59,7 @@ const Login = () => {
                 <Label htmlFor="login">Login</Label>
                 <CenterContainer>
                     <TextField
+                        error={loginError}
                         sx={{ m: 0, width: '25ch' }} // m sktór od marginesu
                         onChange={(e) => { setLogin(e.target.value) }}
                         size="small"
@@ -65,6 +72,7 @@ const Login = () => {
                 <CenterContainer>
                     <FormControl sx={{ width: '25ch' }} variant="outlined">
                         <OutlinedInput
+                            error={loginError}
                             onChange={(e) => { setPassword(e.target.value) }}
                             size="small"
                             id="outlined-adornment-password"
@@ -81,8 +89,16 @@ const Login = () => {
                                 </InputAdornment>
                             }
                         />
+
                     </FormControl>
+
                 </CenterContainer>
+                <CenterContainer>
+                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                        {errorHelperText}
+                    </FormHelperText>
+                </CenterContainer>
+
             </Row>
             <Row>
                 <CenterContainer>

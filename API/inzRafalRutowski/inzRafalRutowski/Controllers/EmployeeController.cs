@@ -15,7 +15,6 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // zmienic komunikat nieprawidłowego logowania na error czerwony u dołu albo góra
         // dodać logowanie za pomocą emaila lub hasła
         // napisac regexa hasło min 8 znaków, znak specjalny, mała litera i dużą litera i liczba
         // napisac regexa do maila w rejestracji
