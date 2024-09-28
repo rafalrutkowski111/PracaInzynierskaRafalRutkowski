@@ -30,7 +30,11 @@ namespace inzRafalRutowski.Controllers
         public IActionResult Login([FromQuery] string login, [FromQuery] string password)
         {
             var employer = _service.Login(login, password);
-            if (employer == null) { return BadRequest(new {message = "Nieprawidłowy login lub hasło" }); }
+            if (employer == null)
+            {
+                employer = _service.Login(login, password);
+                if (employer == null) { return BadRequest(new { message = "Nieprawidłowe dane logowania" }); }
+            } 
 
             var builder = _service.Hush(employer);
 

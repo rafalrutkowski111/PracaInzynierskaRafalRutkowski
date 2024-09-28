@@ -21,7 +21,7 @@ namespace inzRafalRutowski.Service
 
         public Employer Login(string login, string password)
         {
-            return _context.Employers.FirstOrDefault(x => string.Equals(x.Login, login) && string.Equals(x.Password, password));
+            return _context.Employers.FirstOrDefault(x => (string.Equals(x.Login, login) || string.Equals(x.Email, login)) && string.Equals(x.Password, password));
         }
 
         public Employer VeryfieLogin(int userId)
