@@ -24,6 +24,9 @@ width: 60%;
 const RowSpace = styled.div`
 height: 30px;
 `
+const SecoundRowSpace = styled.div`
+height: 10px;
+`
 const ColumnSpace = styled.div`
 width: 20px;
 `
@@ -34,6 +37,13 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [errorHelperText, setErrorHelperText] = useState("");
     const [loginError, setLoginError] = useState(false);
+    const [hideLoginElements, setHideLoginElements] = useState(false)
+    const [showLoginElements, setShowLoginElements] = useState(true)
+    const [sms, setSms] = useState(false);
+    const [codeSms, setCodeSms] = useState("");
+    //const [loginSms, setLoginSms] = useState(true); // potem użyć żeby wiedieć czy robić logowanei przez sms
+
+    var usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -44,18 +54,80 @@ const Login = () => {
                 withCredentials: true
             })
             .then(response => {
+                setHideLoginElements(true)
+                setShowLoginElements(false)
+                smsAuthSend()
+                setSms(true)
                 sessionStorage.setItem("userId", response.data.userId)
                 sessionStorage.setItem("userHashToken", response.data.hash);
-                window.location.pathname = '/inzRafalRutkowski/';
+
+                //window.location.pathname = '/inzRafalRutkowski/';
             }).catch((error) => {
                 setErrorHelperText("Nieprawidłowe dane")
                 setLoginError(true)
             })
     }
+    const back = () => {
+        setSms(false)
+        setHideLoginElements(false)
+        setShowLoginElements(true)
+    }
+    const smsAuthSend = () => {
+        var phoneNumber = "+48695264047"// potem będziemy z bazy podawać
+
+        var requestOptions = {
+            method: 'POST',
+            headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword), "Accept-Language": "en-US" },
+            body: "{ \
+            \"identity\": { \
+              \"type\": \"number\", \
+              \"endpoint\": \""+ phoneNumber + "\" \
+              }, \
+            \"method\": \"sms\" \
+            }"
+        };
+        fetch("https://verification.api.sinch.com/verification/v1/verifications", requestOptions)
+            .then(response => response.json())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+    const doCodeSms = () => {
+        console.log("kod" + codeSms)
+        var requestOptions = {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword) },
+            body: "{ \"method\": \"sms\", \"sms\":{ \"code\": \"" + codeSms + "\" }}"
+        };
+        fetch("https://verification.api.sinch.com/verification/v1/verifications/number/+48793989506", requestOptions)
+            .then(response => response.json())
+            .then(window.location.pathname = '/inzRafalRutkowski/')
+            .catch(error => console.log('error', error));
+    }
 
     return (
         <MainCompontent>
-            <Row>
+            <RowSpace hidden={showLoginElements}></RowSpace>
+            <Row hidden={showLoginElements}>
+                <Label htmlFor="login">Kod z telefonu</Label>
+                <CenterContainer>
+                    <TextField
+                        //error={loginError}
+                        sx={{ m: 0, width: '25ch' }}
+                        onChange={(e) => { setCodeSms(e.target.value) }}
+                        size="small"
+                        variant="outlined" />
+                </CenterContainer>
+            </Row>
+            <SecoundRowSpace hidden={showLoginElements}></SecoundRowSpace>
+            <Row hidden={showLoginElements}>
+                <CenterContainer>
+                    wyślij ponownie
+                </CenterContainer>
+            </Row>
+
+
+
+            <Row hidden={hideLoginElements}>
                 <Label htmlFor="login">Login</Label>
                 <CenterContainer>
                     <TextField
@@ -67,7 +139,7 @@ const Login = () => {
                         variant="outlined" />
                 </CenterContainer>
             </Row>
-            <Row>
+            <Row hidden={hideLoginElements}>
                 <Label htmlFor="password">Hasło</Label>
                 <CenterContainer>
                     <FormControl sx={{ width: '25ch' }} variant="outlined">
@@ -107,13 +179,23 @@ const Login = () => {
                             type="submit"
                             id="button"
                             value="Zaloguj"
-                            onClick={() => { doLogin(); }}
+                            onClick={!sms ? () => doLogin() : () => doCodeSms()}
                         />
                     </ButtonWrapper>
+                    <ColumnSpace hidden={showLoginElements}></ColumnSpace>
+                    <ButtonWrapper hidden={showLoginElements}>
+                        <Button
+                            type="submit"
+                            value="Powrót"
+                            onClick={() => back()}
+                        />
+                    </ButtonWrapper>
+
                 </CenterContainer>
+
             </Row>
             <RowSpace></RowSpace>
-            <Row>
+            <Row hidden={hideLoginElements}>
                 <CenterContainer>
                     <ButtonWithoutBorderWrapper>
                         <ButtonWithoutBorder

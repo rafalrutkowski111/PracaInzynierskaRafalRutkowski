@@ -20,6 +20,8 @@ namespace inzRafalRutowski.Controllers
         // dodać walidajce po stronie fronta do tego
         // sprawdzanie czy login i email sie nie powtarza 
         // dodać 2 strone jerestracji gdzie będziemy prosić o dodatkowe informacje
+        // zaznaczyć czy chcemy 2-etapowe logowanie za pomoca sms
+        // jezeli tak to telefon jest obowiązkoy żeby podać
         // dodać walidajce po stronie fronta do tego
         // dodać do emplercontroller rejestracje (login i email muszą być unikatowe)
 
@@ -32,10 +34,15 @@ namespace inzRafalRutowski.Controllers
 
         // ustawić żeby w axiosie nie było trzeba za każdym razem pisać przy autoryzacji {withCredentials: true}
 
-
-        // logowanie zrobić za pomocą email + haslo lub login + haslo
-
         // Uwierzytelnianie wieloskładnikowe (MFA) np sms + haslo
+        // silnijesza utoryzacjaserwer do serwera Application Signed Request
+        // dać możliwość przy sms opcje żeby przez 30 dni nie było trzeba się logować
+        //(można podczas logowania sprawdzać date kiedy było ostatnie logowanie za pomocą 
+        //pomoca sms i jeżeli ta opcja była wybrana to jeżeli mineło więcej jak 30 dni to zmienić true/false
+        // ustawić czas(5 minut) na który będzie się miało czas na wpisanie
+        // albo ustawić ilość prób na 5
+        // zrobić przycisk wyślij ponownie gdzie będzie wysyłany nowy kod
+        // po upływie 5 minut powinna pojawić się opcja wyślij ponownie i ukryć texboxa
 
         // odzyskiwanie konta za pomocą maila
 
