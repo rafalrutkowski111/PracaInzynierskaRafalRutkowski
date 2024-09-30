@@ -41,11 +41,16 @@ const Login = () => {
     const [showLoginElements, setShowLoginElements] = useState(true)
     const [sms, setSms] = useState(false);
     const [codeSms, setCodeSms] = useState("");
+    const [phone, setPhone] = useState(undefined);
     //const [loginSms, setLoginSms] = useState(true); // potem użyć żeby wiedieć czy robić logowanei przez sms
 
     var usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleLoginElement = () => {
+        setHideLoginElements((hide) => !hide)
+        setShowLoginElements((hide) => !hide)
+    }
 
     const doLogin = () => {
         axios.get('http://localhost:5000/api/Employer/login',
@@ -54,8 +59,10 @@ const Login = () => {
                 withCredentials: true
             })
             .then(response => {
-                setHideLoginElements(true)
-                setShowLoginElements(false)
+                axios.get('http://localhost:5000/api/employer', { withCredentials: true })
+                    .then(response => setPhone(response.data.phone))
+
+                handleLoginElement()
                 smsAuthSend()
                 setSms(true)
                 sessionStorage.setItem("userId", response.data.userId)
@@ -69,38 +76,40 @@ const Login = () => {
     }
     const back = () => {
         setSms(false)
-        setHideLoginElements(false)
-        setShowLoginElements(true)
+        handleLoginElement()
     }
     const smsAuthSend = () => {
-        var phoneNumber = "+48695264047"// potem będziemy z bazy podawać
-
-        var requestOptions = {
-            method: 'POST',
-            headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword), "Accept-Language": "en-US" },
-            body: "{ \
-            \"identity\": { \
-              \"type\": \"number\", \
-              \"endpoint\": \""+ phoneNumber + "\" \
-              }, \
-            \"method\": \"sms\" \
-            }"
-        };
-        fetch("https://verification.api.sinch.com/verification/v1/verifications", requestOptions)
-            .then(response => response.json())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+        axios.get('http://localhost:5000/api/employer', { withCredentials: true })
+            .then(response => {
+                var requestOptions = {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword), "Accept-Language": "en-US" },
+                    body: "{ \
+                \"identity\": { \
+                  \"type\": \"number\", \
+                  \"endpoint\": \"+48"+ response.data.phone + "\" \
+                  }, \
+                \"method\": \"sms\" \
+                }"
+                };
+                fetch("https://verification.api.sinch.com/verification/v1/verifications", requestOptions)
+                    .then(response => response.json())
+                    .then(result => console.log(result))
+                    .catch(error => console.log('error', error));
+            })
     }
     const doCodeSms = () => {
-        console.log("kod" + codeSms)
         var requestOptions = {
             method: 'PUT',
             headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword) },
             body: "{ \"method\": \"sms\", \"sms\":{ \"code\": \"" + codeSms + "\" }}"
         };
-        fetch("https://verification.api.sinch.com/verification/v1/verifications/number/+48793989506", requestOptions)
+        fetch("https://verification.api.sinch.com/verification/v1/verifications/number/+48" + phone, requestOptions)
             .then(response => response.json())
-            .then(window.location.pathname = '/inzRafalRutkowski/')
+            .then(result => {
+                console.log(result)
+                if (result.status == "SUCCESSFUL") window.location.pathname = '/inzRafalRutkowski/'
+            })
             .catch(error => console.log('error', error));
     }
 

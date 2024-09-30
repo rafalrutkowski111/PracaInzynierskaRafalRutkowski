@@ -34,7 +34,6 @@ namespace inzRafalRutowski.Controllers
 
         // ustawić żeby w axiosie nie było trzeba za każdym razem pisać przy autoryzacji {withCredentials: true}
 
-        // Uwierzytelnianie wieloskładnikowe (MFA) np sms + haslo
         // silnijesza utoryzacjaserwer do serwera Application Signed Request
         // dać możliwość przy sms opcje żeby przez 30 dni nie było trzeba się logować
         //(można podczas logowania sprawdzać date kiedy było ostatnie logowanie za pomocą 
