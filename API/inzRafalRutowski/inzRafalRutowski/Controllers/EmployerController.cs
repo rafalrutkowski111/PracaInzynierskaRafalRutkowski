@@ -5,6 +5,7 @@ using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;
 using System.Runtime.InteropServices.JavaScript;
@@ -19,11 +20,13 @@ namespace inzRafalRutowski.Controllers
     {
         private readonly IEmployerService _service;
         private readonly IJwtService _jwtService;
+        private readonly DataContext _context;
 
-        public EmployerController( IEmployerService service, IJwtService jwtService) :base(jwtService)
+        public EmployerController( IEmployerService service, IJwtService jwtService, DataContext context) : base(jwtService)
         {
             _service = service;
             _jwtService = jwtService;
+            _context = context;
         }
         [AllowAnonymous]
         [HttpGet("login")]
@@ -90,6 +93,24 @@ namespace inzRafalRutowski.Controllers
                 return Unauthorized();
             }
 
+        }
+        [HttpGet("IgnoreMFA")]
+        public IActionResult Ignore30daysMFA()
+        {
+            DateTime thisDay = DateTime.Now;
+            DateTime thisDayWith30Days = thisDay.AddDays(30);
+
+            var jwt = Request.Cookies["jwt"];
+
+            var token = _jwtService.Verify(jwt);
+
+            int employerId = int.Parse(token.Issuer);
+
+            var employer = _service.GetEmployerById(employerId);
+
+            employer.IgnoreMFA = thisDayWith30Days;
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }

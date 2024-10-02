@@ -15,6 +15,7 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // przy rejestracji można dodać stepper
         // napisac regexa hasło min 8 znaków, znak specjalny, mała litera i dużą litera i liczba
         // napisac regexa do maila w rejestracji
         // dodać walidajce po stronie fronta do tego

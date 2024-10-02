@@ -11,6 +11,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import * as React from 'react';
 import FormHelperText from '@mui/material/FormHelperText';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -42,6 +44,7 @@ const Login = () => {
     const [sms, setSms] = useState(false);
     const [codeSms, setCodeSms] = useState("");
     const [phone, setPhone] = useState(undefined);
+    const [boxChecked, setBoxChecked] = useState(true);
     //const [loginSms, setLoginSms] = useState(true); // potem użyć żeby wiedieć czy robić logowanei przez sms
 
     var usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
@@ -51,6 +54,7 @@ const Login = () => {
         setHideLoginElements((hide) => !hide)
         setShowLoginElements((hide) => !hide)
     }
+    const handleBoxChecked = () => setBoxChecked((checked) => !checked)
 
     const doLogin = () => {
         axios.get('http://localhost:5000/api/Employer/login',
@@ -79,6 +83,7 @@ const Login = () => {
         handleLoginElement()
     }
     const smsAuthSend = () => {
+        return
         axios.get('http://localhost:5000/api/employer', { withCredentials: true })
             .then(response => {
                 var requestOptions = {
@@ -99,6 +104,10 @@ const Login = () => {
             })
     }
     const doCodeSms = () => {
+        if (boxChecked)
+            axios.get('http://localhost:5000/api/Employer/IgnoreMFA', { withCredentials: true })
+    
+        return
         var requestOptions = {
             method: 'PUT',
             headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword) },
@@ -127,6 +136,13 @@ const Login = () => {
                         variant="outlined" />
                 </CenterContainer>
             </Row>
+            <Row hidden={showLoginElements}>
+                <CenterContainer>
+                    <FormControlLabel control={
+                        <Checkbox defaultChecked onChange={handleBoxChecked} />} label="Zapisz na 30 dni" />
+                </CenterContainer>
+            </Row>
+
             <SecoundRowSpace hidden={showLoginElements}></SecoundRowSpace>
             <Row hidden={showLoginElements}>
                 <CenterContainer>

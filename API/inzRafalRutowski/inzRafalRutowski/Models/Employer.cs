@@ -11,6 +11,8 @@
         public bool Admin { get; set; }
         public string Email { get; set; }
         public bool ConfirmEmail { get; set; }
+        public bool SmsMFA { get; set; }
+        public DateTime? IgnoreMFA { get; set; }
 
         public List<Employee> Employees { get; set; }
         public List<Job> Jobs { get; set; }
