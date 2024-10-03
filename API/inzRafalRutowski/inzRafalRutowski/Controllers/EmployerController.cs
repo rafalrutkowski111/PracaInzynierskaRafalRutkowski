@@ -86,6 +86,7 @@ namespace inzRafalRutowski.Controllers
                     name = employer.Name,
                     surname = employer.Surname,
                     phone = employer.Phone,
+                    smsmfa = employer.SmsMFA
                 });
             }
             catch(Exception _)

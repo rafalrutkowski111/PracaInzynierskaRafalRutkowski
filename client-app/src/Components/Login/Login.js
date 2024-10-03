@@ -45,7 +45,6 @@ const Login = () => {
     const [codeSms, setCodeSms] = useState("");
     const [phone, setPhone] = useState(undefined);
     const [boxChecked, setBoxChecked] = useState(true);
-    //const [loginSms, setLoginSms] = useState(true); // potem użyć żeby wiedieć czy robić logowanei przez sms
 
     var usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
 
@@ -64,11 +63,16 @@ const Login = () => {
             })
             .then(response => {
                 axios.get('http://localhost:5000/api/employer', { withCredentials: true })
-                    .then(response => setPhone(response.data.phone))
+                    .then(response => {
+                        setPhone(response.data.phone)
+                        handleLoginElement()
 
-                handleLoginElement()
-                smsAuthSend()
-                setSms(true)
+                        if (response.data.smsmfa) {
+                            smsAuthSend()
+                            setSms(true)
+                        }
+                    })
+
                 sessionStorage.setItem("userId", response.data.userId)
                 sessionStorage.setItem("userHashToken", response.data.hash);
 
@@ -106,7 +110,6 @@ const Login = () => {
     const doCodeSms = () => {
         if (boxChecked)
             axios.get('http://localhost:5000/api/Employer/IgnoreMFA', { withCredentials: true })
-    
         return
         var requestOptions = {
             method: 'PUT',
