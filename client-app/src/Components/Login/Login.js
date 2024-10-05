@@ -13,6 +13,7 @@ import * as React from 'react';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import * as dayjs from 'dayjs'
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -58,8 +59,8 @@ const Login = () => {
     const doLogin = () => {
         axios.get('http://localhost:5000/api/Employer/login',
             {
-                params: { login: login, password: password },
-                withCredentials: true
+                params: { login: login, password: password }, // zrobić zmienna createCookie i dać fale, chyba żę jużprzejdziemy mfa lub go nei bedzie to zrobić te same zapytanie 
+                withCredentials: true // tyle ze tworzac cookie, bo inaczej bedziemy mieli cookie i przy odswierzeni ustrony bysmy sie zalogowali pomijajac mfa
             })
             .then(response => {
                 axios.get('http://localhost:5000/api/employer', { withCredentials: true })
@@ -67,16 +68,22 @@ const Login = () => {
                         setPhone(response.data.phone)
                         handleLoginElement()
 
-                        if (response.data.smsmfa) {
-                            smsAuthSend()
-                            setSms(true)
+                        if (response.data.smsMFA) {
+                            const date = new Date();
+
+                            if (dayjs(response.data.ignoreMFA) > dayjs(date))
+                                window.location.pathname = '/inzRafalRutkowski/';
+                            else {
+                                smsAuthSend()
+                                setSms(true)
+                            }
                         }
+                        else window.location.pathname = '/inzRafalRutkowski/';
                     })
 
                 sessionStorage.setItem("userId", response.data.userId)
                 sessionStorage.setItem("userHashToken", response.data.hash);
 
-                //window.location.pathname = '/inzRafalRutkowski/';
             }).catch((error) => {
                 setErrorHelperText("Nieprawidłowe dane")
                 setLoginError(true)
@@ -108,8 +115,6 @@ const Login = () => {
             })
     }
     const doCodeSms = () => {
-        if (boxChecked)
-            axios.get('http://localhost:5000/api/Employer/IgnoreMFA', { withCredentials: true })
         return
         var requestOptions = {
             method: 'PUT',
@@ -120,7 +125,11 @@ const Login = () => {
             .then(response => response.json())
             .then(result => {
                 console.log(result)
-                if (result.status == "SUCCESSFUL") window.location.pathname = '/inzRafalRutkowski/'
+                if (result.status == "SUCCESSFUL") {
+                    if (boxChecked)
+                        axios.get('http://localhost:5000/api/Employer/IgnoreMFA', { withCredentials: true })
+                    window.location.pathname = '/inzRafalRutkowski/'
+                }
             })
             .catch(error => console.log('error', error));
     }

@@ -15,6 +15,8 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // zrobić logowanie przez mfa nie robiac cookie trylko sprawdzając logowanie po ktorym będzie sprawdzane mfa
+
         // przy rejestracji można dodać stepper
         // napisac regexa hasło min 8 znaków, znak specjalny, mała litera i dużą litera i liczba
         // napisac regexa do maila w rejestracji
