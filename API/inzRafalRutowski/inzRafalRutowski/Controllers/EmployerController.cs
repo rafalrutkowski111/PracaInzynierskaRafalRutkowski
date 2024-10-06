@@ -30,7 +30,7 @@ namespace inzRafalRutowski.Controllers
         }
         [AllowAnonymous]
         [HttpGet("login")]
-        public IActionResult Login([FromQuery] string login, [FromQuery] string password)
+        public IActionResult Login([FromQuery] string login, [FromQuery] string password, [FromQuery] bool cookies)
         {
             var employer = _service.Login(login, password);
             if (employer == null)
@@ -40,9 +40,9 @@ namespace inzRafalRutowski.Controllers
             } 
 
             var builder = _service.Hush(employer);
+            
 
-
-
+            if (!cookies) return Ok(new { hash = builder.ToString(), userId = employer.Id, employer = employer });
             // dodana zmiana, w przyszłości przenieść do servisu
             // i zastąpić to z uzywaniem husha
             var jwt = _jwtService.Generate(employer);
@@ -50,10 +50,9 @@ namespace inzRafalRutowski.Controllers
             Response.Cookies.Append("jwt", jwt, new CookieOptions
             {
                 HttpOnly = true
-            });
-            //
+            });  
 
-            return Ok(new { hash = builder.ToString(), userId = employer.Id });
+            return Ok(new { hash = builder.ToString(), userId = employer.Id, employer = employer });
         }
         [AllowAnonymous]
         //po autentykazcji za pomoca jwt po stronie fronta usunac VeryfieLogin

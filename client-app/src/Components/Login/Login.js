@@ -59,30 +59,40 @@ const Login = () => {
     const doLogin = () => {
         axios.get('http://localhost:5000/api/Employer/login',
             {
-                params: { login: login, password: password }, // zrobić zmienna createCookie i dać fale, chyba żę jużprzejdziemy mfa lub go nei bedzie to zrobić te same zapytanie 
-                withCredentials: true // tyle ze tworzac cookie, bo inaczej bedziemy mieli cookie i przy odswierzeni ustrony bysmy sie zalogowali pomijajac mfa
+                params: { login: login, password: password, cookies: false },
+                withCredentials: true
             })
             .then(response => {
-                axios.get('http://localhost:5000/api/employer', { withCredentials: true })
-                    .then(response => {
-                        setPhone(response.data.phone)
-                        handleLoginElement()
+                setPhone(response.data.employer.phone)
+                handleLoginElement()
+                if (response.data.employer.smsMFA) {
+                    const date = new Date();
 
-                        if (response.data.smsMFA) {
-                            const date = new Date();
-
-                            if (dayjs(response.data.ignoreMFA) > dayjs(date))
-                                window.location.pathname = '/inzRafalRutkowski/';
-                            else {
-                                smsAuthSend()
-                                setSms(true)
-                            }
-                        }
-                        else window.location.pathname = '/inzRafalRutkowski/';
-                    })
+                    if (dayjs(response.data.employerignoreMFA) > dayjs(date)) {
+                        axios.get('http://localhost:5000/api/Employer/login',
+                            {
+                                params: { login: login, password: password, cookies: true },
+                                withCredentials: true
+                            })
+                        window.location.pathname = '/inzRafalRutkowski/';
+                    }
+                    else {
+                        smsAuthSend(response.data.employer.phone)
+                        setSms(true)
+                    }
+                }
+                else {
+                    axios.get('http://localhost:5000/api/Employer/login',
+                        {
+                            params: { login: login, password: password, cookies: true },
+                            withCredentials: true
+                        })
+                    window.location.pathname = '/inzRafalRutkowski/';
+                }
 
                 sessionStorage.setItem("userId", response.data.userId)
                 sessionStorage.setItem("userHashToken", response.data.hash);
+
 
             }).catch((error) => {
                 setErrorHelperText("Nieprawidłowe dane")
@@ -93,26 +103,24 @@ const Login = () => {
         setSms(false)
         handleLoginElement()
     }
-    const smsAuthSend = () => {
+    const smsAuthSend = (phone) => {
         return
-        axios.get('http://localhost:5000/api/employer', { withCredentials: true })
-            .then(response => {
-                var requestOptions = {
-                    method: 'POST',
-                    headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword), "Accept-Language": "en-US" },
-                    body: "{ \
+        var requestOptions = {
+            method: 'POST',
+            headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword), "Accept-Language": "en-US" },
+            body: "{ \
                 \"identity\": { \
                   \"type\": \"number\", \
-                  \"endpoint\": \"+48"+ response.data.phone + "\" \
+                  \"endpoint\": \"+48"+ phone + "\" \
                   }, \
                 \"method\": \"sms\" \
                 }"
-                };
-                fetch("https://verification.api.sinch.com/verification/v1/verifications", requestOptions)
-                    .then(response => response.json())
-                    .then(result => console.log(result))
-                    .catch(error => console.log('error', error));
-            })
+        };
+        fetch("https://verification.api.sinch.com/verification/v1/verifications", requestOptions)
+            .then(response => response.json())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+
     }
     const doCodeSms = () => {
         return
@@ -126,6 +134,11 @@ const Login = () => {
             .then(result => {
                 console.log(result)
                 if (result.status == "SUCCESSFUL") {
+                    axios.get('http://localhost:5000/api/Employer/login',
+                        {
+                            params: { login: login, password: password, cookies: true },
+                            withCredentials: true
+                        })
                     if (boxChecked)
                         axios.get('http://localhost:5000/api/Employer/IgnoreMFA', { withCredentials: true })
                     window.location.pathname = '/inzRafalRutkowski/'
