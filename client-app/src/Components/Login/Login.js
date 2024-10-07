@@ -46,6 +46,8 @@ const Login = () => {
     const [codeSms, setCodeSms] = useState("");
     const [phone, setPhone] = useState(undefined);
     const [boxChecked, setBoxChecked] = useState(true);
+    const [loginErrorMFA, setLoginErrorMFA] = useState(false);
+    const [errorHelperTextSMS, setErrorHelperTextSMS] = useState("");
 
     var usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
 
@@ -65,6 +67,7 @@ const Login = () => {
             .then(response => {
                 setPhone(response.data.employer.phone)
                 handleLoginElement()
+                
                 if (response.data.employer.smsMFA) {
                     const date = new Date();
 
@@ -104,7 +107,7 @@ const Login = () => {
         handleLoginElement()
     }
     const smsAuthSend = (phone) => {
-        return
+       return
         var requestOptions = {
             method: 'POST',
             headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword), "Accept-Language": "en-US" },
@@ -133,7 +136,7 @@ const Login = () => {
             .then(response => response.json())
             .then(result => {
                 console.log(result)
-                if (result.status == "SUCCESSFUL") {
+                if (result.status === "SUCCESSFUL") {
                     axios.get('http://localhost:5000/api/Employer/login',
                         {
                             params: { login: login, password: password, cookies: true },
@@ -142,6 +145,11 @@ const Login = () => {
                     if (boxChecked)
                         axios.get('http://localhost:5000/api/Employer/IgnoreMFA', { withCredentials: true })
                     window.location.pathname = '/inzRafalRutkowski/'
+                }
+                else 
+                {
+                    setErrorHelperTextSMS("Niepoprawny kod sms")
+                    setLoginErrorMFA(true);
                 }
             })
             .catch(error => console.log('error', error));
@@ -154,11 +162,16 @@ const Login = () => {
                 <Label htmlFor="login">Kod z telefonu</Label>
                 <CenterContainer>
                     <TextField
-                        //error={loginError}
+                        error={loginErrorMFA}
                         sx={{ m: 0, width: '25ch' }}
                         onChange={(e) => { setCodeSms(e.target.value) }}
                         size="small"
                         variant="outlined" />
+                </CenterContainer>
+                <CenterContainer>
+                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                        {errorHelperTextSMS}
+                    </FormHelperText>
                 </CenterContainer>
             </Row>
             <Row hidden={showLoginElements}>
