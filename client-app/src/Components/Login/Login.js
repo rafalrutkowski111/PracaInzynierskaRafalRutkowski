@@ -67,7 +67,7 @@ const Login = () => {
             .then(response => {
                 setPhone(response.data.employer.phone)
                 handleLoginElement()
-                
+
                 if (response.data.employer.smsMFA) {
                     const date = new Date();
 
@@ -107,7 +107,7 @@ const Login = () => {
         handleLoginElement()
     }
     const smsAuthSend = (phone) => {
-       return
+        return
         var requestOptions = {
             method: 'POST',
             headers: { "Content-Type": "application/json", "Authorization": "Basic " + btoa(usernameAndPassword), "Accept-Language": "en-US" },
@@ -146,8 +146,7 @@ const Login = () => {
                         axios.get('http://localhost:5000/api/Employer/IgnoreMFA', { withCredentials: true })
                     window.location.pathname = '/inzRafalRutkowski/'
                 }
-                else 
-                {
+                else {
                     setErrorHelperTextSMS("Niepoprawny kod sms")
                     setLoginErrorMFA(true);
                 }
@@ -183,9 +182,16 @@ const Login = () => {
 
             <SecoundRowSpace hidden={showLoginElements}></SecoundRowSpace>
             <Row hidden={showLoginElements}>
-                <CenterContainer>
-                    wyślij ponownie
-                </CenterContainer>
+
+                    <ButtonWithoutBorderWrapper>
+                        <ButtonWithoutBorder
+                            type="submit"
+                            id="button"
+                            value="Wyślij ponownie"
+                            onClick={smsAuthSend(phone)}
+                        />
+                    </ButtonWithoutBorderWrapper>
+
             </Row>
 
 

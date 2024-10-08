@@ -21,7 +21,6 @@ const CenterContainer = styled.div`
 `
 const ButtonWithoutBorder = styled(Form.Control)`
     border:none;
-    width:100px;
     background-color: white; 
     color: black; 
 `
