@@ -14,6 +14,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import * as dayjs from 'dayjs'
+import Alert from '@mui/material/Alert';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -48,6 +49,9 @@ const Login = () => {
     const [boxChecked, setBoxChecked] = useState(true);
     const [loginErrorMFA, setLoginErrorMFA] = useState(false);
     const [errorHelperTextSMS, setErrorHelperTextSMS] = useState("");
+    const [attemptSMSCount, setAttemptSMSCount] = useState(5);
+    const [attemptSMSMessage, setAttemptSMSMessage] = useState("");
+    const [hiddenAlert, setHiddenAlert] = useState(true);
 
     var usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
 
@@ -57,6 +61,22 @@ const Login = () => {
         setShowLoginElements((hide) => !hide)
     }
     const handleBoxChecked = () => setBoxChecked((checked) => !checked)
+
+    const attemptSMS = () => {
+        if (attemptSMSCount === 0) {
+            setAttemptSMSCount(5)
+            setAttemptSMSMessage("")
+            setErrorHelperTextSMS("")
+            smsAuthSend(phone)
+            setHiddenAlert(false)
+            setLoginErrorMFA(false)
+        }
+        else {
+            setHiddenAlert(true)
+            setAttemptSMSCount(attemptSMSCount - 1)
+            setAttemptSMSMessage("Pozostała ilość prób " + attemptSMSCount)
+        }
+    }
 
     const doLogin = () => {
         axios.get('http://localhost:5000/api/Employer/login',
@@ -149,6 +169,7 @@ const Login = () => {
                 else {
                     setErrorHelperTextSMS("Niepoprawny kod sms")
                     setLoginErrorMFA(true);
+                    attemptSMS()
                 }
             })
             .catch(error => console.log('error', error));
@@ -172,6 +193,16 @@ const Login = () => {
                         {errorHelperTextSMS}
                     </FormHelperText>
                 </CenterContainer>
+                <CenterContainer>
+                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                        {attemptSMSMessage}
+                    </FormHelperText>
+                </CenterContainer>
+            </Row>
+            <Row hidden={hiddenAlert}>
+                <CenterContainer>
+                    <Alert severity="info">Wysłano pownonie kod sms</Alert>
+                </CenterContainer>
             </Row>
             <Row hidden={showLoginElements}>
                 <CenterContainer>
@@ -183,16 +214,17 @@ const Login = () => {
             <SecoundRowSpace hidden={showLoginElements}></SecoundRowSpace>
             <Row hidden={showLoginElements}>
 
-                    <ButtonWithoutBorderWrapper>
-                        <ButtonWithoutBorder
-                            type="submit"
-                            id="button"
-                            value="Wyślij ponownie"
-                            onClick={smsAuthSend(phone)}
-                        />
-                    </ButtonWithoutBorderWrapper>
+                <ButtonWithoutBorderWrapper>
+                    <ButtonWithoutBorder
+                        type="submit"
+                        id="button"
+                        value="Wyślij ponownie"
+                        onClick={smsAuthSend(phone)}
+                    />
+                </ButtonWithoutBorderWrapper>
 
             </Row>
+
 
 
 
