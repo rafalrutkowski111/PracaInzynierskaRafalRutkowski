@@ -9,6 +9,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import * as React from 'react';
 import { useState } from 'react';
 import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -25,8 +26,29 @@ width: 20px;
 
 const Registration = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState("");
+    const [errorPasswordLabel, setErrorPasswordLabel] = useState("");
+    const [errorPassword, setErrorPassword] = useState(false)
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const rgxPassword = /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$/;
+
+    const changePassword = (e) => {
+        setPassword(e)
+        if (e === '') {
+            setErrorPassword(true)
+            setErrorPasswordLabel("Pole nie może być puste")
+        }
+        else if (!rgxPassword.test(e)) {
+            setErrorPassword(true)
+            setErrorPasswordLabel("Niepoprawny format hasła: mała ,duża iltera, liczba, znak specjalny, 8 znaków")
+        }
+        else {
+            setErrorPassword(false)
+            setErrorPasswordLabel("")
+        }
+    }
 
     return (
         <MainCompontent>
@@ -55,7 +77,9 @@ const Registration = () => {
                 <CenterContainer>
                     <FormControl sx={{ width: '25ch' }} variant="outlined">
                         <OutlinedInput
-                            //onChange={}
+                            error={errorPassword}
+                            value={password}
+                            onChange={e => changePassword(e.target.value)}
                             size="small"
                             id="outlined-adornment-password"
                             type={showPassword ? 'text' : 'password'}
@@ -71,6 +95,9 @@ const Registration = () => {
                                 </InputAdornment>
                             }
                         />
+                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                            {errorPasswordLabel}
+                        </FormHelperText>
                     </FormControl>
                 </CenterContainer>
             </Row>

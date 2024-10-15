@@ -37,13 +37,6 @@ namespace inzRafalRutowski.Controllers
         // ustawić żeby w axiosie nie było trzeba za każdym razem pisać przy autoryzacji {withCredentials: true}
 
         // silnijesza utoryzacjaserwer do serwera Application Signed Request
-        // dać możliwość przy sms opcje żeby przez 30 dni nie było trzeba się logować
-        //(można podczas logowania sprawdzać date kiedy było ostatnie logowanie za pomocą 
-        //pomoca sms i jeżeli ta opcja była wybrana to jeżeli mineło więcej jak 30 dni to zmienić true/false
-        // ustawić czas(5 minut) na który będzie się miało czas na wpisanie
-        // albo ustawić ilość prób na 5
-        // zrobić przycisk wyślij ponownie gdzie będzie wysyłany nowy kod
-        // po upływie 5 minut powinna pojawić się opcja wyślij ponownie i ukryć texboxa
 
         // odzyskiwanie konta za pomocą maila
 
