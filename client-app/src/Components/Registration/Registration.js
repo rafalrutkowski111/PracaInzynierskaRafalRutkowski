@@ -29,10 +29,14 @@ const Registration = () => {
     const [password, setPassword] = useState("");
     const [errorPasswordLabel, setErrorPasswordLabel] = useState("");
     const [errorPassword, setErrorPassword] = useState(false)
+    const [email, setEmail] = useState("");
+    const [errorEmailLabel, setErrorEmailLabel] = useState("");
+    const [errorEmail, setErrorEmail] = useState(false)
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const rgxPassword = /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$/;
+    const rgxEmail = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 
     const changePassword = (e) => {
         setPassword(e)
@@ -47,6 +51,23 @@ const Registration = () => {
         else {
             setErrorPassword(false)
             setErrorPasswordLabel("")
+        }
+    }
+    const changeEmail = (e) => {
+        setEmail(e)
+
+        if (e === '') {
+            setErrorEmail(true)
+            setErrorEmailLabel("Pole nie może być puste")
+        }
+        else if (!rgxEmail.test(e)) {
+            setErrorEmail(true)
+            setErrorEmailLabel("Email jest niepoprawny")
+        }
+        else {
+            setErrorEmail(false)
+            setErrorEmailLabel("")
+
         }
     }
 
@@ -66,7 +87,10 @@ const Registration = () => {
                 <Label htmlFor="email">Email</Label>
                 <CenterContainer>
                     <TextField
-                        //onChange={}
+                       helperText={errorEmailLabel}
+                        error={errorEmail}
+                        value={email}
+                        onChange={e => changeEmail(e.target.value)}
                         sx={{ width: '25ch' }}
                         size="small"
                         variant="outlined" />
@@ -95,9 +119,11 @@ const Registration = () => {
                                 </InputAdornment>
                             }
                         />
-                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                            {errorPasswordLabel}
-                        </FormHelperText>
+                        <CenterContainer>
+                            <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                {errorPasswordLabel}
+                            </FormHelperText>
+                        </CenterContainer>
                     </FormControl>
                 </CenterContainer>
             </Row>
