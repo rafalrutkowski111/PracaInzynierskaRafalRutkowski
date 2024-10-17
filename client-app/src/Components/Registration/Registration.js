@@ -32,6 +32,9 @@ const Registration = () => {
     const [email, setEmail] = useState("");
     const [errorEmailLabel, setErrorEmailLabel] = useState("");
     const [errorEmail, setErrorEmail] = useState(false)
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [errorConfirmPasswordLabel, setErrorConfirmPasswordLabel] = useState("");
+    const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -69,6 +72,22 @@ const Registration = () => {
             setErrorEmailLabel("")
 
         }
+    }
+
+    const changeConfirmPassword = (e) => {
+        setConfirmPassword(e)
+
+        if(e === password)
+        {
+            setErrorConfirmPasswordLabel("")
+            setErrorConfirmPassword(false)
+        }
+        else
+        {
+            setErrorConfirmPasswordLabel("Hasło musi być takie samo")
+            setErrorConfirmPassword(true)
+        }
+
     }
 
     return (
@@ -132,7 +151,9 @@ const Registration = () => {
                 <CenterContainer>
                     <FormControl sx={{ width: '25ch' }} variant="outlined">
                         <OutlinedInput
-                            //onChange={}
+                            error={errorConfirmPassword}
+                            value={confirmPassword}
+                            onChange={e => changeConfirmPassword(e.target.value)}
                             size="small"
                             id="outlined-adornment-password"
                             type={showPassword ? 'text' : 'password'}
@@ -148,6 +169,9 @@ const Registration = () => {
                                 </InputAdornment>
                             }
                         />
+                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                            {errorConfirmPasswordLabel}
+                        </FormHelperText>
                     </FormControl>
                 </CenterContainer>
             </Row>
