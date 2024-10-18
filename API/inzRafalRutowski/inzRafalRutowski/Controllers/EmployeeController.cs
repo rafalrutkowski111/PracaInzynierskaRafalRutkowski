@@ -17,7 +17,6 @@ namespace inzRafalRutowski.Controllers
     {
 
         // przy rejestracji można dodać stepper
-        // napisac regexa do maila w rejestracji
         // dodać walidajce po stronie fronta do tego
         // sprawdzanie czy login i email sie nie powtarza 
         // dodać 2 strone jerestracji gdzie będziemy prosić o dodatkowe informacje

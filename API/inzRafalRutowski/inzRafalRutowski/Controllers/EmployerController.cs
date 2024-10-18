@@ -29,6 +29,29 @@ namespace inzRafalRutowski.Controllers
             _context = context;
         }
         [AllowAnonymous]
+        [HttpGet("register")]
+        public IActionResult Register([FromQuery] string login, [FromQuery] string password, [FromQuery] string email)
+        {
+            string passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
+
+            Employer employer = new Employer();
+
+            employer.Name = "aa";
+            employer.Surname = "bb";
+            employer.Login = login;
+            employer.Password = passwordHash;
+            employer.Phone = "66";
+            employer.Admin = false;
+            employer.Email = email;
+
+            _context.Employers.Add(employer);
+            _context.SaveChanges();
+
+
+
+            return Ok();
+        }
+        [AllowAnonymous]
         [HttpGet("login")]
         public IActionResult Login([FromQuery] string login, [FromQuery] string password, [FromQuery] bool cookies)
         {

@@ -10,6 +10,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
+import axios from 'axios';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -35,6 +36,7 @@ const Registration = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorConfirmPasswordLabel, setErrorConfirmPasswordLabel] = useState("");
     const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
+    const [login, setLogin] = useState("");
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -77,17 +79,23 @@ const Registration = () => {
     const changeConfirmPassword = (e) => {
         setConfirmPassword(e)
 
-        if(e === password)
-        {
+        if (e === password) {
             setErrorConfirmPasswordLabel("")
             setErrorConfirmPassword(false)
         }
-        else
-        {
+        else {
             setErrorConfirmPasswordLabel("Hasło musi być takie samo")
             setErrorConfirmPassword(true)
         }
 
+    }
+
+    const doRegister = () => {
+        axios.get('http://localhost:5000/api/Employer/register',
+            {
+                params: { login: login, password: password, email: email },
+                withCredentials: true
+            })
     }
 
     return (
@@ -96,7 +104,7 @@ const Registration = () => {
                 <Label htmlFor="login">Login</Label>
                 <CenterContainer>
                     <TextField
-                        //onChange={}
+                        onChange={e => setLogin(e.target.value)}
                         sx={{ width: '25ch' }}
                         size="small"
                         variant="outlined" />
@@ -106,7 +114,7 @@ const Registration = () => {
                 <Label htmlFor="email">Email</Label>
                 <CenterContainer>
                     <TextField
-                       helperText={errorEmailLabel}
+                        helperText={errorEmailLabel}
                         error={errorEmail}
                         value={email}
                         onChange={e => changeEmail(e.target.value)}
@@ -182,7 +190,7 @@ const Registration = () => {
                             type="submit"
                             id="button"
                             value="Dalej"
-                        //onClick={() => {doLogin();}}
+                            onClick={() => { doRegister(); }}
                         />
                     </ButtonWrapper>
                     <ColumnSpace></ColumnSpace>
