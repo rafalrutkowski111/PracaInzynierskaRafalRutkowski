@@ -21,7 +21,15 @@ namespace inzRafalRutowski.Service
 
         public Employer Login(string login, string password)
         {
-            return _context.Employers.FirstOrDefault(x => (string.Equals(x.Login, login) || string.Equals(x.Email, login)) && string.Equals(x.Password, password));
+            var employer =  _context.Employers.FirstOrDefault(x => (string.Equals(x.Login, login) || string.Equals(x.Email, login)));
+
+            if (employer != null)
+            {
+                if (BCrypt.Net.BCrypt.EnhancedVerify(password, employer.Password))
+                    return employer;
+                else return null;
+            }   
+            return null;
         }
 
         public Employer VeryfieLogin(int userId)

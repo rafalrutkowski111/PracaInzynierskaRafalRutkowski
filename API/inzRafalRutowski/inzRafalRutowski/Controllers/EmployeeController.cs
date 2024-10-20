@@ -25,16 +25,9 @@ namespace inzRafalRutowski.Controllers
         // dodać walidajce po stronie fronta do tego
         // dodać do emplercontroller rejestracje (login i email muszą być unikatowe)
 
-        // przy hasle w rejestracji zrobic hashowane haslo(mozna uzyc package bccrypt)
-        // uzywa sie go "password = BCrypt.Net.BCrypt.HashPassword(password);"
-        // sprawdza się BCrypt.Net.BCrypt.Verifity(password,password) - zwraca true jesli prawda
-        // przy storzenei uczegoś zamiast OK() mozna uzyc Create("wiadomosc", wartosc)
-
         // zaktualizować rejestracne o dodanie potwierdzenia rejestracji przez emaila
 
         // ustawić żeby w axiosie nie było trzeba za każdym razem pisać przy autoryzacji {withCredentials: true}
-
-        // silnijesza utoryzacjaserwer do serwera Application Signed Request
 
         // odzyskiwanie konta za pomocą maila
 
