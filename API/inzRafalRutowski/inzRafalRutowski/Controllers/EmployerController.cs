@@ -28,6 +28,27 @@ namespace inzRafalRutowski.Controllers
             _jwtService = jwtService;
             _context = context;
         }
+
+        [AllowAnonymous]
+        [HttpGet("checkUniqueLoginAndEmail")]
+        public IActionResult CheckUniqueLoginAndEmail([FromQuery] string login, [FromQuery] string email)
+        {
+            var loginUnique = true;
+            var emailUnique = true;
+
+            var loginEmployer = _context.Employers.FirstOrDefault(x=> string.Equals(x.Login, login));
+            if(loginEmployer != null) loginUnique = false;
+
+            var emailEmployer = _context.Employers.FirstOrDefault(x => string.Equals(x.Email, email));
+            if(emailEmployer != null) emailUnique = false;
+
+
+            return Ok(new
+            {
+                login = loginUnique,
+                email = emailUnique,
+            });
+        }
         [AllowAnonymous]
         [HttpGet("register")]
         public IActionResult Register([FromQuery] string login, [FromQuery] string password, [FromQuery] string email)

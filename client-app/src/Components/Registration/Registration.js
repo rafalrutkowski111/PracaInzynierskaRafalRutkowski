@@ -37,6 +37,8 @@ const Registration = () => {
     const [errorConfirmPasswordLabel, setErrorConfirmPasswordLabel] = useState("");
     const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
     const [login, setLogin] = useState("");
+    const [uniqueEmail, setUniqueEmail] = useState(false);
+    const [uniqueLogin, setUniqueLogin] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -90,6 +92,19 @@ const Registration = () => {
 
     }
 
+    const checkUniqueLoginAndEmail = () =>{
+        axios.get('http://localhost:5000/api/Employer/checkUniqueLoginAndEmail',
+            {
+                params: { login: login, email: email },
+                withCredentials: true
+            })
+            .then(response => 
+            {
+                setUniqueEmail(response.data.email)
+                setUniqueLogin(response.data.login)
+            }
+            )
+    }
     const doRegister = () => {
         axios.get('http://localhost:5000/api/Employer/register',
             {
@@ -190,7 +205,7 @@ const Registration = () => {
                             type="submit"
                             id="button"
                             value="Dalej"
-                            onClick={() => { doRegister(); }}
+                            onClick={() => { checkUniqueLoginAndEmail(); }}
                         />
                     </ButtonWrapper>
                     <ColumnSpace></ColumnSpace>
