@@ -37,8 +37,10 @@ const Registration = () => {
     const [errorConfirmPasswordLabel, setErrorConfirmPasswordLabel] = useState("");
     const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
     const [login, setLogin] = useState("");
-    const [uniqueEmail, setUniqueEmail] = useState(false);
-    const [uniqueLogin, setUniqueLogin] = useState(false);
+
+    const [errorUniqueLoginLabel, setErrorUniqueLoginLabel] = useState("");
+    const [errorUniqueLogin, setErrorUniqueLogin] = useState(false);
+    const [errorUniqueEmialLabel, setErrorUniqueEmail] = useState("");
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -62,6 +64,7 @@ const Registration = () => {
     }
     const changeEmail = (e) => {
         setEmail(e)
+        setErrorUniqueEmail("")
 
         if (e === '') {
             setErrorEmail(true)
@@ -92,18 +95,38 @@ const Registration = () => {
 
     }
 
-    const checkUniqueLoginAndEmail = () =>{
-        axios.get('http://localhost:5000/api/Employer/checkUniqueLoginAndEmail',
-            {
-                params: { login: login, email: email },
-                withCredentials: true
-            })
-            .then(response => 
-            {
-                setUniqueEmail(response.data.email)
-                setUniqueLogin(response.data.login)
-            }
-            )
+    const checkUniqueLoginAndEmail = () => {
+        if (errorPassword === true || password === "" || errorEmail === true || email === ""
+            || login === "" || errorConfirmPassword === true || confirmPassword === "") {
+            console.log("poprawnie")
+        }
+        else {
+            axios.get('http://localhost:5000/api/Employer/checkUniqueLoginAndEmail',
+                {
+                    params: { login: login, email: email },
+                    withCredentials: true
+                })
+                .then(response => {
+                    console.log(response.data)
+                    if (response.data.email === true && response.data.login === true) {
+                        // przjedz do kolejnego kroku rejstracji
+                    }
+                    else {
+                        if (response.data.email === false) {
+                            setErrorUniqueEmail("Email musi być unikalny")
+                            setErrorEmail(true)
+                        }
+                        if (response.data.login === false) {
+                            setErrorUniqueLoginLabel("Login musi być unikalny")
+                            setErrorUniqueLogin(true)
+                        }
+                    }
+
+                }
+                )
+        }
+
+
     }
     const doRegister = () => {
         axios.get('http://localhost:5000/api/Employer/register',
@@ -119,10 +142,20 @@ const Registration = () => {
                 <Label htmlFor="login">Login</Label>
                 <CenterContainer>
                     <TextField
-                        onChange={e => setLogin(e.target.value)}
+                        error={errorUniqueLogin}
+                        onChange={e => {
+                            setLogin(e.target.value)
+                            setErrorUniqueLoginLabel("")
+                            setErrorUniqueLogin(false)
+                        }}
                         sx={{ width: '25ch' }}
                         size="small"
                         variant="outlined" />
+                </CenterContainer>
+                <CenterContainer>
+                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                        {errorUniqueLoginLabel}
+                    </FormHelperText>
                 </CenterContainer>
             </Row>
             <Row>
@@ -136,6 +169,11 @@ const Registration = () => {
                         sx={{ width: '25ch' }}
                         size="small"
                         variant="outlined" />
+                </CenterContainer>
+                <CenterContainer>
+                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                        {errorUniqueEmialLabel}
+                    </FormHelperText>
                 </CenterContainer>
             </Row>
             <Row>
