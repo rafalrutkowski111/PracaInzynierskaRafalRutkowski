@@ -15,8 +15,6 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-
-        // przy rejestracji można dodać stepper
         // dodać 2 strone jerestracji gdzie będziemy prosić o dodatkowe informacje
         // zaznaczyć czy chcemy 2-etapowe logowanie za pomoca sms
         // jezeli tak to telefon jest obowiązkoy żeby podać
