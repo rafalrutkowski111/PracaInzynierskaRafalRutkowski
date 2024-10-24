@@ -17,6 +17,7 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import { Container } from '@mui/material';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -29,6 +30,13 @@ width: 60%;
 `
 const ColumnSpace = styled.div`
 width: 20px;
+`
+const RowSecound = styled.div`
+    margin-bottom: 15%;
+`
+const RowThird = styled.div`
+width: 100%;
+    margin-bottom: 3%;
 `
 
 const Registration = () => {
@@ -48,6 +56,8 @@ const Registration = () => {
     const [errorUniqueLogin, setErrorUniqueLogin] = useState(false);
     const [errorUniqueEmialLabel, setErrorUniqueEmail] = useState("");
     const [activeStep, setActiveStep] = useState(0);
+    const [hideBaisicInformation, setHideBaisicInformation] = useState(false);
+    const [hideOpcionalInformation, setHidepcionalInformation] = useState(true);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -107,7 +117,10 @@ const Registration = () => {
     const checkUniqueLoginAndEmail = () => {
         if (errorPassword === true || password === "" || errorEmail === true || email === ""
             || login === "" || errorConfirmPassword === true || confirmPassword === "") {
-            console.log("poprawnie")
+            changeEmail(email)
+            changePassword(password)
+            changeConfirmPassword(confirmPassword)
+            if (login === "") setErrorUniqueLoginLabel("login nie może być pusty")
         }
         else {
             axios.get('http://localhost:5000/api/Employer/checkUniqueLoginAndEmail',
@@ -118,7 +131,9 @@ const Registration = () => {
                 .then(response => {
                     console.log(response.data)
                     if (response.data.email === true && response.data.login === true) {
-                        // przjedz do kolejnego kroku rejstracji
+                        setHideBaisicInformation(true)
+                        handleNext()
+                        setHidepcionalInformation(false)
                     }
                     else {
                         if (response.data.email === false) {
@@ -145,19 +160,10 @@ const Registration = () => {
             })
     }
 
-    const [skipped, setSkipped] = React.useState(new Set());
 
-    const isStepOptional = (step) => {
-        return step === 1;
-    };
-
-    const isStepSkipped = (step) => {
-        return skipped.has(step);
-    };
-    const handleReset = () => {
-        setActiveStep(0);
-    };
     const handleBack = () => {
+        setHidepcionalInformation(true)
+        setHideBaisicInformation(false)
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
     const handleNext = () => {
@@ -165,181 +171,185 @@ const Registration = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
     };
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            // You probably want to guard against something like this,
-            // it should never occur unless someone's actively trying to break something.
-            throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-            const newSkipped = new Set(prevSkipped.values());
-            newSkipped.add(activeStep);
-            return newSkipped;
-        });
-    };
 
     return (
         <MainCompontent>
             <Row>
                 <Box sx={{ width: '100%' }}>
-                    <Stepper activeStep={activeStep}>
-                        {steps.map((label, index) => {
-                            const stepProps = {};
-                            const labelProps = {};
-                            return (
-                                <Step key={label} {...stepProps}>
-                                    <StepLabel {...labelProps}>{label}</StepLabel>
-                                </Step>
-                            );
-                        })}
-                    </Stepper>
+                    <CenterContainer>
+                        <Stepper activeStep={activeStep}>
+                            {steps.map((label, index) => {
+                                const stepProps = {};
+                                const labelProps = {};
+                                return (
+                                    <Step key={label} {...stepProps}>
+                                        <StepLabel {...labelProps}>{label}</StepLabel>
+                                    </Step>
+                                );
+                            })}
+                        </Stepper>
+                    </CenterContainer>
                     <React.Fragment>
+                        <RowSecound></RowSecound>
 
+                        <Container hidden={hideBaisicInformation}>
+                            <CenterContainer >
+                                <RowThird >
+                                    <Label htmlFor="login">Login</Label>
+                                    <CenterContainer>
+                                        <TextField
+                                            error={errorUniqueLogin}
+                                            onChange={e => {
+                                                setLogin(e.target.value)
+                                                setErrorUniqueLoginLabel("")
+                                                setErrorUniqueLogin(false)
+                                            }}
+                                            sx={{ width: '25ch' }}
+                                            size="small"
+                                            variant="outlined" />
+                                    </CenterContainer>
+                                    <CenterContainer>
+                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                            {errorUniqueLoginLabel}
+                                        </FormHelperText>
+                                    </CenterContainer>
+                                </RowThird>
+                            </CenterContainer>
+                            <CenterContainer>
+                                <RowThird>
+                                    <Label htmlFor="email">Email</Label>
+                                    <CenterContainer>
+                                        <TextField
+                                            helperText={errorEmailLabel}
+                                            error={errorEmail}
+                                            value={email}
+                                            onChange={e => changeEmail(e.target.value)}
+                                            sx={{ width: '25ch' }}
+                                            size="small"
+                                            variant="outlined" />
+                                    </CenterContainer>
+                                    <CenterContainer>
+                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                            {errorUniqueEmialLabel}
+                                        </FormHelperText>
+                                    </CenterContainer>
+                                </RowThird>
+                            </CenterContainer>
+                            <CenterContainer>
+                                <RowThird>
+                                    <Label htmlFor="password">Hasło</Label>
+                                    <CenterContainer>
+                                        <FormControl sx={{ width: '25ch' }} variant="outlined">
+                                            <OutlinedInput
+                                                error={errorPassword}
+                                                value={password}
+                                                onChange={e => changePassword(e.target.value)}
+                                                size="small"
+                                                id="outlined-adornment-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                            />
+                                            <CenterContainer>
+                                                <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                                    {errorPasswordLabel}
+                                                </FormHelperText>
+                                            </CenterContainer>
+                                        </FormControl>
+                                    </CenterContainer>
+                                </RowThird>
+                            </CenterContainer>
+                            <CenterContainer>
+                                <RowThird>
+                                    <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
+                                    <CenterContainer>
+                                        <FormControl sx={{ width: '25ch' }} variant="outlined">
+                                            <OutlinedInput
+                                                error={errorConfirmPassword}
+                                                value={confirmPassword}
+                                                onChange={e => changeConfirmPassword(e.target.value)}
+                                                size="small"
+                                                id="outlined-adornment-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                            />
+                                            <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                                {errorConfirmPasswordLabel}
+                                            </FormHelperText>
+                                        </FormControl>
+                                    </CenterContainer>
+                                </RowThird>
+                            </CenterContainer>
+                        </Container>
 
-                        tu dodać teść
-
-                        zrobic 1 przycisk dalej ? stwórz 
-                        zrobić 1 orzycisk powrót(do logowania) ? powrót(do 1 kroku)
-                        stworzyć komponent w którym będzie się chować 1 część i pokazywać 2 i odwrotnie
-
-
-                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                            <Button
-                                color="inherit"
-                                disabled={activeStep === 0}
-                                onClick={handleBack}
-                                sx={{ mr: 1 }}
-                                value="Back"
-                                type="submit"
-                            >
-                            </Button>
-                            <Box sx={{ flex: '1 1 auto' }} />
-                            <Button onClick={handleNext} value="Next" type="submit">
-                            </Button>
-                        </Box>
+                        <Container hidden={hideOpcionalInformation}>
+                            <CenterContainer>
+                                <RowThird>
+                                    <Label htmlFor="test">TEST</Label>
+                                    <CenterContainer>
+                                        <TextField
+                                            error={errorUniqueLogin}
+                                            onChange={e => {
+                                                setLogin(e.target.value)
+                                                setErrorUniqueLoginLabel("")
+                                                setErrorUniqueLogin(false)
+                                            }}
+                                            sx={{ width: '25ch' }}
+                                            size="small"
+                                            variant="outlined" />
+                                    </CenterContainer>
+                                    <CenterContainer>
+                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                            {errorUniqueLoginLabel}
+                                        </FormHelperText>
+                                    </CenterContainer>
+                                </RowThird>
+                            </CenterContainer>
+                        </Container>
+                        <CenterContainer>
+                            <RowThird>
+                                <CenterContainer>
+                                    <ButtonWrapper>
+                                        <Button
+                                            type="submit"
+                                            id="button"
+                                            value="Dalej"
+                                            onClick={() => { checkUniqueLoginAndEmail(); }}
+                                        />
+                                    </ButtonWrapper>
+                                    <ColumnSpace></ColumnSpace>
+                                    <ButtonWrapper>
+                                        <Button
+                                            type="submit"
+                                            id="button"
+                                            value="Powrót"
+                                            onClick={activeStep !== 0 ? handleBack : () => window.location.pathname = '/'}
+                                        />
+                                    </ButtonWrapper>
+                                </CenterContainer>
+                            </RowThird>
+                        </CenterContainer>
                     </React.Fragment>
                 </Box>
-            </Row>
-            <Row>
-                <Label htmlFor="login">Login</Label>
-                <CenterContainer>
-                    <TextField
-                        error={errorUniqueLogin}
-                        onChange={e => {
-                            setLogin(e.target.value)
-                            setErrorUniqueLoginLabel("")
-                            setErrorUniqueLogin(false)
-                        }}
-                        sx={{ width: '25ch' }}
-                        size="small"
-                        variant="outlined" />
-                </CenterContainer>
-                <CenterContainer>
-                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                        {errorUniqueLoginLabel}
-                    </FormHelperText>
-                </CenterContainer>
-            </Row>
-            <Row>
-                <Label htmlFor="email">Email</Label>
-                <CenterContainer>
-                    <TextField
-                        helperText={errorEmailLabel}
-                        error={errorEmail}
-                        value={email}
-                        onChange={e => changeEmail(e.target.value)}
-                        sx={{ width: '25ch' }}
-                        size="small"
-                        variant="outlined" />
-                </CenterContainer>
-                <CenterContainer>
-                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                        {errorUniqueEmialLabel}
-                    </FormHelperText>
-                </CenterContainer>
-            </Row>
-            <Row>
-                <Label htmlFor="password">Hasło</Label>
-                <CenterContainer>
-                    <FormControl sx={{ width: '25ch' }} variant="outlined">
-                        <OutlinedInput
-                            error={errorPassword}
-                            value={password}
-                            onChange={e => changePassword(e.target.value)}
-                            size="small"
-                            id="outlined-adornment-password"
-                            type={showPassword ? 'text' : 'password'}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                        <CenterContainer>
-                            <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                {errorPasswordLabel}
-                            </FormHelperText>
-                        </CenterContainer>
-                    </FormControl>
-                </CenterContainer>
-            </Row>
-            <Row>
-                <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
-                <CenterContainer>
-                    <FormControl sx={{ width: '25ch' }} variant="outlined">
-                        <OutlinedInput
-                            error={errorConfirmPassword}
-                            value={confirmPassword}
-                            onChange={e => changeConfirmPassword(e.target.value)}
-                            size="small"
-                            id="outlined-adornment-password"
-                            type={showPassword ? 'text' : 'password'}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                            {errorConfirmPasswordLabel}
-                        </FormHelperText>
-                    </FormControl>
-                </CenterContainer>
-            </Row>
-            <Row>
-                <CenterContainer>
-                    <ButtonWrapper>
-                        <Button
-                            type="submit"
-                            id="button"
-                            value="Dalej"
-                            onClick={() => { checkUniqueLoginAndEmail(); }}
-                        />
-                    </ButtonWrapper>
-                    <ColumnSpace></ColumnSpace>
-                    <ButtonWrapper>
-                        <Button
-                            type="submit"
-                            id="button"
-                            value="Powrót"
-                            onClick={() => window.location.pathname = '/'}
-                        />
-                    </ButtonWrapper>
-                </CenterContainer>
             </Row>
         </MainCompontent>
     )
