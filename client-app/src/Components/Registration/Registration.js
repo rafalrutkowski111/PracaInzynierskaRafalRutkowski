@@ -51,13 +51,16 @@ const Registration = () => {
     const [errorConfirmPasswordLabel, setErrorConfirmPasswordLabel] = useState("");
     const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
     const [login, setLogin] = useState("");
-
     const [errorUniqueLoginLabel, setErrorUniqueLoginLabel] = useState("");
     const [errorUniqueLogin, setErrorUniqueLogin] = useState(false);
     const [errorUniqueEmialLabel, setErrorUniqueEmail] = useState("");
     const [activeStep, setActiveStep] = useState(0);
     const [hideBaisicInformation, setHideBaisicInformation] = useState(false);
     const [hideOpcionalInformation, setHidepcionalInformation] = useState(true);
+    const [errorNameLabel, setErrorNameLabel] = useState("");
+    const [name, setName] = useState("");
+    const [errorName, setErrorName] = useState(false);
+    
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -304,14 +307,13 @@ const Registration = () => {
                         <Container hidden={hideOpcionalInformation}>
                             <CenterContainer>
                                 <RowThird>
-                                    <Label htmlFor="test">TEST</Label>
+                                    <Label htmlFor="test">Imie</Label>
                                     <CenterContainer>
                                         <TextField
-                                            error={errorUniqueLogin}
+                                            value={name}
+                                            error={errorName}
                                             onChange={e => {
-                                                setLogin(e.target.value)
-                                                setErrorUniqueLoginLabel("")
-                                                setErrorUniqueLogin(false)
+                                                setName(e.target.value)
                                             }}
                                             sx={{ width: '25ch' }}
                                             size="small"
@@ -319,7 +321,7 @@ const Registration = () => {
                                     </CenterContainer>
                                     <CenterContainer>
                                         <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                            {errorUniqueLoginLabel}
+                                            {errorNameLabel}
                                         </FormHelperText>
                                     </CenterContainer>
                                 </RowThird>
