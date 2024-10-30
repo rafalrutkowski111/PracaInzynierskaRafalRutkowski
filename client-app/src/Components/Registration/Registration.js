@@ -60,6 +60,9 @@ const Registration = () => {
     const [errorNameLabel, setErrorNameLabel] = useState("");
     const [name, setName] = useState("");
     const [errorName, setErrorName] = useState(false);
+    const [errorSurnameLabel, setErrorSurnameLabel] = useState("");
+    const [surname, setSurname] = useState("");
+    const [errorSurname, setErrorSurname] = useState(false);
     
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -322,6 +325,27 @@ const Registration = () => {
                                     <CenterContainer>
                                         <FormHelperText id="component-error-text" sx={{ color: "red" }}>
                                             {errorNameLabel}
+                                        </FormHelperText>
+                                    </CenterContainer>
+                                </RowThird>
+                            </CenterContainer>
+                            <CenterContainer>
+                                <RowThird>
+                                    <Label htmlFor="test">Nazwisko</Label>
+                                    <CenterContainer>
+                                        <TextField
+                                            value={surname}
+                                            error={errorSurname}
+                                            onChange={e => {
+                                                setName(e.target.value)
+                                            }}
+                                            sx={{ width: '25ch' }}
+                                            size="small"
+                                            variant="outlined" />
+                                    </CenterContainer>
+                                    <CenterContainer>
+                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                            {errorSurnameLabel}
                                         </FormHelperText>
                                     </CenterContainer>
                                 </RowThird>
