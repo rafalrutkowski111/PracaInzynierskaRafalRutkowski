@@ -14,6 +14,7 @@ import { AddEmployee, ChangeSpecialist, ConfirmAdd, Summary, SummaryViewEmployee
 import JobAddress from "../Job/JobAddress";
 import { Estimate, MoneyPerHour } from "../Job/Estimate";
 import Investor from "../Job/Investor";
+import { regexZIP } from "../../Regex/Regex";
 
 const TittleContainer = styled.div`
     margin-top:2%;
@@ -120,7 +121,7 @@ const UpdateJob = () => {
 
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
-    const rgxZIP = /^[0-9]{2}[-][0-9]{3}(-[0-9]{2}[-][0-9]{2})?$/;
+    const rgxZIP = regexZIP;
 
     //console.log("dataEmployeeWithSpecialization")
     //console.log(dataEmployeeWithSpecialization)

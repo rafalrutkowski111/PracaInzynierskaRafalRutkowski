@@ -15,7 +15,6 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // dodac klase dla regexów gdzie się bedzie je wszystkie przechowywać
         // można dodać losowe generowane hasło
         // dodać 2 strone jerestracji gdzie będziemy prosić o dodatkowe informacje
         // zaznaczyć czy chcemy 2-etapowe logowanie za pomoca sms

@@ -13,6 +13,7 @@ import * as dayjs from 'dayjs'
 import JobAddress from "../Job/JobAddress";
 import { Estimate, MoneyPerHour } from "../Job/Estimate";
 import Investor from "../Job/Investor";
+import { regexZIP } from "../../Regex/Regex";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -114,7 +115,7 @@ const AddJob = () => {
     const [errorSurnameInvestorLabel, setErrorSurnameInvestorLabel] = useState('')
 
     const userId = sessionStorage.getItem("userId");
-    const rgxZIP = /^[0-9]{2}[-][0-9]{3}(-[0-9]{2}[-][0-9]{2})?$/;
+    const rgxZIP = regexZIP;
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })

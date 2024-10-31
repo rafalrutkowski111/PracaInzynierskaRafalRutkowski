@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import TextField from '@mui/material/TextField';
+import { regexZIP } from "../../Regex/Regex";
 
 
 const AddressContainer = styled.div`
@@ -10,7 +11,7 @@ const AddressContainer = styled.div`
 
 const JobAddress = (props) => {
 
-    const rgxZIP = /^[0-9]{2}[-][0-9]{3}(-[0-9]{2}[-][0-9]{2})?$/;
+    const rgxZIP = regexZIP;
 
     const changeZip = (e) => {
         props.setZip(e)
