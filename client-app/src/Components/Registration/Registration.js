@@ -121,6 +121,9 @@ const Registration = () => {
     }
 
     const checkUniqueLoginAndEmail = () => {
+        //generator haslo
+        password_generator(15)
+        // koniec generatora
         if (errorPassword === true || password === "" || errorEmail === true || email === ""
             || login === "" || errorConfirmPassword === true || confirmPassword === "") {
             changeEmail(email)
@@ -177,6 +180,29 @@ const Registration = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
     };
+
+    const password_generator = ( len ) => {
+        var length = (len)?(len):(10);
+        var string = "abcdefghijklmnopqrstuvwxyz"; //to upper 
+        var numeric = '0123456789';
+        var punctuation = '!@#$%^&*()_+~`|}{[]\:;?><,./-=';
+        var password = "";
+        var character = "";
+        while( password.length<length ) {
+            let entity1 = Math.ceil(string.length * Math.random()*Math.random());
+            let entity2 = Math.ceil(numeric.length * Math.random()*Math.random());
+            let entity3 = Math.ceil(punctuation.length * Math.random()*Math.random());
+            let hold = string.charAt( entity1 );
+            hold = (password.length%2==0)?(hold.toUpperCase()):(hold);
+            character += hold;
+            character += numeric.charAt( entity2 );
+            character += punctuation.charAt( entity3 );
+            password = character;
+        }
+        password=password.split('').sort(function(){return 0.5-Math.random()}).join('');
+        console.log( password)
+        return password.substr(0,len);
+    }
 
     return (
         <MainCompontent>
