@@ -7,17 +7,18 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
-import Typography from '@mui/material/Typography';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import { Container } from '@mui/material';
-import { regexPassword , regexEmail } from '../Regex/Regex';
+import { regexPassword, regexEmail } from '../Regex/Regex';
+import { ButtonWithoutBorder, ButtonWithoutBorderWrapper } from '../Styled/StyledGlobal';
+
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -63,7 +64,7 @@ const Registration = () => {
     const [errorSurnameLabel, setErrorSurnameLabel] = useState("");
     const [surname, setSurname] = useState("");
     const [errorSurname, setErrorSurname] = useState(false);
-    
+
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -121,9 +122,6 @@ const Registration = () => {
     }
 
     const checkUniqueLoginAndEmail = () => {
-        //generator haslo
-        password_generator(15)
-        // koniec generatora
         if (errorPassword === true || password === "" || errorEmail === true || email === ""
             || login === "" || errorConfirmPassword === true || confirmPassword === "") {
             changeEmail(email)
@@ -181,29 +179,34 @@ const Registration = () => {
 
     };
 
-    const password_generator = ( len ) => {
-        var length = (len)?(len):(10);
+    const password_generator = (len) => {
+        var length = (len) ? (len) : (10);
         var string = "abcdefghijklmnopqrstuvwxyz"; //to upper 
         var numeric = '0123456789';
         var punctuation = '!@#$%^&*()_+~`|}{[]\:;?><,./-=';
         var password = "";
         var character = "";
-        while( password.length<length ) {
-            let entity1 = Math.ceil(string.length * Math.random()*Math.random());
-            let entity2 = Math.ceil(numeric.length * Math.random()*Math.random());
-            let entity3 = Math.ceil(punctuation.length * Math.random()*Math.random());
-            let hold = string.charAt( entity1 );
-            hold = (password.length%2==0)?(hold.toUpperCase()):(hold);
+        while (password.length < length) {
+            let entity1 = Math.ceil(string.length * Math.random() * Math.random());
+            let entity2 = Math.ceil(numeric.length * Math.random() * Math.random());
+            let entity3 = Math.ceil(punctuation.length * Math.random() * Math.random());
+            let hold = string.charAt(entity1);
+            hold = (password.length % 2 == 0) ? (hold.toUpperCase()) : (hold);
             character += hold;
-            character += numeric.charAt( entity2 );
-            character += punctuation.charAt( entity3 );
+            character += numeric.charAt(entity2);
+            character += punctuation.charAt(entity3);
             password = character;
         }
-        password=password.split('').sort(function(){return 0.5-Math.random()}).join('');
-        console.log( password)
-        return password.substr(0,len);
+        password = password.split('').sort(function () { return 0.5 - Math.random() }).join('');
+        changePassword(password)
+        changeConfirmPassword(password)
+        setErrorConfirmPasswordLabel("")
+        setErrorConfirmPassword(false)
     }
 
+    useEffect(() => {
+        changePassword("")
+    }, [])
     return (
         <MainCompontent>
             <Row>
@@ -296,10 +299,21 @@ const Registration = () => {
                                                     {errorPasswordLabel}
                                                 </FormHelperText>
                                             </CenterContainer>
+                                            <ButtonWithoutBorderWrapper>
+                                                <ButtonWithoutBorder
+                                                    type="submit"
+                                                    id="button"
+                                                    value="Generuj"
+                                                    onClick={() => { password_generator(15) }}
+                                                />
+                                            </ButtonWithoutBorderWrapper>
                                         </FormControl>
                                     </CenterContainer>
                                 </RowThird>
                             </CenterContainer>
+
+
+
                             <CenterContainer>
                                 <RowThird>
                                     <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
