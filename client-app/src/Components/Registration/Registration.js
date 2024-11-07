@@ -64,6 +64,9 @@ const Registration = () => {
     const [errorSurnameLabel, setErrorSurnameLabel] = useState("");
     const [surname, setSurname] = useState("");
     const [errorSurname, setErrorSurname] = useState(false);
+    const [phone, setPhone] = useState("");
+    const [errorPhone, setErrorPhone] = useState(false)
+    const [errorPhoneLabel, setErrorPhoneLabel] = useState("")
 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -204,9 +207,6 @@ const Registration = () => {
         setErrorConfirmPassword(false)
     }
 
-    useEffect(() => {
-        changePassword("")
-    }, [])
     return (
         <MainCompontent>
             <Row>
@@ -386,6 +386,27 @@ const Registration = () => {
                                     <CenterContainer>
                                         <FormHelperText id="component-error-text" sx={{ color: "red" }}>
                                             {errorSurnameLabel}
+                                        </FormHelperText>
+                                    </CenterContainer>
+                                </RowThird>
+                            </CenterContainer>
+                            <CenterContainer>
+                                <RowThird>
+                                    <Label htmlFor="test">Telefon</Label>
+                                    <CenterContainer>
+                                        <TextField
+                                            value={phone}
+                                            error={errorPhone}
+                                            onChange={e => {
+                                                setPhone(e.target.value)
+                                            }}
+                                            sx={{ width: '25ch' }}
+                                            size="small"
+                                            variant="outlined" />
+                                    </CenterContainer>
+                                    <CenterContainer>
+                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                            {errorPhoneLabel}
                                         </FormHelperText>
                                     </CenterContainer>
                                 </RowThird>
