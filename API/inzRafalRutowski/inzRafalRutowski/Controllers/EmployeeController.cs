@@ -15,6 +15,7 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // useNavigate do nawigowania między trasami z poziomu kodu
         // zaznaczyć czy chcemy 2-etapowe logowanie za pomoca sms
         // jezeli tak to telefon jest obowiązkoy żeby podać
         // dodać walidajce po stronie fronta do tego
@@ -78,6 +79,8 @@ namespace inzRafalRutowski.Controllers
 
         //IdentityUser można zrobić do autoryzacji. Wiele rzeczy ktorych tu zrobie ona automatyzuje, mozliwe ze przetestuje w odzielnym
         //projekce. Jeszcze do przemyślenia.
+
+        // testowanie React
 
 
         private readonly DataContext _context;

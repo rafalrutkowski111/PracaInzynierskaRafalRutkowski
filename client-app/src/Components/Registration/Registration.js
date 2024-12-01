@@ -18,7 +18,8 @@ import StepLabel from '@mui/material/StepLabel';
 import { Container } from '@mui/material';
 import { regexPassword, regexEmail } from '../Regex/Regex';
 import { ButtonWithoutBorder, ButtonWithoutBorderWrapper } from '../Styled/StyledGlobal';
-
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -67,9 +68,11 @@ const Registration = () => {
     const [phone, setPhone] = useState("");
     const [errorPhone, setErrorPhone] = useState(false)
     const [errorPhoneLabel, setErrorPhoneLabel] = useState("")
+    const [smsCheckbox, setSmsCheckbox] = useState(true)
 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleCheckboxSMS = () => setSmsCheckbox((smsCheckbox) => !smsCheckbox)
 
     const rgxPassword = regexPassword;
     const rgxEmail = regexEmail;
@@ -125,6 +128,7 @@ const Registration = () => {
     }
 
     const checkUniqueLoginAndEmail = () => {
+        console.log(smsCheckbox)
         if (errorPassword === true || password === "" || errorEmail === true || email === ""
             || login === "" || errorConfirmPassword === true || confirmPassword === "") {
             changeEmail(email)
@@ -410,6 +414,15 @@ const Registration = () => {
                                         </FormHelperText>
                                     </CenterContainer>
                                 </RowThird>
+                            </CenterContainer>
+                            <CenterContainer>
+                                <FormControlLabel control={
+                                    <Checkbox 
+                                    defaultChecked
+                                    value={smsCheckbox}
+                                    onChange={handleCheckboxSMS}
+                                    />
+                                } label="Logowanie sms" />
                             </CenterContainer>
                         </Container>
                         <CenterContainer>
