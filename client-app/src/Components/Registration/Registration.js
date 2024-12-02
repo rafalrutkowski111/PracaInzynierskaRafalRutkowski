@@ -69,10 +69,12 @@ const Registration = () => {
     const [errorPhone, setErrorPhone] = useState(false)
     const [errorPhoneLabel, setErrorPhoneLabel] = useState("")
     const [smsCheckbox, setSmsCheckbox] = useState(true)
+    const [firstStep, setFirstStep] = useState(true)
 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleCheckboxSMS = () => setSmsCheckbox((smsCheckbox) => !smsCheckbox)
+    const handleChangeStep = () => setFirstStep((step => !step))
 
     const rgxPassword = regexPassword;
     const rgxEmail = regexEmail;
@@ -127,8 +129,7 @@ const Registration = () => {
 
     }
 
-    const checkUniqueLoginAndEmail = () => {
-        console.log(smsCheckbox)
+    const nextFirstStep = () => {
         if (errorPassword === true || password === "" || errorEmail === true || email === ""
             || login === "" || errorConfirmPassword === true || confirmPassword === "") {
             changeEmail(email)
@@ -143,8 +144,8 @@ const Registration = () => {
                     withCredentials: true
                 })
                 .then(response => {
-                    console.log(response.data)
                     if (response.data.email === true && response.data.login === true) {
+                        handleChangeStep()
                         setHideBaisicInformation(true)
                         handleNext()
                         setHidepcionalInformation(false)
@@ -166,6 +167,9 @@ const Registration = () => {
 
 
     }
+    const nextSecoundStep = () =>{
+        console.log(smsCheckbox)
+    }
     const doRegister = () => {
         axios.get('http://localhost:5000/api/Employer/register',
             {
@@ -176,6 +180,7 @@ const Registration = () => {
 
 
     const handleBack = () => {
+        handleChangeStep()
         setHidepcionalInformation(true)
         setHideBaisicInformation(false)
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -433,7 +438,7 @@ const Registration = () => {
                                             type="submit"
                                             id="button"
                                             value="Dalej"
-                                            onClick={() => { checkUniqueLoginAndEmail(); }}
+                                            onClick={firstStep === true ? () =>  nextFirstStep() : () => nextSecoundStep()}
                                         />
                                     </ButtonWrapper>
                                     <ColumnSpace></ColumnSpace>
