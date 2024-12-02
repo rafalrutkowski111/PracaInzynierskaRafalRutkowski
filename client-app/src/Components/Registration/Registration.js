@@ -16,7 +16,7 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import { Container } from '@mui/material';
-import { regexPassword, regexEmail } from '../Regex/Regex';
+import { regexPassword, regexEmail, regexPhone } from '../Regex/Regex';
 import { ButtonWithoutBorder, ButtonWithoutBorderWrapper } from '../Styled/StyledGlobal';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -78,6 +78,7 @@ const Registration = () => {
 
     const rgxPassword = regexPassword;
     const rgxEmail = regexEmail;
+    const rgxPhone = regexPhone;
 
     const steps = ['Podstawowe informacje', 'Dodatkowe informacje'];
 
@@ -111,6 +112,23 @@ const Registration = () => {
         else {
             setErrorEmail(false)
             setErrorEmailLabel("")
+
+        }
+    }
+    const changePhone = (e) =>{
+        setPhone(e)
+
+        if(e === ''){
+            setErrorPhone(true)
+            setErrorPhoneLabel("Pole nie może być puste")
+        }
+        else if (!rgxPhone.test(e)){
+            setErrorPhone(true)
+            setErrorPhoneLabel("Niepoprawny numer telefonu")
+        }
+        else {
+            setErrorPhone(false)
+            setErrorPhoneLabel("")
 
         }
     }
@@ -167,10 +185,16 @@ const Registration = () => {
 
 
     }
-    const nextSecoundStep = () =>{
-        console.log(smsCheckbox)
+    const nextSecoundStep = () => {
+        smsCheckbox === true
+            ? phone !== "" && errorPhone === false
+                ? doRegister()
+                : doRegister() // TU ZROBIC Z HIDDEN(ustawic na hidden errory) NA SHOW errory // przy odznaczeniu buttonu znow ukrywanie
+            : doRegister()
     }
     const doRegister = () => {
+        console.log("jest")
+        return // USUNĄĆ JAK REJESTRACJA BEDZIE DZIAŁAC
         axios.get('http://localhost:5000/api/Employer/register',
             {
                 params: { login: login, password: password, email: email },
@@ -407,7 +431,7 @@ const Registration = () => {
                                             value={phone}
                                             error={errorPhone}
                                             onChange={e => {
-                                                setPhone(e.target.value)
+                                                changePhone(e.target.value)
                                             }}
                                             sx={{ width: '25ch' }}
                                             size="small"
@@ -422,10 +446,10 @@ const Registration = () => {
                             </CenterContainer>
                             <CenterContainer>
                                 <FormControlLabel control={
-                                    <Checkbox 
-                                    defaultChecked
-                                    value={smsCheckbox}
-                                    onChange={handleCheckboxSMS}
+                                    <Checkbox
+                                        defaultChecked
+                                        value={smsCheckbox}
+                                        onChange={handleCheckboxSMS}
                                     />
                                 } label="Logowanie sms" />
                             </CenterContainer>
@@ -438,7 +462,7 @@ const Registration = () => {
                                             type="submit"
                                             id="button"
                                             value="Dalej"
-                                            onClick={firstStep === true ? () =>  nextFirstStep() : () => nextSecoundStep()}
+                                            onClick={firstStep === true ? () => nextFirstStep() : () => nextSecoundStep()}
                                         />
                                     </ButtonWrapper>
                                     <ColumnSpace></ColumnSpace>

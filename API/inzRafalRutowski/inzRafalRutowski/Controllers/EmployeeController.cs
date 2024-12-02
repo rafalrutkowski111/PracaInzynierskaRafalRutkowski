@@ -15,6 +15,7 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // poprawic w rejestracji/logowaniu walidajce, zeby sie zeby errory sie pokazywaly po nacisnieciu dalej(dodac useState sprawdzajcy stan w jakim jest)
         // useNavigate do nawigowania między trasami z poziomu kodu
         // zaznaczyć czy chcemy 2-etapowe logowanie za pomoca sms
         // jezeli tak to telefon jest obowiązkoy żeby podać
@@ -28,6 +29,9 @@ namespace inzRafalRutowski.Controllers
         // odzyskiwanie konta za pomocą maila
 
         // zrobić walidacje po stronie becka
+
+        // w rejestracji imie, nazwisko i telefon jest opcjonalne, ale jak będziemy chcieli stworzyć prace to zrobić okno z prozba o
+        // uzupelnienie danych jesli ich nie ma, albo dac na hidden i przy dalej odpalic, wtedy nie bedzie trzeba state nowego robic
 
 
 
@@ -81,6 +85,8 @@ namespace inzRafalRutowski.Controllers
         //projekce. Jeszcze do przemyślenia.
 
         // testowanie React
+
+
 
 
         private readonly DataContext _context;
