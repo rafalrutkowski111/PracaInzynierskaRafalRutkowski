@@ -15,6 +15,8 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // koło hasła w rejestracji dac ikonke po ktorej wcisnieciu bedziemy widzieli z czego ma sie skladac(jakas podpowiedz np wyskoczy okno,
+        // albo pod spodem tekst jak ma wygladac ktory znika po ponownym wcisnieciu)
         // poprawic w rejestracji/logowaniu walidajce, zeby sie zeby errory sie pokazywaly po nacisnieciu dalej(dodac useState sprawdzajcy stan w jakim jest)
         // useNavigate do nawigowania między trasami z poziomu kodu
         // zaznaczyć czy chcemy 2-etapowe logowanie za pomoca sms

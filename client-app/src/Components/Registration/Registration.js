@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import * as React from 'react';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import axios from 'axios';
@@ -53,8 +53,9 @@ const Registration = () => {
     const [errorConfirmPasswordLabel, setErrorConfirmPasswordLabel] = useState("");
     const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
     const [login, setLogin] = useState("");
+    const [errorLoginLabel, setErrorLoginLabel] = useState("");
     const [errorUniqueLoginLabel, setErrorUniqueLoginLabel] = useState("");
-    const [errorUniqueLogin, setErrorUniqueLogin] = useState(false);
+    const [errorLogin, setErrorLogin] = useState(false);
     const [errorUniqueEmialLabel, setErrorUniqueEmail] = useState("");
     const [activeStep, setActiveStep] = useState(0);
     const [hideBaisicInformation, setHideBaisicInformation] = useState(false);
@@ -70,6 +71,7 @@ const Registration = () => {
     const [errorPhoneLabel, setErrorPhoneLabel] = useState("")
     const [smsCheckbox, setSmsCheckbox] = useState(true)
     const [firstStep, setFirstStep] = useState(true)
+    const [hideError, setHideError] = useState(true)
 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -115,14 +117,14 @@ const Registration = () => {
 
         }
     }
-    const changePhone = (e) =>{
+    const changePhone = (e) => {
         setPhone(e)
 
-        if(e === ''){
+        if (e === '') {
             setErrorPhone(true)
             setErrorPhoneLabel("Pole nie może być puste")
         }
-        else if (!rgxPhone.test(e)){
+        else if (!rgxPhone.test(e)) {
             setErrorPhone(true)
             setErrorPhoneLabel("Niepoprawny numer telefonu")
         }
@@ -146,6 +148,18 @@ const Registration = () => {
         }
 
     }
+    const changeLogin = (e) => {
+        setLogin(e)
+
+        if (e === '') {
+            setErrorLogin(true)
+            setErrorLoginLabel("Pole nie może być puste")
+        }
+        else {
+            setErrorLogin(false)
+            setErrorLoginLabel("")
+        }
+    }
 
     const nextFirstStep = () => {
         if (errorPassword === true || password === "" || errorEmail === true || email === ""
@@ -153,7 +167,7 @@ const Registration = () => {
             changeEmail(email)
             changePassword(password)
             changeConfirmPassword(confirmPassword)
-            if (login === "") setErrorUniqueLoginLabel("login nie może być pusty")
+            changeLogin(login)
         }
         else {
             axios.get('http://localhost:5000/api/Employer/checkUniqueLoginAndEmail',
@@ -175,7 +189,7 @@ const Registration = () => {
                         }
                         if (response.data.login === false) {
                             setErrorUniqueLoginLabel("Login musi być unikalny")
-                            setErrorUniqueLogin(true)
+                            setErrorLogin(true)
                         }
                     }
 
@@ -266,15 +280,16 @@ const Registration = () => {
                                     <Label htmlFor="login">Login</Label>
                                     <CenterContainer>
                                         <TextField
-                                            error={errorUniqueLogin}
-                                            onChange={e => {
-                                                setLogin(e.target.value)
-                                                setErrorUniqueLoginLabel("")
-                                                setErrorUniqueLogin(false)
-                                            }}
+                                            error={errorLogin}
+                                            onChange={e => changeLogin(e.target.value)}
                                             sx={{ width: '25ch' }}
                                             size="small"
                                             variant="outlined" />
+                                    </CenterContainer>
+                                    <CenterContainer>
+                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                            {errorLoginLabel}
+                                        </FormHelperText>
                                     </CenterContainer>
                                     <CenterContainer>
                                         <FormHelperText id="component-error-text" sx={{ color: "red" }}>
@@ -288,13 +303,17 @@ const Registration = () => {
                                     <Label htmlFor="email">Email</Label>
                                     <CenterContainer>
                                         <TextField
-                                            helperText={errorEmailLabel}
                                             error={errorEmail}
                                             value={email}
                                             onChange={e => changeEmail(e.target.value)}
                                             sx={{ width: '25ch' }}
                                             size="small"
                                             variant="outlined" />
+                                    </CenterContainer>
+                                    <CenterContainer>
+                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                            {errorEmailLabel}
+                                        </FormHelperText>
                                     </CenterContainer>
                                     <CenterContainer>
                                         <FormHelperText id="component-error-text" sx={{ color: "red" }}>
