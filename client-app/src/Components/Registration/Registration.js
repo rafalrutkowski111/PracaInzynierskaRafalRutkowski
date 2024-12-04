@@ -54,18 +54,12 @@ const Registration = () => {
     const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
     const [login, setLogin] = useState("");
     const [errorLoginLabel, setErrorLoginLabel] = useState("");
-    const [errorUniqueLoginLabel, setErrorUniqueLoginLabel] = useState("");
     const [errorLogin, setErrorLogin] = useState(false);
-    const [errorUniqueEmialLabel, setErrorUniqueEmail] = useState("");
     const [activeStep, setActiveStep] = useState(0);
     const [hideBaisicInformation, setHideBaisicInformation] = useState(false);
     const [hideOpcionalInformation, setHidepcionalInformation] = useState(true);
-    const [errorNameLabel, setErrorNameLabel] = useState("");
     const [name, setName] = useState("");
-    const [errorName, setErrorName] = useState(false);
-    const [errorSurnameLabel, setErrorSurnameLabel] = useState("");
     const [surname, setSurname] = useState("");
-    const [errorSurname, setErrorSurname] = useState(false);
     const [phone, setPhone] = useState("");
     const [errorPhone, setErrorPhone] = useState(false)
     const [errorPhoneLabel, setErrorPhoneLabel] = useState("")
@@ -101,7 +95,7 @@ const Registration = () => {
     }
     const changeEmail = (e) => {
         setEmail(e)
-        setErrorUniqueEmail("")
+        setErrorEmailLabel("")
 
         if (e === '') {
             setErrorEmail(true)
@@ -184,11 +178,11 @@ const Registration = () => {
                     }
                     else {
                         if (response.data.email === false) {
-                            setErrorUniqueEmail("Email musi być unikalny")
+                            setErrorEmailLabel("Email musi być unikalny")
                             setErrorEmail(true)
                         }
                         if (response.data.login === false) {
-                            setErrorUniqueLoginLabel("Login musi być unikalny")
+                            setErrorLoginLabel("Login musi być unikalny")
                             setErrorLogin(true)
                         }
                     }
@@ -291,11 +285,6 @@ const Registration = () => {
                                             {errorLoginLabel}
                                         </FormHelperText>
                                     </CenterContainer>
-                                    <CenterContainer>
-                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                            {errorUniqueLoginLabel}
-                                        </FormHelperText>
-                                    </CenterContainer>
                                 </RowThird>
                             </CenterContainer>
                             <CenterContainer>
@@ -313,11 +302,6 @@ const Registration = () => {
                                     <CenterContainer>
                                         <FormHelperText id="component-error-text" sx={{ color: "red" }}>
                                             {errorEmailLabel}
-                                        </FormHelperText>
-                                    </CenterContainer>
-                                    <CenterContainer>
-                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                            {errorUniqueEmialLabel}
                                         </FormHelperText>
                                     </CenterContainer>
                                 </RowThird>
@@ -406,18 +390,10 @@ const Registration = () => {
                                     <CenterContainer>
                                         <TextField
                                             value={name}
-                                            error={errorName}
-                                            onChange={e => {
-                                                setName(e.target.value)
-                                            }}
+                                            onChange={e => setName(e.target.value)}
                                             sx={{ width: '25ch' }}
                                             size="small"
                                             variant="outlined" />
-                                    </CenterContainer>
-                                    <CenterContainer>
-                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                            {errorNameLabel}
-                                        </FormHelperText>
                                     </CenterContainer>
                                 </RowThird>
                             </CenterContainer>
@@ -427,18 +403,10 @@ const Registration = () => {
                                     <CenterContainer>
                                         <TextField
                                             value={surname}
-                                            error={errorSurname}
-                                            onChange={e => {
-                                                setName(e.target.value)
-                                            }}
+                                            onChange={e => setSurname(e.target.value)}
                                             sx={{ width: '25ch' }}
                                             size="small"
                                             variant="outlined" />
-                                    </CenterContainer>
-                                    <CenterContainer>
-                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                            {errorSurnameLabel}
-                                        </FormHelperText>
                                     </CenterContainer>
                                 </RowThird>
                             </CenterContainer>
