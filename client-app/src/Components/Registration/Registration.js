@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import * as React from 'react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import axios from 'axios';
@@ -65,11 +65,15 @@ const Registration = () => {
     const [errorPhoneLabel, setErrorPhoneLabel] = useState("")
     const [smsCheckbox, setSmsCheckbox] = useState(true)
     const [firstStep, setFirstStep] = useState(true)
-    const [hideError, setHideError] = useState(true)
+    const [hideErrorFirstStep, setHideErrorFirstStep] = useState(true)
+    const [hideErrorSecoundStep, setHideErrorSecoundStep] = useState(true)
 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const handleCheckboxSMS = () => setSmsCheckbox((smsCheckbox) => !smsCheckbox)
+    const handleCheckboxSMS = () => {
+        setSmsCheckbox((smsCheckbox) => !smsCheckbox)
+        changePhone(phone)
+    }
     const handleChangeStep = () => setFirstStep((step => !step))
 
     const rgxPassword = regexPassword;
@@ -78,9 +82,34 @@ const Registration = () => {
 
     const steps = ['Podstawowe informacje', 'Dodatkowe informacje'];
 
+    useEffect(() => {
+        if (hideErrorFirstStep === false) {
+            changeEmail(email)
+            changePassword(password)
+            changeConfirmPassword(confirmPassword)
+            changeLogin(login)
+        }
+    }, [hideErrorFirstStep])
+
+    useEffect(() => {
+        if (hideErrorSecoundStep === false)
+            changePhone(phone)
+        else {
+            setErrorPhone(false)
+            setErrorPhoneLabel("")
+        }
+    }, [hideErrorSecoundStep])
+
+    useEffect(() => {
+        if (phone === '')
+            changePhone(phone)
+    }, [smsCheckbox])
+
     const changePassword = (e) => {
         setPassword(e)
-        if (e === '') {
+
+        if (hideErrorFirstStep === true) { }
+        else if (e === '') {
             setErrorPassword(true)
             setErrorPasswordLabel("Pole nie może być puste")
         }
@@ -94,10 +123,10 @@ const Registration = () => {
         }
     }
     const changeEmail = (e) => {
-        setEmail(e)
-        setErrorEmailLabel("")
 
-        if (e === '') {
+        setEmail(e)
+        if (hideErrorFirstStep === true) { }
+        else if (e === '') {
             setErrorEmail(true)
             setErrorEmailLabel("Pole nie może być puste")
         }
@@ -114,9 +143,14 @@ const Registration = () => {
     const changePhone = (e) => {
         setPhone(e)
 
-        if (e === '') {
+        if (hideErrorSecoundStep === true) { }
+        else if (e === '' && smsCheckbox === true) {
             setErrorPhone(true)
             setErrorPhoneLabel("Pole nie może być puste")
+        }
+        else if (e === '' && smsCheckbox === false) {
+            setErrorPhone(false)
+            setErrorPhoneLabel("")
         }
         else if (!rgxPhone.test(e)) {
             setErrorPhone(true)
@@ -132,7 +166,8 @@ const Registration = () => {
     const changeConfirmPassword = (e) => {
         setConfirmPassword(e)
 
-        if (e === password) {
+        if (hideErrorFirstStep === true) { }
+        else if (e === password) {
             setErrorConfirmPasswordLabel("")
             setErrorConfirmPassword(false)
         }
@@ -145,7 +180,8 @@ const Registration = () => {
     const changeLogin = (e) => {
         setLogin(e)
 
-        if (e === '') {
+        if (hideErrorFirstStep === true) { }
+        else if (e === '') {
             setErrorLogin(true)
             setErrorLoginLabel("Pole nie może być puste")
         }
@@ -158,10 +194,7 @@ const Registration = () => {
     const nextFirstStep = () => {
         if (errorPassword === true || password === "" || errorEmail === true || email === ""
             || login === "" || errorConfirmPassword === true || confirmPassword === "") {
-            changeEmail(email)
-            changePassword(password)
-            changeConfirmPassword(confirmPassword)
-            changeLogin(login)
+            setHideErrorFirstStep(false)
         }
         else {
             axios.get('http://localhost:5000/api/Employer/checkUniqueLoginAndEmail',
@@ -186,18 +219,15 @@ const Registration = () => {
                             setErrorLogin(true)
                         }
                     }
-
-                }
-                )
+                })
         }
 
 
     }
     const nextSecoundStep = () => {
+        setHideErrorSecoundStep(false)
         smsCheckbox === true
-            ? phone !== "" && errorPhone === false
-                ? doRegister()
-                : doRegister() // TU ZROBIC Z HIDDEN(ustawic na hidden errory) NA SHOW errory // przy odznaczeniu buttonu znow ukrywanie
+            ? phone !== "" && !errorPhone && doRegister()
             : doRegister()
     }
     const doRegister = () => {
@@ -212,6 +242,7 @@ const Registration = () => {
 
 
     const handleBack = () => {
+        setHideErrorSecoundStep(true)
         handleChangeStep()
         setHidepcionalInformation(true)
         setHideBaisicInformation(false)
