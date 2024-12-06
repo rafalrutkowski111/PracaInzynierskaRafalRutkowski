@@ -20,6 +20,7 @@ import { regexPassword, regexEmail, regexPhone } from '../Regex/Regex';
 import { ButtonWithoutBorder, ButtonWithoutBorderWrapper } from '../Styled/StyledGlobal';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { useNavigate } from "react-router-dom";
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -67,6 +68,8 @@ const Registration = () => {
     const [firstStep, setFirstStep] = useState(true)
     const [hideErrorFirstStep, setHideErrorFirstStep] = useState(true)
     const [hideErrorSecoundStep, setHideErrorSecoundStep] = useState(true)
+
+    const navigate = useNavigate();
 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -489,7 +492,7 @@ const Registration = () => {
                                             type="submit"
                                             id="button"
                                             value="Powrót"
-                                            onClick={activeStep !== 0 ? handleBack : () => window.location.pathname = '/'}
+                                            onClick={activeStep !== 0 ? handleBack : () => navigate(-1)}
                                         />
                                     </ButtonWrapper>
                                 </CenterContainer>

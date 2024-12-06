@@ -52,34 +52,34 @@ const Router = () => {
   }, []);
 
 
-  return !(isLogged) ? (
-
-    (window.location.pathname) == "/inzRafalRutkowski/registration"
-      ? <Registration />
-      : <Login />
-
-  ) : (
-    <>
-      <Toolbar userName={userName}/>
-      <BrowserRouter basename="/inzRafalRutkowski">
+  return (
+    <BrowserRouter basename="/inzRafalRutkowski">
+      {isLogged ? (
+        <>
+          <Toolbar userName={userName} />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/calendar" element={<Home />} />
+            <Route path="/calendar/addJob" element={<AddJob />} />
+            <Route path="/calendar/updateJob/:id" element={<UpdateJob />} />
+            <Route path="/calendar/storyJob/:id" element={<StoryJob />} />
+            <Route path="/calendar/showJob/:id" element={<ShowJob />} />
+            <Route path="/employee" element={<Employee />} />
+            <Route path="/employee/addEmployee" element={<AddEmployee />} />
+            <Route path="/employee/searchEmployee" element={<SearchEmployee />} />
+            <Route path="/specialization" element={<Specialization />} />
+            <Route path="/specialization/addSpecialization" element={<AddSpecialization />} />
+            <Route path="/experience" element={<Experience />} />
+            <Route path="/experience/addExperience" element={<AddExperience />} />
+          </Routes>
+        </>
+      ) : (
         <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/calendar" element={<Home />}></Route>
-          <Route path="/calendar/addJob" element={<AddJob />}></Route>
-          <Route path="/calendar/updateJob/:id" element={<UpdateJob />}></Route>
-          <Route path="/calendar/storyJob/:id" element={<StoryJob />}></Route>
-          <Route path="/calendar/showJob/:id" element={<ShowJob />}></Route>
-          <Route path="/employee" element={<Employee />}></Route>
-          <Route path="/employee/addEmployee" element={<AddEmployee />}></Route>
-          <Route path="/employee/searchEmployee" element={<SearchEmployee />}></Route>
-          <Route path="/specialization" element={<Specialization />}></Route>
-          <Route path="/specialization/addSpecialization" element={<AddSpecialization />}></Route>
-          <Route path="/experience" element={<Experience />}></Route>
-          <Route path="/experience/addExperience" element={<AddExperience />}></Route>
-          <Route path="/registration" element={<Registration />}></Route>
+          <Route path="/registration" element={<Registration />} />
+          <Route path="/*" element={<Login />} />
         </Routes>
-      </BrowserRouter>
-    </>
+      )}
+    </BrowserRouter>
   );
 }
 export default Router

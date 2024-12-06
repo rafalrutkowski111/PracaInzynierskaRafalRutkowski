@@ -15,7 +15,7 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import * as dayjs from 'dayjs'
 import Alert from '@mui/material/Alert';
-
+import { useNavigate } from "react-router-dom";
 const MainCompontent = styled.div`
 width: 30%;
     margin-left: 40%;
@@ -54,6 +54,8 @@ const Login = () => {
     const [hiddenAlert, setHiddenAlert] = useState(true);
 
     var usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
+
+    const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleLoginElement = () => {
@@ -312,7 +314,7 @@ const Login = () => {
                             type="submit"
                             id="button"
                             value="Rejestracja"
-                            onClick={() => window.location.pathname = '/inzRafalRutkowski/registration'}
+                            onClick={() => navigate("/registration")}
                         />
                     </ButtonWithoutBorderWrapper>
                 </CenterContainer>
