@@ -10,6 +10,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Summary = (props) => {
 
@@ -782,12 +783,13 @@ const SummaryViewEmployee = (props) => {
 }
 
 const ConfirmAdd = (props) => {
+    const navigate = useNavigate()
     return (
         <Modal
             aria-labelledby="modal-title"
             aria-describedby="modal-desc"
             open={props.modalOpenConfirmAdd}
-            onClose={() => window.location.pathname = '/inzRafalRutkowski/'}
+            onClose={() => navigate("/")}
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
             <Sheet
@@ -819,7 +821,7 @@ const ConfirmAdd = (props) => {
                         type="submit"
                         id="button"
                         value="Potwierdź"
-                        onClick={() => window.location.pathname = '/inzRafalRutkowski/'}
+                        onClick={() => navigate("/")}
                     />
                 </props.ButtonContainer >
             </Sheet>

@@ -58,6 +58,8 @@ const AddEmployee = () => {
 
     const userId = sessionStorage.getItem("userId");
 
+    const navigate = useNavigate();
+
     console.log("dataExperience")
     console.log(dataListSpecializationAndExperience)
 
@@ -76,7 +78,7 @@ const AddEmployee = () => {
     }, [])
 
     const back = () => {
-        window.location.pathname = '/inzRafalRutkowski/Employee';
+        navigate(-1)
     }
     const add = () => {
 

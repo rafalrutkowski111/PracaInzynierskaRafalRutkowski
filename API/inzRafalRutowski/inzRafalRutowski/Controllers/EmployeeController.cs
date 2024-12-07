@@ -15,7 +15,9 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        //sprawdzic gdzie sie pisze changeCos a gdzie handleCos
+        // w routerze dodać path="*" (nie przy logowaniu bo tam mamy) i zrobić obsługę dla błędnej strony
+        // jak sie loguje to długo widizmy okno z logowaniem sms(dlugo wykonuje sie endpoint i widizmy okno)
+        // sprawdzic gdzie sie pisze changeCos a gdzie handleCos
         // koło hasła w rejestracji dac ikonke po ktorej wcisnieciu bedziemy widzieli z czego ma sie skladac(jakas podpowiedz np wyskoczy okno,
         // albo pod spodem tekst jak ma wygladac ktory znika po ponownym wcisnieciu)
         // useNavigate do nawigowania między trasami z poziomu kodu
@@ -87,6 +89,7 @@ namespace inzRafalRutowski.Controllers
         //projekce. Jeszcze do przemyślenia.
 
         // testowanie React
+        // refaktoryzacja javascryptu na typescrypt
 
 
 

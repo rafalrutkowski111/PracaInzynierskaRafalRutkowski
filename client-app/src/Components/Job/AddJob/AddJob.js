@@ -14,6 +14,7 @@ import JobAddress from "../Job/JobAddress";
 import { Estimate, MoneyPerHour } from "../Job/Estimate";
 import Investor from "../Job/Investor";
 import { regexZIP } from "../../Regex/Regex";
+import { useNavigate } from "react-router-dom";
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;
@@ -117,6 +118,8 @@ const AddJob = () => {
     const userId = sessionStorage.getItem("userId");
     const rgxZIP = regexZIP;
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         axios.get('http://localhost:5000/api/Specialization', { params: { EmployerId: userId } })
             .then(response => {
@@ -134,8 +137,7 @@ const AddJob = () => {
                 setEmployer(employer)
             })
     }, [])
-    const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
-
+    const back = () => { navigate(-1) }
     const next = () => {
         if (title === "") {
             setErrorTitleLabel("Pole nie może być puste");

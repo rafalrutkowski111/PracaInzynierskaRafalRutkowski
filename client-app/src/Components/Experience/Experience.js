@@ -11,6 +11,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import { ConfirmModal } from '../Global/ConfirmModal';
 import Typography from '@mui/joy/Typography';
+import { useNavigate } from 'react-router-dom';
 
 const ButtonContainer = styled.div`
     widht:60%;
@@ -70,6 +71,8 @@ const Experience = () => {
 
     const userId = sessionStorage.getItem("userId");
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         axios.get('http://localhost:5000/api/experience', { params: { employerId: userId } })
             .then(response => {
@@ -78,7 +81,7 @@ const Experience = () => {
     }, [])
 
     const addNewExperience = () => {
-        window.location.pathname = '/inzRafalRutkowski/experience/addExperience';
+        navigate("/experience/addExperience")
     }
 
     const editExperiance = (name, value, experianceId) => {

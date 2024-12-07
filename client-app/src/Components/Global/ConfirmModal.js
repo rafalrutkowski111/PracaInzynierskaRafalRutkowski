@@ -4,6 +4,7 @@ import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
+import { useNavigate } from 'react-router-dom';
 
 const ButtonContainer = styled.div`
     widht:60%;
@@ -18,13 +19,14 @@ const ButtonBootstrap = styled(Form.Control)`
 `
 
 const ConfirmModal = (props) => {
+    const navigate = useNavigate();
     return (
         <Modal
             aria-labelledby="modal-title"
             aria-describedby="modal-desc"
             open={props.confirmModal}
             onClose={props.changePath === true ?
-                () => { props.setConfirmModal(false); window.location.pathname = '/inzRafalRutkowski' + props.endPath }
+                () => { props.setConfirmModal(false); navigate(props.endPath)}
                 : () => { props.setConfirmModal(false) }}
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
@@ -58,7 +60,7 @@ const ConfirmModal = (props) => {
                         id="button"
                         value="Potwierdź"
                         onClick={props.changePath === true ?
-                            () => { props.setConfirmModal(false); window.location.pathname = '/inzRafalRutkowski' + props.endPath }
+                            () => { props.setConfirmModal(false); navigate(props.endPath) }
                             : () => { props.setConfirmModal(false) }
                         }
                     />

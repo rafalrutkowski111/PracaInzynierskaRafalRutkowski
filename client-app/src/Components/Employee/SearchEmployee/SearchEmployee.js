@@ -11,6 +11,7 @@ import TextField from '@mui/material/TextField';
 import { AddEmployeeModal } from './AddEmployeeModal';
 import { ConfirmModal } from '../../Global/ConfirmModal';
 import Typography from '@mui/joy/Typography';
+import { useNavigate } from 'react-router-dom';
 
 const H1Container = styled.h1`
     margin-top: 1%;
@@ -54,6 +55,8 @@ const SearchEmployee = () => {
 
     const userId = sessionStorage.getItem("userId");
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         axios.get('http://localhost:5000/api/Employee/getEmployeesWithoutEmployer')
             .then(response => {
@@ -69,7 +72,7 @@ const SearchEmployee = () => {
         setModalOpen(true)
     }
     const back = () => {
-        window.location.pathname = '/inzRafalRutkowski/Employee'
+        navigate(-1)
     }
 
     const renderAddEmployeeModal = () => {

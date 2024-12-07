@@ -14,6 +14,7 @@ import Typography from '@mui/joy/Typography';
 import * as dayjs from 'dayjs'
 import { ConfirmModal } from '../../Global/ConfirmModal';
 import { EditEmployee } from './EditModal';
+import { useNavigate } from 'react-router-dom';
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -109,6 +110,8 @@ const Employee = () => {
 
   const userId = sessionStorage.getItem("userId");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     axios.get('http://localhost:5000/api/Employee/getEmployees', { params: { employerId: userId } })
       .then(response => {
@@ -117,10 +120,10 @@ const Employee = () => {
   }, [])
 
   const addNewEmployee = () => {
-    window.location.pathname = '/inzRafalRutkowski/employee/addEmployee';
+    navigate("/employee/addEmployee")
   }
   const searchNewEmployee = () => {
-    window.location.pathname = '/inzRafalRutkowski/employee/searchEmployee';
+    navigate("/employee/searchEmployee")
   }
 
   const removeEmployee = (id, item) => {

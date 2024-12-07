@@ -11,6 +11,7 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import { Button } from "@mui/material";
 import Typography from '@mui/joy/Typography';
 import { ConfirmModal } from '../Global/ConfirmModal';
+import { useNavigate } from "react-router-dom";
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -64,6 +65,8 @@ const Specialization = () => {
 
   const userId = sessionStorage.getItem("userId");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     axios.get('http://localhost:5000/api/specialization', { params: { employerId: userId } })
       .then(response => {
@@ -73,7 +76,7 @@ const Specialization = () => {
   }, [])
 
   const addNewSpecialization = () => {
-    window.location.pathname = '/inzRafalRutkowski/specialization/addSpecialization';
+    navigate("/specialization/addSpecialization")
   }
 
   const changeName = (e, itemChange) => {

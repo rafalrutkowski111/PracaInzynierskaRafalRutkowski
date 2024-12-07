@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import JobDate from "../Job/JobDates";
 import JobTitle from "../Job/JobTitle";
@@ -122,6 +122,8 @@ const UpdateJob = () => {
     const userId = sessionStorage.getItem("userId");
     const params = useParams()
     const rgxZIP = regexZIP;
+
+    const navigate = useNavigate();
 
     //console.log("dataEmployeeWithSpecialization")
     //console.log(dataEmployeeWithSpecialization)
@@ -249,7 +251,7 @@ const UpdateJob = () => {
             })
     }, [])
 
-    const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
+    const back = () => { navigate(-1) }
 
     const next = () => {
 

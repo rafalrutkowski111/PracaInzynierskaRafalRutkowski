@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as dayjs from 'dayjs'
 import Form from 'react-bootstrap/Form';
 import Typography from '@mui/joy/Typography';
@@ -85,6 +85,8 @@ const ShowJob = () => {
     const params = useParams()
     const userId = sessionStorage.getItem("userId");
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         axios.get('http://localhost:5000/api/Job/GetJob', { params: { jobId: params.id } })
             .then(response => {
@@ -151,7 +153,7 @@ const ShowJob = () => {
     }, [])
 
 
-    const back = () => { window.location.pathname = '/inzRafalRutkowski/'; }
+    const back = () => { navigate(-1) }
 
     const renderModalShowEstimate = () => {
         return (

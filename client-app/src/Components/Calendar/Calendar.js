@@ -9,6 +9,7 @@ import "./Calendar.css"
 import React, { useCallback } from 'react'
 import calendarComponent from './CalendarComponent';
 import * as dayjs from 'dayjs'
+import { useNavigate } from 'react-router-dom';
 
 const ButtonContainer = styled.div`
   widht:60%;
@@ -51,6 +52,8 @@ const MyCalendar = () => {
   const [eventData, setEventData] = useState();
   const localizer = momentLocalizer(moment)
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     axios.get('http://localhost:5000/api/Job', { params: { userId: userId } })
       .then(response => {
@@ -59,16 +62,17 @@ const MyCalendar = () => {
   }, [])
 
   const addNewJob = () => {
-    window.location.pathname = '/inzRafalRutkowski/calendar/addJob';
+    navigate("/calendar/addJob")
   }
   const updateJob = () => {
-    window.location.pathname = '/inzRafalRutkowski/calendar/updateJob/' + eventData.id;
-  }
+    navigate("/calendar/updateJob/" + eventData.id)
+  } // mozna ucyc  navigate("/calendar/updateJob", { state: { id: eventData.id } });,
+    // a potem odebrac infromacje za pomoca useLocation, wtedy nie ma w sciezce id
   const storyJob = () => {
-    window.location.pathname = '/inzRafalRutkowski/calendar/storyJob/' + eventData.id;
+    navigate("/calendar/storyJob/" + eventData.id)
   }
   const showJob = () => {
-    window.location.pathname = '/inzRafalRutkowski/calendar/showJob/' + eventData.id;
+    navigate("/calendar/showJob/" + eventData.id)
   }
 
   const eventSelect = useCallback(

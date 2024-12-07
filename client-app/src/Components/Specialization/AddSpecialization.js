@@ -5,6 +5,7 @@ import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/joy/Typography';
 import { ConfirmModal } from '../Global/ConfirmModal';
+import { useNavigate } from 'react-router-dom';
 
 const TextFieldContainer = styled.div`
     display: flex;
@@ -56,6 +57,8 @@ const AddSpecialization = () => {
 
     const userId = sessionStorage.getItem("userId");
 
+    const navigate = useNavigate();
+
     const add = () => {
         if (name === "") {
             setErrorNameLabel("Nazwa nie może być pusta");
@@ -70,7 +73,7 @@ const AddSpecialization = () => {
             )
     }
     const back = () => {
-        window.location.pathname = '/inzRafalRutkowski/Specialization'
+        navigate(-1)
     }
     const changeName = (e) => {
         setName(e);

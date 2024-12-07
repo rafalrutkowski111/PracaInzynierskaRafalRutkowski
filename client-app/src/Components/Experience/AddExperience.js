@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { ConfirmModal } from '../Global/ConfirmModal';
 import Typography from '@mui/joy/Typography';
+import { useNavigate } from 'react-router-dom';
 
 const TextFieldContainer = styled.div`
     display: flex;
@@ -56,6 +57,8 @@ const AddExperience = () => {
 
     const userId = sessionStorage.getItem("userId");
 
+    const navigate = useNavigate();
+
     const add = () => {
         if (name === "") {
             setErrorNameLabel("Nazwa nie może być pusta");
@@ -74,7 +77,7 @@ const AddExperience = () => {
             )
     }
     const back = () => {
-        window.location.pathname = '/inzRafalRutkowski/Experience'
+        navigate(-1)
     }
 
     const changeValue = (e) => {
