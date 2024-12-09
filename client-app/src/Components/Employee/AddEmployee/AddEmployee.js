@@ -6,7 +6,7 @@ import { AddName, AddSurname } from "../Employee/NameAndSurname";
 import { AddSpecializationAndExperiance, ButtonSpecializationAndExperiance, ViewSpecializationAndExperiance } from "../Employee/SpecializationAndExperiane";
 import { ConfirmModal } from "../../Global/ConfirmModal";
 import Typography from '@mui/joy/Typography';
-
+import { useNavigate } from 'react-router-dom';
 
 const ButtonBootstrapContainer = styled.div`
     widht:60%;

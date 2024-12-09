@@ -17,6 +17,7 @@ import AddEmployee from "../../Components/Employee/AddEmployee/AddEmployee";
 import Employee from "../../Components/Employee/ViewEmployee/Employee";
 import ShowJob from "../../Components/Job/ShowJob/ShowJob";
 import Registration from "../../Components/Registration/Registration";
+import ErrorPage from "../../Components/Error/ErrorPage";
 
 const Router = () => {
 
@@ -58,6 +59,7 @@ const Router = () => {
         <>
           <Toolbar userName={userName} />
           <Routes>
+            <Route path="*" element={<ErrorPage />} />
             <Route path="/" element={<Home />} />
             <Route path="/calendar" element={<Home />} />
             <Route path="/calendar/addJob" element={<AddJob />} />

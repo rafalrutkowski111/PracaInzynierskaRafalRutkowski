@@ -15,7 +15,6 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // w routerze dodać path="*" (nie przy logowaniu bo tam mamy) i zrobić obsługę dla błędnej strony
         // jak sie loguje to długo widizmy okno z logowaniem sms(dlugo wykonuje sie endpoint i widizmy okno)
         // sprawdzic gdzie sie pisze changeCos a gdzie handleCos
         // koło hasła w rejestracji dac ikonke po ktorej wcisnieciu bedziemy widzieli z czego ma sie skladac(jakas podpowiedz np wyskoczy okno,
