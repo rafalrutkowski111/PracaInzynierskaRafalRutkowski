@@ -282,6 +282,9 @@ const Registration = () => {
         setErrorConfirmPassword(false)
     }
 
+    const InfoPassword = () =>{
+        console.log("dodać info o hasle")
+    }
     return (
         <MainCompontent>
             <Row>
@@ -342,7 +345,14 @@ const Registration = () => {
                             </CenterContainer>
                             <CenterContainer>
                                 <RowThird>
-                                    <Label htmlFor="password">Hasło</Label>
+                                    <ButtonWithoutBorderWrapper>
+                                        <ButtonWithoutBorder
+                                            type="submit"
+                                            id="button"
+                                            value="Hasło"
+                                            onClick={() => { InfoPassword() }}
+                                        />
+                                    </ButtonWithoutBorderWrapper>
                                     <CenterContainer>
                                         <FormControl sx={{ width: '25ch' }} variant="outlined">
                                             <OutlinedInput
