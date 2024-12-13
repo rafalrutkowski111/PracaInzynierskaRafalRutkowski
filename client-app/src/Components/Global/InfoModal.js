@@ -29,8 +29,8 @@ const InfomModal = (props) => {
             <Sheet
                 variant="outlined"
                 sx={{
-                    width: props.width, // 450
-                    maxWidth: props.maxWidth, // 600
+                    width: props.widthInfomModal, // 450
+                    maxWidth: props.maxWidthInfomModal, // 600
                     borderRadius: 'md',
                     p: 3,
                     boxShadow: 'lg',
@@ -45,10 +45,10 @@ const InfomModal = (props) => {
                     fontWeight="lg"
                     mb={3}
                 >
-                    {props.nameTitle}
+                    {props.nameTitleInfomModal}
                 </Typography>
 
-                {props.message}
+                {props.messageInfomModal}
 
                 < ButtonContainer >
                     <ButtonBootstrap

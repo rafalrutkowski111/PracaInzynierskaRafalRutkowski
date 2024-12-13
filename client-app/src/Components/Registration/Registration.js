@@ -21,6 +21,7 @@ import { ButtonWithoutBorder, ButtonWithoutBorderWrapper } from '../Styled/Style
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useNavigate } from "react-router-dom";
+import { InfomModal } from '../Global/InfoModal';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -68,6 +69,7 @@ const Registration = () => {
     const [firstStep, setFirstStep] = useState(true)
     const [hideErrorFirstStep, setHideErrorFirstStep] = useState(true)
     const [hideErrorSecoundStep, setHideErrorSecoundStep] = useState(true)
+    const [infoModal, setInfoModal] = useState(false)
 
     const navigate = useNavigate();
 
@@ -85,6 +87,10 @@ const Registration = () => {
 
     const steps = ['Podstawowe informacje', 'Dodatkowe informacje'];
 
+    const widthInfomModal = 550
+    const maxWidthInfomModal = 800
+    const nameTitleInfomModal = "Wymagania dotyczące hasła"
+    const messageInfomModal = "Twoje hasło powinno zawierać co najmniej jedną małą literę, jedną wielką literę, jedną cyfrę oraz jeden znak specjalny, taki jak np. !, @, # czy $. Dodatkowo musi mieć przynajmniej 8 znaków długości."
     useEffect(() => {
         if (hideErrorFirstStep === false) {
             changeEmail(email)
@@ -282,236 +288,246 @@ const Registration = () => {
         setErrorConfirmPassword(false)
     }
 
-    const InfoPassword = () =>{
-        console.log("dodać info o hasle")
+    const RenderInfoModal = () => {
+        return (
+            <InfomModal infoModal={infoModal} setInfoModal={setInfoModal} widthInfomModal={widthInfomModal}
+                maxWidthInfomModal={maxWidthInfomModal} nameTitleInfomModal={nameTitleInfomModal} 
+                messageInfomModal={messageInfomModal}
+            />  
+        )
     }
     return (
-        <MainCompontent>
-            <Row>
-                <Box sx={{ width: '100%' }}>
-                    <CenterContainer>
-                        <Stepper activeStep={activeStep}>
-                            {steps.map((label, index) => {
-                                const stepProps = {};
-                                const labelProps = {};
-                                return (
-                                    <Step key={label} {...stepProps}>
-                                        <StepLabel {...labelProps}>{label}</StepLabel>
-                                    </Step>
-                                );
-                            })}
-                        </Stepper>
-                    </CenterContainer>
-                    <React.Fragment>
-                        <RowSecound></RowSecound>
+        <>
+            {RenderInfoModal()}
 
-                        <Container hidden={hideBaisicInformation}>
-                            <CenterContainer >
-                                <RowThird >
-                                    <Label htmlFor="login">Login</Label>
-                                    <CenterContainer>
-                                        <TextField
-                                            error={errorLogin}
-                                            onChange={e => changeLogin(e.target.value)}
-                                            sx={{ width: '25ch' }}
-                                            size="small"
-                                            variant="outlined" />
-                                    </CenterContainer>
-                                    <CenterContainer>
-                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                            {errorLoginLabel}
-                                        </FormHelperText>
-                                    </CenterContainer>
-                                </RowThird>
-                            </CenterContainer>
-                            <CenterContainer>
-                                <RowThird>
-                                    <Label htmlFor="email">Email</Label>
-                                    <CenterContainer>
-                                        <TextField
-                                            error={errorEmail}
-                                            value={email}
-                                            onChange={e => changeEmail(e.target.value)}
-                                            sx={{ width: '25ch' }}
-                                            size="small"
-                                            variant="outlined" />
-                                    </CenterContainer>
-                                    <CenterContainer>
-                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                            {errorEmailLabel}
-                                        </FormHelperText>
-                                    </CenterContainer>
-                                </RowThird>
-                            </CenterContainer>
-                            <CenterContainer>
-                                <RowThird>
-                                    <ButtonWithoutBorderWrapper>
-                                        <ButtonWithoutBorder
-                                            type="submit"
-                                            id="button"
-                                            value="Hasło"
-                                            onClick={() => { InfoPassword() }}
-                                        />
-                                    </ButtonWithoutBorderWrapper>
-                                    <CenterContainer>
-                                        <FormControl sx={{ width: '25ch' }} variant="outlined">
-                                            <OutlinedInput
-                                                error={errorPassword}
-                                                value={password}
-                                                onChange={e => changePassword(e.target.value)}
-                                                size="small"
-                                                id="outlined-adornment-password"
-                                                type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={handleClickShowPassword}
-                                                            edge="end"
-                                                        >
-                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
-                                            />
-                                            <CenterContainer>
-                                                <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                                    {errorPasswordLabel}
-                                                </FormHelperText>
-                                            </CenterContainer>
-                                            <ButtonWithoutBorderWrapper>
-                                                <ButtonWithoutBorder
-                                                    type="submit"
-                                                    id="button"
-                                                    value="Generuj"
-                                                    onClick={() => { password_generator(15) }}
-                                                />
-                                            </ButtonWithoutBorderWrapper>
-                                        </FormControl>
-                                    </CenterContainer>
-                                </RowThird>
-                            </CenterContainer>
-
-
-
-                            <CenterContainer>
-                                <RowThird>
-                                    <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
-                                    <CenterContainer>
-                                        <FormControl sx={{ width: '25ch' }} variant="outlined">
-                                            <OutlinedInput
-                                                error={errorConfirmPassword}
-                                                value={confirmPassword}
-                                                onChange={e => changeConfirmPassword(e.target.value)}
-                                                size="small"
-                                                id="outlined-adornment-password"
-                                                type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={handleClickShowPassword}
-                                                            edge="end"
-                                                        >
-                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
-                                            />
-                                            <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                                {errorConfirmPasswordLabel}
-                                            </FormHelperText>
-                                        </FormControl>
-                                    </CenterContainer>
-                                </RowThird>
-                            </CenterContainer>
-                        </Container>
-
-                        <Container hidden={hideOpcionalInformation}>
-                            <CenterContainer>
-                                <RowThird>
-                                    <Label htmlFor="test">Imie</Label>
-                                    <CenterContainer>
-                                        <TextField
-                                            value={name}
-                                            onChange={e => setName(e.target.value)}
-                                            sx={{ width: '25ch' }}
-                                            size="small"
-                                            variant="outlined" />
-                                    </CenterContainer>
-                                </RowThird>
-                            </CenterContainer>
-                            <CenterContainer>
-                                <RowThird>
-                                    <Label htmlFor="test">Nazwisko</Label>
-                                    <CenterContainer>
-                                        <TextField
-                                            value={surname}
-                                            onChange={e => setSurname(e.target.value)}
-                                            sx={{ width: '25ch' }}
-                                            size="small"
-                                            variant="outlined" />
-                                    </CenterContainer>
-                                </RowThird>
-                            </CenterContainer>
-                            <CenterContainer>
-                                <RowThird>
-                                    <Label htmlFor="test">Telefon</Label>
-                                    <CenterContainer>
-                                        <TextField
-                                            value={phone}
-                                            error={errorPhone}
-                                            onChange={e => {
-                                                changePhone(e.target.value)
-                                            }}
-                                            sx={{ width: '25ch' }}
-                                            size="small"
-                                            variant="outlined" />
-                                    </CenterContainer>
-                                    <CenterContainer>
-                                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                                            {errorPhoneLabel}
-                                        </FormHelperText>
-                                    </CenterContainer>
-                                </RowThird>
-                            </CenterContainer>
-                            <CenterContainer>
-                                <FormControlLabel control={
-                                    <Checkbox
-                                        defaultChecked
-                                        value={smsCheckbox}
-                                        onChange={handleCheckboxSMS}
-                                    />
-                                } label="Logowanie sms" />
-                            </CenterContainer>
-                        </Container>
+            <MainCompontent>
+                <Row>
+                    <Box sx={{ width: '100%' }}>
                         <CenterContainer>
-                            <RowThird>
-                                <CenterContainer>
-                                    <ButtonWrapper>
-                                        <Button
-                                            type="submit"
-                                            id="button"
-                                            value="Dalej"
-                                            onClick={firstStep === true ? () => nextFirstStep() : () => nextSecoundStep()}
-                                        />
-                                    </ButtonWrapper>
-                                    <ColumnSpace></ColumnSpace>
-                                    <ButtonWrapper>
-                                        <Button
-                                            type="submit"
-                                            id="button"
-                                            value="Powrót"
-                                            onClick={activeStep !== 0 ? handleBack : () => navigate(-1)}
-                                        />
-                                    </ButtonWrapper>
-                                </CenterContainer>
-                            </RowThird>
+                            <Stepper activeStep={activeStep}>
+                                {steps.map((label, index) => {
+                                    const stepProps = {};
+                                    const labelProps = {};
+                                    return (
+                                        <Step key={label} {...stepProps}>
+                                            <StepLabel {...labelProps}>{label}</StepLabel>
+                                        </Step>
+                                    );
+                                })}
+                            </Stepper>
                         </CenterContainer>
-                    </React.Fragment>
-                </Box>
-            </Row>
-        </MainCompontent>
+                        <React.Fragment>
+                            <RowSecound></RowSecound>
+
+                            <Container hidden={hideBaisicInformation}>
+                                <CenterContainer >
+                                    <RowThird >
+                                        <Label htmlFor="login">Login</Label>
+                                        <CenterContainer>
+                                            <TextField
+                                                error={errorLogin}
+                                                onChange={e => changeLogin(e.target.value)}
+                                                sx={{ width: '25ch' }}
+                                                size="small"
+                                                variant="outlined" />
+                                        </CenterContainer>
+                                        <CenterContainer>
+                                            <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                                {errorLoginLabel}
+                                            </FormHelperText>
+                                        </CenterContainer>
+                                    </RowThird>
+                                </CenterContainer>
+                                <CenterContainer>
+                                    <RowThird>
+                                        <Label htmlFor="email">Email</Label>
+                                        <CenterContainer>
+                                            <TextField
+                                                error={errorEmail}
+                                                value={email}
+                                                onChange={e => changeEmail(e.target.value)}
+                                                sx={{ width: '25ch' }}
+                                                size="small"
+                                                variant="outlined" />
+                                        </CenterContainer>
+                                        <CenterContainer>
+                                            <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                                {errorEmailLabel}
+                                            </FormHelperText>
+                                        </CenterContainer>
+                                    </RowThird>
+                                </CenterContainer>
+                                <CenterContainer>
+                                    <RowThird>
+                                        <ButtonWithoutBorderWrapper>
+                                            <ButtonWithoutBorder
+                                                type="submit"
+                                                id="button"
+                                                value="Hasło"
+                                                onClick={() => { setInfoModal(true) }}
+                                            />
+                                        </ButtonWithoutBorderWrapper>
+                                        <CenterContainer>
+                                            <FormControl sx={{ width: '25ch' }} variant="outlined">
+                                                <OutlinedInput
+                                                    error={errorPassword}
+                                                    value={password}
+                                                    onChange={e => changePassword(e.target.value)}
+                                                    size="small"
+                                                    id="outlined-adornment-password"
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                aria-label="toggle password visibility"
+                                                                onClick={handleClickShowPassword}
+                                                                edge="end"
+                                                            >
+                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                />
+                                                <CenterContainer>
+                                                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                                        {errorPasswordLabel}
+                                                    </FormHelperText>
+                                                </CenterContainer>
+                                                <ButtonWithoutBorderWrapper>
+                                                    <ButtonWithoutBorder
+                                                        type="submit"
+                                                        id="button"
+                                                        value="Generuj"
+                                                        onClick={() => { password_generator(15) }}
+                                                    />
+                                                </ButtonWithoutBorderWrapper>
+                                            </FormControl>
+                                        </CenterContainer>
+                                    </RowThird>
+                                </CenterContainer>
+
+
+
+                                <CenterContainer>
+                                    <RowThird>
+                                        <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
+                                        <CenterContainer>
+                                            <FormControl sx={{ width: '25ch' }} variant="outlined">
+                                                <OutlinedInput
+                                                    error={errorConfirmPassword}
+                                                    value={confirmPassword}
+                                                    onChange={e => changeConfirmPassword(e.target.value)}
+                                                    size="small"
+                                                    id="outlined-adornment-password"
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                aria-label="toggle password visibility"
+                                                                onClick={handleClickShowPassword}
+                                                                edge="end"
+                                                            >
+                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                />
+                                                <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                                    {errorConfirmPasswordLabel}
+                                                </FormHelperText>
+                                            </FormControl>
+                                        </CenterContainer>
+                                    </RowThird>
+                                </CenterContainer>
+                            </Container>
+
+                            <Container hidden={hideOpcionalInformation}>
+                                <CenterContainer>
+                                    <RowThird>
+                                        <Label htmlFor="test">Imie</Label>
+                                        <CenterContainer>
+                                            <TextField
+                                                value={name}
+                                                onChange={e => setName(e.target.value)}
+                                                sx={{ width: '25ch' }}
+                                                size="small"
+                                                variant="outlined" />
+                                        </CenterContainer>
+                                    </RowThird>
+                                </CenterContainer>
+                                <CenterContainer>
+                                    <RowThird>
+                                        <Label htmlFor="test">Nazwisko</Label>
+                                        <CenterContainer>
+                                            <TextField
+                                                value={surname}
+                                                onChange={e => setSurname(e.target.value)}
+                                                sx={{ width: '25ch' }}
+                                                size="small"
+                                                variant="outlined" />
+                                        </CenterContainer>
+                                    </RowThird>
+                                </CenterContainer>
+                                <CenterContainer>
+                                    <RowThird>
+                                        <Label htmlFor="test">Telefon</Label>
+                                        <CenterContainer>
+                                            <TextField
+                                                value={phone}
+                                                error={errorPhone}
+                                                onChange={e => {
+                                                    changePhone(e.target.value)
+                                                }}
+                                                sx={{ width: '25ch' }}
+                                                size="small"
+                                                variant="outlined" />
+                                        </CenterContainer>
+                                        <CenterContainer>
+                                            <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                                                {errorPhoneLabel}
+                                            </FormHelperText>
+                                        </CenterContainer>
+                                    </RowThird>
+                                </CenterContainer>
+                                <CenterContainer>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={smsCheckbox}
+                                            onChange={handleCheckboxSMS}
+                                        />
+                                    } label="Logowanie sms" />
+                                </CenterContainer>
+                            </Container>
+                            <CenterContainer>
+                                <RowThird>
+                                    <CenterContainer>
+                                        <ButtonWrapper>
+                                            <Button
+                                                type="submit"
+                                                id="button"
+                                                value="Dalej"
+                                                onClick={firstStep === true ? () => nextFirstStep() : () => nextSecoundStep()}
+                                            />
+                                        </ButtonWrapper>
+                                        <ColumnSpace></ColumnSpace>
+                                        <ButtonWrapper>
+                                            <Button
+                                                type="submit"
+                                                id="button"
+                                                value="Powrót"
+                                                onClick={activeStep !== 0 ? handleBack : () => navigate(-1)}
+                                            />
+                                        </ButtonWrapper>
+                                    </CenterContainer>
+                                </RowThird>
+                            </CenterContainer>
+                        </React.Fragment>
+                    </Box>
+                </Row>
+            </MainCompontent>
+        </>
+
     )
 }
 
