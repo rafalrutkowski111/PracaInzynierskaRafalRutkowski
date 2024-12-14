@@ -105,8 +105,8 @@ const AddExperience = () => {
 
     const renderConfirmModal = () => {
         return (
-            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message}
-                nameTitle={"Poziom doświadczenia"} changePath={true} endPath={"/Experience"} />
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} messageConfirmModal={message}
+            nameTitleConfirmModal={"Poziom doświadczenia"} changePath={true} endPath={"/Experience"} />
         )
     }
 

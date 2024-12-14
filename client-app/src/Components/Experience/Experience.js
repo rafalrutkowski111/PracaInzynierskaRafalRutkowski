@@ -167,7 +167,7 @@ const Experience = () => {
 
     const renderConfirmModal = () => {
         return (
-            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message} nameTitle={"Poziom doświadczenia"} />
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} messageConfirmModal={message} nameTitleConfirmModal={"Poziom doświadczenia"} />
         )
     }
 

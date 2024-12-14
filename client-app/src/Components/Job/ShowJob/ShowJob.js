@@ -184,7 +184,7 @@ const ShowJob = () => {
 
     const renderConfirmModal = () => {
         return (
-            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message} nameTitle={"Kosztorys"} />
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} messageConfirmModal={message} nameTitleConfirmModal={"Kosztorys"} />
         )
     }
     return (

@@ -451,8 +451,8 @@ const Employee = () => {
   }
   const renderConfirmModal = () => {
     return (
-      <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message}
-        nameTitle={"Pracownik " + nameEmployee} />
+      <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} messageConfirmModal={message}
+      nameTitleConfirmModal={"Pracownik " + nameEmployee} />
     )
   }
   const renderEditEmployeeModal = () => {

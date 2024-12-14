@@ -89,8 +89,8 @@ const AddSpecialization = () => {
 
     const renderConfirmModal = () => {
         return (
-            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message}
-                nameTitle={"Specjalizacja"} changePath={true} endPath={"/Specialization"} />
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} messageConfirmModal={message}
+            nameTitleConfirmModal={"Specjalizacja"} changePath={true} endPath={"/Specialization"} />
         )
     }
 

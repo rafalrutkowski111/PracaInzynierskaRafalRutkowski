@@ -146,8 +146,8 @@ const AddEmployee = () => {
     }
     const renderConfirmModal = () => {
         return (
-            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message}
-                nameTitle={"Poziom doświadczenia"} changePath={true} endPath={"/Employee"} />
+            <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} messageConfirmModal={message}
+            nameTitleConfirmModal={"Poziom doświadczenia"} changePath={true} endPath={"/Employee"} />
         )
     }
 

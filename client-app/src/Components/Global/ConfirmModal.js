@@ -49,10 +49,10 @@ const ConfirmModal = (props) => {
                     fontWeight="lg"
                     mb={3}
                 >
-                    {props.nameTitle}
+                    {props.nameTitleConfirmModal}
                 </Typography>
 
-                {props.message}
+                {props.messageConfirmModal}
 
                 < ButtonContainer >
                     <ButtonBootstrap

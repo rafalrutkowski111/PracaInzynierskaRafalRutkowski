@@ -136,7 +136,7 @@ const Specialization = () => {
 
   const renderConfirmModal = () => {
     return (
-      <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} message={message} nameTitle={"Specjalizacja"} />
+      <ConfirmModal setConfirmModal={setConfirmModal} confirmModal={confirmModal} messageConfirmModal={message} nameTitleConfirmModal={"Specjalizacja"} />
     )
   }
 

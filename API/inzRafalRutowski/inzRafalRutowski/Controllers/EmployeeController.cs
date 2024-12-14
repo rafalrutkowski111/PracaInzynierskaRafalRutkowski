@@ -17,13 +17,7 @@ namespace inzRafalRutowski.Controllers
     {
         // jak sie loguje to długo widizmy okno z logowaniem sms(dlugo wykonuje sie endpoint i widizmy okno)
         // sprawdzic gdzie sie pisze changeCos a gdzie handleCos
-        // koło hasła w rejestracji dac ikonke po ktorej wcisnieciu bedziemy widzieli z czego ma sie skladac(jakas podpowiedz np wyskoczy okno,
-        // albo pod spodem tekst jak ma wygladac ktory znika po ponownym wcisnieciu)
-        // useNavigate do nawigowania między trasami z poziomu kodu
-        // zaznaczyć czy chcemy 2-etapowe logowanie za pomoca sms
-        // jezeli tak to telefon jest obowiązkoy żeby podać
         // dodać walidajce po stronie fronta do tego
-        // dodać do emplercontroller rejestracje (login i email muszą być unikatowe)
 
         // zaktualizować rejestracne o dodanie potwierdzenia rejestracji przez emaila
 
