@@ -88,7 +88,6 @@ const Login = () => {
             })
             .then(response => {
                 setPhone(response.data.employer.phone)
-                handleLoginElement()
 
                 if (response.data.employer.smsMFA) {
                     const date = new Date();
@@ -102,6 +101,7 @@ const Login = () => {
                         window.location.pathname = '/inzRafalRutkowski/';
                     }
                     else {
+                        handleLoginElement()
                         smsAuthSend(response.data.employer.phone)
                         setSms(true)
                     }

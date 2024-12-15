@@ -15,7 +15,6 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // jak sie loguje to długo widizmy okno z logowaniem sms(dlugo wykonuje sie endpoint i widizmy okno)
         // sprawdzic gdzie sie pisze changeCos a gdzie handleCos
         // dodać walidajce po stronie fronta do tego
 
