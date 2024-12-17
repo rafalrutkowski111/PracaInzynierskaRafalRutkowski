@@ -15,6 +15,9 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // //builder.Services.AddFluentEmail(builder.Configuration);  zrobic to w program.cs
+        //zrobić auth controller i przeneisc tam wiekszosc sndpointow z employerController
+        // zrobić przy logowaniu sprawdzanie czy ma sie potwierdzony email, i jak nie to dac opcje zeby wysłać potwierdenie na maila
         // sprawdzic gdzie sie pisze changeCos a gdzie handleCos
         // dodać walidajce po stronie fronta do tego
 

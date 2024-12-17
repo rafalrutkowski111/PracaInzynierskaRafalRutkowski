@@ -1,6 +1,7 @@
 using AutoMapper;
 using inzRafalRutowski.Controllers;
 using inzRafalRutowski.Data;
+using inzRafalRutowski.Extensions;
 using inzRafalRutowski.Identity;
 using inzRafalRutowski.Mapper;
 using inzRafalRutowski.Service;
@@ -12,12 +13,21 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Authentication
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+
+
+//dotnet tool install -g Rnwood.Smtp4dev  --- intalacja
+//smtp4dev --urls=http://127.0.0.1:5001   --- uruchomienie na innnym porcie
+
+builder.Services
+    .AddFluentEmail("default-sender@example.com") // Domyœlny nadawca
+    .AddSmtpSender("localhost", 25); // smtp4dev lub inny serwer SMTP
 
 builder.Services.AddAuthentication(options=>
 {
@@ -54,6 +64,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 //});
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddTransient<ITestApiService, TestApiService>();
 builder.Services.AddTransient<IEmployerService, EmployerService>();
 builder.Services.AddTransient<IExperienceService, ExperienceService>();

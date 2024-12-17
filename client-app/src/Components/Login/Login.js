@@ -53,7 +53,7 @@ const Login = () => {
     const [attemptSMSMessage, setAttemptSMSMessage] = useState("");
     const [hiddenAlert, setHiddenAlert] = useState(true);
 
-    var usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
+    const usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
 
     const navigate = useNavigate();
 
