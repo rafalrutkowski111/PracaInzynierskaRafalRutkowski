@@ -18,8 +18,10 @@ namespace inzRafalRutowski.Controllers
         // //builder.Services.AddFluentEmail(builder.Configuration);  zrobic to w program.cs
         //zrobić auth controller i przeneisc tam wiekszosc sndpointow z employerController
         // zrobić przy logowaniu sprawdzanie czy ma sie potwierdzony email, i jak nie to dac opcje zeby wysłać potwierdenie na maila
-        // sprawdzic gdzie sie pisze changeCos a gdzie handleCos
+        // sprawdzic gdzie sie pisze changeCos a gdzie hasndleCos
         // dodać walidajce po stronie fronta do tego
+
+        // zmienic w employeer  id z inta na guid
 
         // zaktualizować rejestracne o dodanie potwierdzenia rejestracji przez emaila
 

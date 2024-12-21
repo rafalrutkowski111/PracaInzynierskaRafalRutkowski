@@ -18,7 +18,7 @@ namespace inzRafalRutowski.Controllers
         [HttpGet("singleemail")]
         public async Task<IActionResult> SendSingleEmail()
         {
-            EmailMetadata emailMetadata = new("konto6510@gmail.com",
+            EmailMetadata emailMetadata = new("test@gmail.com",
                 "Fluent test email",
                 "This is a test email from FluentEmial.");
             await _emailService.Send(emailMetadata);

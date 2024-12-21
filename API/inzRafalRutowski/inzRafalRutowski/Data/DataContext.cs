@@ -20,6 +20,8 @@ namespace inzRafalRutowski.Data
         public DbSet<EmployeeSpecializationAnother> EmployeeSpecializationAnothers { get; set; }
         public DbSet<ExperianceAnother> ExperianceAnothers { get; set; }
         public DbSet<SpecializationAnother> SpecializationAnothers { get; set; }
+        public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

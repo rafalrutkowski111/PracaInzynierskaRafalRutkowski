@@ -66,6 +66,19 @@ namespace inzRafalRutowski.Controllers
             employer.Email = email;
 
             _context.Employers.Add(employer);
+
+
+            DateTime utcNow = DateTime.UtcNow;
+            var varificationToken = new EmailVerificationToken
+            {
+                Id = Guid.NewGuid(),
+                EmployerId = employer.Id,
+                CreatedOnUtc = utcNow,
+                ExpiresOnUtc = utcNow.AddMinutes(15),
+            };
+
+            _context.EmailVerificationTokens.Add(varificationToken);
+
             _context.SaveChanges();
 
 
