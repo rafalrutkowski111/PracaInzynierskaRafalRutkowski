@@ -18,9 +18,25 @@ namespace inzRafalRutowski.Controllers
         [HttpGet("singleemail")]
         public async Task<IActionResult> SendSingleEmail()
         {
+            //EmailMetadata emailMetadata = new("test@gmail.com",
+            //    "Fluent test email",
+            //    "This is a test email from FluentEmial.");
+            //await _emailService.Send(emailMetadata);
+
+            DateTime utcNow = DateTime.UtcNow;
+            var varificationToken = new EmailVerificationToken
+            {
+                Id = Guid.NewGuid(),
+                EmployerId = 1,
+                CreatedOnUtc = utcNow,
+                ExpiresOnUtc = utcNow.AddMinutes(15),
+            };
+
+            string verificationLink = _emailService.CreateVerificationToken(varificationToken);
+
             EmailMetadata emailMetadata = new("test@gmail.com",
-                "Fluent test email",
-                "This is a test email from FluentEmial.");
+            "Email verification for inzRafalRutkowski",
+            $"To verifity your email address <a href='{verificationLink}'>click here </a>");
             await _emailService.Send(emailMetadata);
 
             return Ok();

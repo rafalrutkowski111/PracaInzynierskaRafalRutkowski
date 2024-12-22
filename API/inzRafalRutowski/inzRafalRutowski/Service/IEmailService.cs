@@ -5,5 +5,6 @@ namespace inzRafalRutowski.Service
     public interface IEmailService
     {
         Task Send(EmailMetadata emailMetadata);
+        string CreateVerificationToken(EmailVerificationToken emailVerificationToken);
     }
 }

@@ -11,6 +11,7 @@ namespace inzRafalRutowski.Class
 {
     public class JobFunctions
     {
+        // katalog zbędy, jak zrobie dla jobController serwis tam przeniose te metody
         public Tuple<List<EmployeeSpecializationListDTO>, List<string>> AddEmployeeWithoutEmployerToList(
             ListJobSpecialization e, JobSpecializationEmployeeDTO jobSpecializationEmployee,
             List<EmployeeSpecializationListDTO> employeeDTOListInList, DataContext _context,

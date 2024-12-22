@@ -1,7 +1,13 @@
 ﻿using inzRafalRutowski.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static System.Net.WebRequestMethods;
 
+//
+// Instalacja i uruchomienie SMTP4DEV(zmieniamy port na 5001 bo domyślnie jest 5000 a już go używamy w aplikacji):
+// dotnet tool install -g Rnwood.Smtp4dev
+// smtp4dev --urls=http://127.0.0.1:5001
+//
 namespace inzRafalRutowski.Controllers
 {
     // inne podejście, chciałem je przetestować. Normalnie można w contexcie to zrobić w metodzie OnModelCreating

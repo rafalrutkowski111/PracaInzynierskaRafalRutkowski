@@ -15,6 +15,7 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // zmienić metody w kontrolerach i serwisach na asynchroniczne, bo to poprawna praktyka przyspieszajaca dzialanie metod
         // //builder.Services.AddFluentEmail(builder.Configuration);  zrobic to w program.cs
         //zrobić auth controller i przeneisc tam wiekszosc sndpointow z employerController
         // zrobić przy logowaniu sprawdzanie czy ma sie potwierdzony email, i jak nie to dac opcje zeby wysłać potwierdenie na maila
@@ -34,7 +35,7 @@ namespace inzRafalRutowski.Controllers
         // w rejestracji imie, nazwisko i telefon jest opcjonalne, ale jak będziemy chcieli stworzyć prace to zrobić okno z prozba o
         // uzupelnienie danych jesli ich nie ma, albo dac na hidden i przy dalej odpalic, wtedy nie bedzie trzeba state nowego robic
 
-
+        // dodac repozytoria (z metodami async)(moze nie dla wszystkich modeli, ale tak zeby potem latwo dane zmocowac do testow)
 
         //refaktoryzacja (zacznijmy od specjalizacji)
 
@@ -87,6 +88,13 @@ namespace inzRafalRutowski.Controllers
 
         // testowanie React
         // refaktoryzacja javascryptu na typescrypt
+
+        // zrobic skrypt wstrzykujący dane do db
+
+        // mikroserwisy
+        // docker
+        // Azure
+        // Kubernetes
 
 
 

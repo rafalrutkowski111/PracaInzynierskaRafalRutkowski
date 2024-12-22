@@ -21,12 +21,15 @@ namespace inzRafalRutowski.Controllers
         private readonly IEmployerService _service;
         private readonly IJwtService _jwtService;
         private readonly DataContext _context;
+        private readonly IEmailService _emailService;
 
-        public EmployerController( IEmployerService service, IJwtService jwtService, DataContext context) : base(jwtService)
+        public EmployerController( IEmployerService service, IJwtService jwtService,
+            DataContext context, IEmailService emailService) : base(jwtService)
         {
             _service = service;
             _jwtService = jwtService;
             _context = context;
+            _emailService = emailService;
         }
 
         [AllowAnonymous]
@@ -81,10 +84,23 @@ namespace inzRafalRutowski.Controllers
 
             _context.SaveChanges();
 
+            string verificationLink = "";
 
+            EmailMetadata emailMetadata = new("test@gmail.com",
+            "Email verification for inzRafalRutkowski",
+            $"To verifity your email address <a href='{verificationLink}'>click here </a>");
+            _emailService.Send(emailMetadata);
 
             return Ok();
         }
+
+        [AllowAnonymous]
+        [HttpGet("VerifityEmailEmployer")]
+        public IActionResult VerifityEmailEmployer(Guid token)
+        {
+            return Ok();
+        }
+
         [AllowAnonymous]
         [HttpGet("login")]
         public IActionResult Login([FromQuery] string login, [FromQuery] string password, [FromQuery] bool cookies)

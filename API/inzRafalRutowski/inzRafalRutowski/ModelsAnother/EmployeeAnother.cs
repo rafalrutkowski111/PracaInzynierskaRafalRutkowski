@@ -1,5 +1,7 @@
 ﻿namespace inzRafalRutowski.ModelsAnother
 {
+    // ten katalog ma reprezentowac modele które mogłby być umiejszczone w innym serwisie i tylko do nas wstrzykiwane.
+    // w przyszłości może tak zrobie
     public class EmployeeAnother
     {
         public Guid Id { get; set; }
