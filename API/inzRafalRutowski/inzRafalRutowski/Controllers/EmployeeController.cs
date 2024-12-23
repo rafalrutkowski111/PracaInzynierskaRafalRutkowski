@@ -15,6 +15,9 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        //w employercontroller VerifityEmailEmployer przeniesc do emailcontroller
+        //VerifityEmail w email serwis poprawic
+        // zrefaktoryzować CreateVerificationToken w email service potem zeby Employer był przekazywany jako parametr i była to metoda dla wielu cntrollerów
         // zmienić metody w kontrolerach i serwisach na asynchroniczne, bo to poprawna praktyka przyspieszajaca dzialanie metod
         // //builder.Services.AddFluentEmail(builder.Configuration);  zrobic to w program.cs
         //zrobić auth controller i przeneisc tam wiekszosc sndpointow z employerController

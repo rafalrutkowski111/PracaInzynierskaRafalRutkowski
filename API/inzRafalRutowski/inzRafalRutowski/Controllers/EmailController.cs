@@ -1,6 +1,8 @@
-﻿using inzRafalRutowski.Models;
+﻿using inzRafalRutowski.Data;
+using inzRafalRutowski.Models;
 using inzRafalRutowski.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace inzRafalRutowski.Controllers
 {
@@ -9,10 +11,12 @@ namespace inzRafalRutowski.Controllers
     public class EmailController : Controller
     {
         private readonly IEmailService _emailService;
+        private readonly DataContext _context;
 
-        public EmailController(IEmailService emailService)
+        public EmailController(IEmailService emailService, DataContext dataContext)
         {
             _emailService = emailService;
+            _context = dataContext;
         }
 
         [HttpGet("singleemail")]
@@ -27,10 +31,12 @@ namespace inzRafalRutowski.Controllers
             var varificationToken = new EmailVerificationToken
             {
                 Id = Guid.NewGuid(),
-                EmployerId = 1,
+                EmployerId = 5,
                 CreatedOnUtc = utcNow,
                 ExpiresOnUtc = utcNow.AddMinutes(15),
             };
+            _context.EmailVerificationTokens.Add(varificationToken);
+            await _context.SaveChangesAsync();
 
             string verificationLink = _emailService.CreateVerificationToken(varificationToken);
 
