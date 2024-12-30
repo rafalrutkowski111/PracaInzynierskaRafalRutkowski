@@ -6,6 +6,10 @@ namespace inzRafalRutowski.Service
     {
         Task Send(EmailMetadata emailMetadata);
         string CreateVerificationToken(EmailVerificationToken emailVerificationToken);
-        Task<bool> VerifityEmail(Guid tokenId);
+        Task<bool> VerifityEmail<TModel>(Guid tokenId,
+            Func<EmailVerificationToken, int> modelIdSelector,
+            Func<TModel, bool> propertySelector,
+            Action<TModel> updateAction
+            ) where TModel : class;
     }
 }

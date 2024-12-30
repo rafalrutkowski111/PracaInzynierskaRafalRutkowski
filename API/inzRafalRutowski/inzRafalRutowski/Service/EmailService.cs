@@ -30,21 +30,27 @@ namespace inzRafalRutowski.Service
             if (emailVerificationToken == null)
                 throw new ArgumentNullException(nameof(emailVerificationToken), "EmailVerificationToken cannot be null");
 
-            return $"http://localhost:5000/api/Employer/VerifityEmailEmployer?token={emailVerificationToken.Id}";
+            return $"http://localhost:5000/api/Employer/VerifityEmailEmployer?tokenId={emailVerificationToken.Id}";
         }
 
-        // mogłym użyć refleksji aby przesłać wartość "Employer" i odczytać jego właściwość dla tokena przez co verifity email mógłby być używany wielokrotnie
-        // refleksja raczej nie jest rekomendowana bo ma niższą wydajność i lepiej byłoby dać tą metode do employera, ale przetestujemy refleksje tu
-        public async Task<bool> VerifityEmail(Guid tokenId)
+        // stworzona metoda generyczna na potrzeby przetestowania metod generycznych
+        public async Task<bool> VerifityEmail<TModel>(
+            Guid tokenId,
+            Func<EmailVerificationToken, int> modelIdSelector,
+            Func<TModel, bool> propertySelector,
+            Action<TModel> updateAction   // Action to tez funkcja ale moze miec 1 parametr i nie zwraca nic
+            ) where TModel : class
         {
             var token = await _context.EmailVerificationTokens.FirstOrDefaultAsync(x => Equals(x.Id, tokenId));
             if (token == null) return false;
 
-            var employer = await _context.Employers.FirstAsync( x=> Equals(x.Id, token.EmployerId));
+            var modelId = modelIdSelector(token);
+            var model = await _context.Set<TModel>().FindAsync(modelId);
+            if (model == null) return false;
 
-            if (token.ExpiresOnUtc < DateTime.UtcNow || employer.ConfirmEmail) return false;
+            if (token.ExpiresOnUtc < DateTime.UtcNow || propertySelector(model)) return false;
 
-            token.Employer.ConfirmEmail = true;
+            updateAction(model);
 
             _context.EmailVerificationTokens.Remove(token);
 

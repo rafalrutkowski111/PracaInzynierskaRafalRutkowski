@@ -96,9 +96,16 @@ namespace inzRafalRutowski.Controllers
 
         [AllowAnonymous]
         [HttpGet("VerifityEmailEmployer")]
-        public async Task<IActionResult> VerifityEmailEmployer([FromQuery] Guid token)
+        public async Task<IActionResult> VerifityEmailEmployer([FromQuery] Guid tokenId)
         {
-            bool result = await _emailService.VerifityEmail(token);
+            // Wywołanie typu generycznego
+            bool result = await _emailService.VerifityEmail<Employer>(
+                tokenId,
+                token => token.EmployerId,
+                employer => employer.ConfirmEmail,
+                employer => employer.ConfirmEmail = true
+
+                );
             return result ? Ok() : BadRequest("Verification token expired");
         }
 
