@@ -16,6 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import * as dayjs from 'dayjs'
 import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
+import ConfirmEmail from './ConfirmEmail';
 const MainCompontent = styled.div`
 width: 30%;
     margin-left: 40%;
@@ -52,6 +53,7 @@ const Login = () => {
     const [attemptSMSCount, setAttemptSMSCount] = useState(5);
     const [attemptSMSMessage, setAttemptSMSMessage] = useState("");
     const [hiddenAlert, setHiddenAlert] = useState(true);
+    const [confirmEmailModal, setConfirmEmailModal] = useState(false);
 
     const usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
 
@@ -120,6 +122,10 @@ const Login = () => {
 
 
             }).catch((error) => {
+                if (error.response.data.confirmEmail === false) {
+                    setConfirmEmailModal(true)
+                    return
+                }
                 setErrorHelperText("Nieprawidłowe dane")
                 setLoginError(true)
             })
@@ -178,148 +184,151 @@ const Login = () => {
     }
 
     return (
-        <MainCompontent>
-            <RowSpace hidden={showLoginElements}></RowSpace>
-            <Row hidden={showLoginElements}>
-                <Label htmlFor="login">Kod z telefonu</Label>
-                <CenterContainer>
-                    <TextField
-                        error={loginErrorMFA}
-                        sx={{ m: 0, width: '25ch' }}
-                        onChange={(e) => { setCodeSms(e.target.value) }}
-                        size="small"
-                        variant="outlined" />
-                </CenterContainer>
-                <CenterContainer>
-                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                        {errorHelperTextSMS}
-                    </FormHelperText>
-                </CenterContainer>
-                <CenterContainer>
-                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                        {attemptSMSMessage}
-                    </FormHelperText>
-                </CenterContainer>
-            </Row>
-            <Row hidden={hiddenAlert}>
-                <CenterContainer>
-                    <Alert severity="info">Wysłano pownonie kod sms</Alert>
-                </CenterContainer>
-            </Row>
-            <Row hidden={showLoginElements}>
-                <CenterContainer>
-                    <FormControlLabel control={
-                        <Checkbox defaultChecked onChange={handleBoxChecked} />} label="Zapisz na 30 dni" />
-                </CenterContainer>
-            </Row>
-
-            <SecoundRowSpace hidden={showLoginElements}></SecoundRowSpace>
-            <Row hidden={showLoginElements}>
-
-                <ButtonWithoutBorderWrapper>
-                    <ButtonWithoutBorder
-                        type="submit"
-                        id="button"
-                        value="Wyślij ponownie"
-                        onClick={smsAuthSend(phone)}
-                    />
-                </ButtonWithoutBorderWrapper>
-
-            </Row>
-
-
-
-
-            <Row hidden={hideLoginElements}>
-                <Label htmlFor="login">Login</Label>
-                <CenterContainer>
-                    <TextField
-                        error={loginError}
-                        sx={{ m: 0, width: '25ch' }} // m sktór od marginesu
-                        onChange={(e) => { setLogin(e.target.value) }}
-                        size="small"
-                        id="outlined-basic"
-                        variant="outlined" />
-                </CenterContainer>
-            </Row>
-            <Row hidden={hideLoginElements}>
-                <Label htmlFor="password">Hasło</Label>
-                <CenterContainer>
-                    <FormControl sx={{ width: '25ch' }} variant="outlined">
-                        <OutlinedInput
-                            error={loginError}
-                            onChange={(e) => { setPassword(e.target.value) }}
+        <>
+            <ConfirmEmail setConfirmEmailModal={setConfirmEmailModal} confirmEmailModal={confirmEmailModal} />
+            <MainCompontent>
+                <RowSpace hidden={showLoginElements}></RowSpace>
+                <Row hidden={showLoginElements}>
+                    <Label htmlFor="login">Kod z telefonu</Label>
+                    <CenterContainer>
+                        <TextField
+                            error={loginErrorMFA}
+                            sx={{ m: 0, width: '25ch' }}
+                            onChange={(e) => { setCodeSms(e.target.value) }}
                             size="small"
-                            id="outlined-adornment-password"
-                            type={showPassword ? 'text' : 'password'}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
+                            variant="outlined" />
+                    </CenterContainer>
+                    <CenterContainer>
+                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                            {errorHelperTextSMS}
+                        </FormHelperText>
+                    </CenterContainer>
+                    <CenterContainer>
+                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                            {attemptSMSMessage}
+                        </FormHelperText>
+                    </CenterContainer>
+                </Row>
+                <Row hidden={hiddenAlert}>
+                    <CenterContainer>
+                        <Alert severity="info">Wysłano pownonie kod sms</Alert>
+                    </CenterContainer>
+                </Row>
+                <Row hidden={showLoginElements}>
+                    <CenterContainer>
+                        <FormControlLabel control={
+                            <Checkbox defaultChecked onChange={handleBoxChecked} />} label="Zapisz na 30 dni" />
+                    </CenterContainer>
+                </Row>
 
-                    </FormControl>
+                <SecoundRowSpace hidden={showLoginElements}></SecoundRowSpace>
+                <Row hidden={showLoginElements}>
 
-                </CenterContainer>
-                <CenterContainer>
-                    <FormHelperText id="component-error-text" sx={{ color: "red" }}>
-                        {errorHelperText}
-                    </FormHelperText>
-                </CenterContainer>
-
-            </Row>
-            <Row>
-                <CenterContainer>
-                    <ButtonWrapper>
-                        <Button
-                            type="submit"
-                            id="button"
-                            value="Zaloguj"
-                            onClick={!sms ? () => doLogin() : () => doCodeSms()}
-                        />
-                    </ButtonWrapper>
-                    <ColumnSpace hidden={showLoginElements}></ColumnSpace>
-                    <ButtonWrapper hidden={showLoginElements}>
-                        <Button
-                            type="submit"
-                            value="Powrót"
-                            onClick={() => back()}
-                        />
-                    </ButtonWrapper>
-
-                </CenterContainer>
-
-            </Row>
-            <RowSpace></RowSpace>
-            <Row hidden={hideLoginElements}>
-                <CenterContainer>
                     <ButtonWithoutBorderWrapper>
                         <ButtonWithoutBorder
                             type="submit"
                             id="button"
-                            value="Przypomnij"
-                        //onClick={}
+                            value="Wyślij ponownie"
+                            onClick={smsAuthSend(phone)}
                         />
                     </ButtonWithoutBorderWrapper>
-                    <ColumnSpace></ColumnSpace>
-                    <ButtonWithoutBorderWrapper>
-                        <ButtonWithoutBorder
-                            type="submit"
-                            id="button"
-                            value="Rejestracja"
-                            onClick={() => navigate("/registration")}
-                        />
-                    </ButtonWithoutBorderWrapper>
-                </CenterContainer>
-            </Row>
-        </MainCompontent>
+
+                </Row>
+
+
+
+
+                <Row hidden={hideLoginElements}>
+                    <Label htmlFor="login">Login</Label>
+                    <CenterContainer>
+                        <TextField
+                            error={loginError}
+                            sx={{ m: 0, width: '25ch' }} // m sktór od marginesu
+                            onChange={(e) => { setLogin(e.target.value) }}
+                            size="small"
+                            id="outlined-basic"
+                            variant="outlined" />
+                    </CenterContainer>
+                </Row>
+                <Row hidden={hideLoginElements}>
+                    <Label htmlFor="password">Hasło</Label>
+                    <CenterContainer>
+                        <FormControl sx={{ width: '25ch' }} variant="outlined">
+                            <OutlinedInput
+                                error={loginError}
+                                onChange={(e) => { setPassword(e.target.value) }}
+                                size="small"
+                                id="outlined-adornment-password"
+                                type={showPassword ? 'text' : 'password'}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                            />
+
+                        </FormControl>
+
+                    </CenterContainer>
+                    <CenterContainer>
+                        <FormHelperText id="component-error-text" sx={{ color: "red" }}>
+                            {errorHelperText}
+                        </FormHelperText>
+                    </CenterContainer>
+
+                </Row>
+                <Row>
+                    <CenterContainer>
+                        <ButtonWrapper>
+                            <Button
+                                type="submit"
+                                id="button"
+                                value="Zaloguj"
+                                onClick={!sms ? () => doLogin() : () => doCodeSms()}
+                            />
+                        </ButtonWrapper>
+                        <ColumnSpace hidden={showLoginElements}></ColumnSpace>
+                        <ButtonWrapper hidden={showLoginElements}>
+                            <Button
+                                type="submit"
+                                value="Powrót"
+                                onClick={() => back()}
+                            />
+                        </ButtonWrapper>
+
+                    </CenterContainer>
+
+                </Row>
+                <RowSpace></RowSpace>
+                <Row hidden={hideLoginElements}>
+                    <CenterContainer>
+                        <ButtonWithoutBorderWrapper>
+                            <ButtonWithoutBorder
+                                type="submit"
+                                id="button"
+                                value="Przypomnij"
+                            //onClick={}
+                            />
+                        </ButtonWithoutBorderWrapper>
+                        <ColumnSpace></ColumnSpace>
+                        <ButtonWithoutBorderWrapper>
+                            <ButtonWithoutBorder
+                                type="submit"
+                                id="button"
+                                value="Rejestracja"
+                                onClick={() => navigate("/registration")}
+                            />
+                        </ButtonWithoutBorderWrapper>
+                    </CenterContainer>
+                </Row>
+            </MainCompontent>
+        </>
     )
 }
 

@@ -15,6 +15,13 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        //zrobić folder aReadme gdzie będą 2 pliki tekstowe gdzie w jednym będą informacje co musze jeszze zrobić(przeniesc to)
+        // a w drugim co użyłem i gdzie np metod generycznych w EmailService w metodzie VerifityEmail
+
+        //zrobić jakiś plik readme w react gdzie będe miał zapisane skróty kawiszowe i skruty szablonów 
+
+        //jeżli chodzi o czystość kodu preferowane jest zamiast "== null" "is null" można zrefaktoryzować
+
         //w employercontroller VerifityEmailEmployer przeniesc do emailcontroller
         // zrefaktoryzować CreateVerificationToken w email service potem zeby Employer był przekazywany jako parametr i była to metoda dla wielu cntrollerów
         // zmienić metody w kontrolerach i serwisach na asynchroniczne, bo to poprawna praktyka przyspieszajaca dzialanie metod

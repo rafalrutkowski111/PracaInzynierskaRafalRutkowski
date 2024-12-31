@@ -2,21 +2,9 @@ import Sheet from '@mui/joy/Sheet';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
-import styled from 'styled-components';
-import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
+import { Button, CenterContainer, ButtonWrapper } from '../Styled/StyledGlobal';
 
-const ButtonContainer = styled.div`
-    widht:60%;
-    margin-top: 2%;
-    display: flex;
-    justify-content: center;
-`
-const ButtonBootstrap = styled(Form.Control)`
-    width:150px;
-    background-color: green;
-    color: white;
-`
 
 const ConfirmModal = (props) => {
     const navigate = useNavigate();
@@ -54,8 +42,9 @@ const ConfirmModal = (props) => {
 
                 {props.messageConfirmModal}
 
-                < ButtonContainer >
-                    <ButtonBootstrap
+                < CenterContainer >
+                <ButtonWrapper>
+                    <Button
                         type="submit"
                         id="button"
                         value="Potwierdź"
@@ -64,7 +53,8 @@ const ConfirmModal = (props) => {
                             : () => { props.setConfirmModal(false) }
                         }
                     />
-                </ButtonContainer >
+                    </ButtonWrapper>
+                </CenterContainer >
             </Sheet>
         </Modal >
     )

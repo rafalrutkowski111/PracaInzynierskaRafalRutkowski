@@ -8,6 +8,7 @@ using static System.Net.WebRequestMethods;
 // dotnet tool install -g Rnwood.Smtp4dev
 // smtp4dev --urls=http://127.0.0.1:5001
 //
+// zainstalowac w react potem rozszeżenie "ES7 React/Redux/GraphQL/React-Native snippets" dzięki ktorym będizemy mogli robić szablony np rafce tworzy komponent funkcyjny
 namespace inzRafalRutowski.Controllers
 {
     // inne podejście, chciałem je przetestować. Normalnie można w contexcie to zrobić w metodzie OnModelCreating

@@ -118,7 +118,16 @@ namespace inzRafalRutowski.Controllers
             {
                 employer = _service.Login(login, password);
                 if (employer == null) { return BadRequest(new { message = "Nieprawidłowe dane logowania" }); }
-            } 
+            }
+
+            if (!employer.ConfirmEmail)
+            {
+                return Unauthorized(new
+                {
+                    message = "Twój adres e-mail nie został potwierdzony. Potwierdź go, aby uzyskać dostęp.",
+                    confirmEmail = false
+                });
+            }
 
             var builder = _service.Hush(employer);
             
