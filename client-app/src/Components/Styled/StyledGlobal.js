@@ -7,8 +7,13 @@ const Button = styled(Form.Control)`
     color: black; 
     border: 1px solid #cccccc;
 `
+const ButtonFullWidth = styled(Form.Control)`
+    background-color: white; 
+    color: black; 
+    border: 1px solid #cccccc;
+`
 const ButtonWrapper = styled.div`
-  &:hover ${Button} {
+  &:hover ${Button}, &:hover ${ButtonFullWidth} {
     background-color: #e6e6e6;
     color: black;
     border: 1px solid #adadad;
@@ -36,7 +41,10 @@ const Label = styled(Form.Label)`
     display: flex;
     justify-content: center;
 `
-export { CenterContainer }
-export { Button, ButtonWrapper };
-export { ButtonWithoutBorder, ButtonWithoutBorderWrapper };
-export { Label };
+const ButtonSpacer = styled.div`
+  width: 5px;
+`
+export { 
+  CenterContainer, Button, ButtonWrapper, ButtonFullWidth, Label,
+  ButtonWithoutBorder, ButtonWithoutBorderWrapper, ButtonSpacer
+}

@@ -32,8 +32,8 @@ const Row = styled.div`
 width: 60%;
     margin-bottom: 3%;
 `
-const ColumnSpace = styled.div`
-width: 20px;
+const ButtonSpacer = styled.div`
+  width: 16px;
 `
 const RowSecound = styled.div`
     margin-bottom: 15%;
@@ -510,7 +510,7 @@ const Registration = () => {
                                                 onClick={firstStep === true ? () => nextFirstStep() : () => nextSecoundStep()}
                                             />
                                         </ButtonWrapper>
-                                        <ColumnSpace></ColumnSpace>
+                                        <ButtonSpacer/>
                                         <ButtonWrapper>
                                             <Button
                                                 type="submit"
