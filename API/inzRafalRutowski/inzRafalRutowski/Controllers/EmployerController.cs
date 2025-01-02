@@ -18,15 +18,15 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployerController : HomeController
     {
-        private readonly IEmployerService _service;
+        private readonly IEmployerService _emoyerService;
         private readonly IJwtService _jwtService;
         private readonly DataContext _context;
         private readonly IEmailService _emailService;
 
-        public EmployerController( IEmployerService service, IJwtService jwtService,
+        public EmployerController( IEmployerService employerService, IJwtService jwtService,
             DataContext context, IEmailService emailService) : base(jwtService)
         {
-            _service = service;
+            _emoyerService = employerService;
             _jwtService = jwtService;
             _context = context;
             _emailService = emailService;
@@ -106,30 +106,31 @@ namespace inzRafalRutowski.Controllers
                 employer => employer.ConfirmEmail = true
 
                 );
-            return result ? Ok() : BadRequest("Verification token expired");
+            return result ? Ok("Email został potwierdzony") : BadRequest("Verification token expired");
         }
 
         [AllowAnonymous]
         [HttpGet("login")]
         public IActionResult Login([FromQuery] string login, [FromQuery] string password, [FromQuery] bool cookies)
         {
-            var employer = _service.Login(login, password);
+            var employer = _emoyerService.Login(login, password);
             if (employer == null)
             {
-                employer = _service.Login(login, password);
+                employer = _emoyerService.Login(login, password);
                 if (employer == null) { return BadRequest(new { message = "Nieprawidłowe dane logowania" }); }
             }
-
             if (!employer.ConfirmEmail)
             {
                 return Unauthorized(new
                 {
+                    email = employer.Email,
+                    employerId = employer.Id,
                     message = "Twój adres e-mail nie został potwierdzony. Potwierdź go, aby uzyskać dostęp.",
                     confirmEmail = false
                 });
             }
 
-            var builder = _service.Hush(employer);
+            var builder = _emoyerService.Hush(employer);
             
 
             if (!cookies) return Ok(new { hash = builder.ToString(), userId = employer.Id, employer = employer });
@@ -140,21 +141,20 @@ namespace inzRafalRutowski.Controllers
             Response.Cookies.Append("jwt", jwt, new CookieOptions
             {
                 HttpOnly = true
-            });  
+            });
 
             return Ok(new { hash = builder.ToString(), userId = employer.Id, employer = employer });
         }
         [AllowAnonymous]
-        //po autentykazcji za pomoca jwt po stronie fronta usunac VeryfieLogin
         [HttpGet("veryfieLogin")]
         public IActionResult VeryfieLogin([FromQuery] int userId, [FromQuery] string hash)
         {
-            var employer = _service.VeryfieLogin(userId);
-            if (employer == null) { return BadRequest(new { message = "Id użytkownika jest niepoprawne" }); }
+            var employer = _emoyerService.VeryfieLogin(userId);
+            if (employer == null)  return BadRequest(new { message = "Id użytkownika jest niepoprawne" }); 
 
-            var builder = _service.Hush(employer);
+            var builder = _emoyerService.Hush(employer);
             if (string.Equals(builder.ToString(), hash)) return Ok();
-            return BadRequest(new {message = "Utracono token, proszę się zalogować ponownie."});
+            return Unauthorized(new {message = "Utracono token, proszę się zalogować ponownie."});
         }
 
         //pobieranie pracownika za pomocą jwt cookie
@@ -168,7 +168,7 @@ namespace inzRafalRutowski.Controllers
 
                 int employerId = int.Parse(token.Issuer);
 
-                var employer = _service.GetEmployerById(employerId);
+                var employer = _emoyerService.GetEmployerById(employerId);
 
                 return Ok(new
                 {
@@ -197,7 +197,7 @@ namespace inzRafalRutowski.Controllers
 
             int employerId = int.Parse(token.Issuer);
 
-            var employer = _service.GetEmployerById(employerId);
+            var employer = _emoyerService.GetEmployerById(employerId);
 
             employer.IgnoreMFA = thisDayWith30Days;
             _context.SaveChanges();

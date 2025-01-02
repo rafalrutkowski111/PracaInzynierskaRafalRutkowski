@@ -16,7 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import * as dayjs from 'dayjs'
 import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
-import ConfirmEmail from './ConfirmEmail';
+import ConfirmEmailModal from './ConfirmEmailModal';
 const MainCompontent = styled.div`
 width: 30%;
     margin-left: 40%;
@@ -54,6 +54,10 @@ const Login = () => {
     const [attemptSMSMessage, setAttemptSMSMessage] = useState("");
     const [hiddenAlert, setHiddenAlert] = useState(true);
     const [confirmEmailModal, setConfirmEmailModal] = useState(false);
+    const [employerData, setEmployerData] = useState({
+        email : "",
+        employerId: 0
+    })
 
     const usernameAndPassword = "2a630649-3f17-4026-9917-f3ccc27eeb95" + ":" + "LZ/3Lzpp4UiFBQPuMfW7TA==" // to nie powinno być jawne
 
@@ -124,6 +128,11 @@ const Login = () => {
             }).catch((error) => {
                 if (error.response.data.confirmEmail === false) {
                     setConfirmEmailModal(true)
+                    setEmployerData({
+                        ...employerData,
+                        email : error.response.data.email,
+                        employerId : error.response.data.employerId,
+                    })
                     return
                 }
                 setErrorHelperText("Nieprawidłowe dane")
@@ -183,9 +192,15 @@ const Login = () => {
             .catch(error => console.log('error', error));
     }
 
+    const renderConfirmEmailModal = ()=>{
+        return(
+            <ConfirmEmailModal setConfirmEmailModal={setConfirmEmailModal} confirmEmailModal={confirmEmailModal} 
+            email ={employerData.email} employerId={employerData.employerId}/>
+        )
+    }
     return (
         <>
-            <ConfirmEmail setConfirmEmailModal={setConfirmEmailModal} confirmEmailModal={confirmEmailModal} />
+            {renderConfirmEmailModal()}
             <MainCompontent>
                 <RowSpace hidden={showLoginElements}></RowSpace>
                 <Row hidden={showLoginElements}>

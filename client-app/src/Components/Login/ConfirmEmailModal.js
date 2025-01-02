@@ -6,13 +6,14 @@ import Typography from '@mui/joy/Typography';
 import { ButtonWrapper, Button, CenterContainer, ButtonFullWidth, ButtonSpacer } from '../Styled/StyledGlobal';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import axios from 'axios';
 
 
-const ConfirmEmail = (props) => {
+const ConfirmEmailModal = (props) => {
     const messages = {
         initial: [
             "Przy utworzeniu konta wysłaliśmy link na podany email z linkiem rejestracyjnym ważnym przez 15 minut.",
-            "W przypadku nieaktywnego linku można poprosić o wysłanie go ponownie przyciskiem poniżej."
+            "W przypadku nieaktywnego linku można poprosić o wysłanie go ponownie przyciskiem poniżej.",
         ],
         updated: [
             "Link został wysłany ponownie na podany adres email.",
@@ -33,7 +34,7 @@ const ConfirmEmail = (props) => {
             isButtonDisabled: true,
         });
 
-        // tu zrobić wysyłanie maila
+        axios.get('http://localhost:5000/api/Email/sendEmplyerEmailConfirm', { params: { employerId: props.employerId, email: props.email } })
 
         setTimeout(() => {
             setEmailSending({
@@ -120,4 +121,4 @@ const ConfirmEmail = (props) => {
     )
 }
 
-export default ConfirmEmail
+export default ConfirmEmailModal
