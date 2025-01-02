@@ -106,7 +106,7 @@ namespace inzRafalRutowski.Controllers
                 employer => employer.ConfirmEmail = true
 
                 );
-            return result ? Ok("Email został potwierdzony") : BadRequest("Verification token expired");
+            return result ? Redirect("http://localhost:3000/inzRafalRutkowski/") : BadRequest("Verification token expired");
         }
 
         [AllowAnonymous]
