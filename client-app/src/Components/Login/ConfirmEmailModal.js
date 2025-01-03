@@ -34,7 +34,7 @@ const ConfirmEmailModal = (props) => {
             isButtonDisabled: true,
         });
 
-        axios.get('http://localhost:5000/api/Email/sendEmplyerEmailConfirm', { params: { employerId: props.employerId, email: props.email } })
+        axios.get('http://localhost:5000/api/Email/sendEmplyerEmailConfirm', { params: { employerId: props.employerId, email: props.email, controllerAndActionName: "Employer" } })
 
         setTimeout(() => {
             setEmailSending({

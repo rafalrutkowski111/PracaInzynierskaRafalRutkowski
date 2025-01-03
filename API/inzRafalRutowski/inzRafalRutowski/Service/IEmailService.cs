@@ -5,7 +5,9 @@ namespace inzRafalRutowski.Service
     public interface IEmailService
     {
         Task Send(EmailMetadata emailMetadata);
-        string CreateVerificationToken(EmailVerificationToken emailVerificationToken);
+        string CreateVerificationToken(
+            EmailVerificationToken emailVerificationToken,
+            string controllerAndActionName);
         Task<bool> VerifityEmail<TModel>(Guid tokenId,
             Func<EmailVerificationToken, int> modelIdSelector,
             Func<TModel, bool> propertySelector,

@@ -38,7 +38,7 @@ namespace inzRafalRutowski.Controllers
 
 
         [HttpGet("sendEmplyerEmailConfirm")]
-        public async Task<IActionResult> SendEmplyerEmailConfirm(int employerId, string email)
+        public async Task<IActionResult> SendEmplyerEmailConfirm(int employerId, string email, string controllerAndActionName)
         {
 
                 DateTime utcNow = DateTime.UtcNow;
@@ -52,7 +52,7 @@ namespace inzRafalRutowski.Controllers
                 _context.EmailVerificationTokens.Add(varificationToken);
                 await _context.SaveChangesAsync();
 
-                string verificationLink = _emailService.CreateVerificationToken(varificationToken);
+                string verificationLink = _emailService.CreateVerificationToken(varificationToken, controllerAndActionName);
 
                 EmailMetadata emailMetadata = new($"{email}",
                 "Email verification for inzRafalRutkowski",

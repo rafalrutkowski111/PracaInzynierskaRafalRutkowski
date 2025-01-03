@@ -24,13 +24,12 @@ namespace inzRafalRutowski.Service
                 .SendAsync();
         }
         
-        // zrefaktoryzować potem zeby Employer był przekazywany jako parametr i była to metoda dla wielu cntrollerów
-        public string CreateVerificationToken(EmailVerificationToken emailVerificationToken)
+        public string CreateVerificationToken(EmailVerificationToken emailVerificationToken, string controllerAndActionName)
         {
             if (emailVerificationToken == null)
                 throw new ArgumentNullException(nameof(emailVerificationToken), "EmailVerificationToken cannot be null");
 
-            return $"http://localhost:5000/api/Employer/VerifityEmailEmployer?tokenId={emailVerificationToken.Id}";
+            return $"http://localhost:5000/api/{controllerAndActionName}/VerifityEmail{controllerAndActionName}?tokenId={emailVerificationToken.Id}";
         }
 
         // stworzona metoda generyczna na potrzeby przetestowania metod generycznych
