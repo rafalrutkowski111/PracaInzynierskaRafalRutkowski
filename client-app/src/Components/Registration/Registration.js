@@ -240,8 +240,6 @@ const Registration = () => {
             : doRegister()
     }
     const doRegister = () => {
-        console.log("jest")
-        return // USUNĄĆ JAK REJESTRACJA BEDZIE DZIAŁAC
         axios.get('http://localhost:5000/api/Employer/register',
             {
                 params: { login: login, password: password, email: email },

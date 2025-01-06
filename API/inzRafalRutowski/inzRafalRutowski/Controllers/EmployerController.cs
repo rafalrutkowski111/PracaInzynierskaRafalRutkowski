@@ -70,6 +70,7 @@ namespace inzRafalRutowski.Controllers
 
             _context.Employers.Add(employer);
 
+            _context.SaveChanges();
 
             DateTime utcNow = DateTime.UtcNow;
             var varificationToken = new EmailVerificationToken
