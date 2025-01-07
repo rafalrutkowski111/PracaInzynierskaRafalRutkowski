@@ -70,6 +70,7 @@ const Registration = () => {
     const [hideErrorFirstStep, setHideErrorFirstStep] = useState(true)
     const [hideErrorSecoundStep, setHideErrorSecoundStep] = useState(true)
     const [infoModal, setInfoModal] = useState(false)
+    const [anyError, setAnyError] = useState(false)
 
     const navigate = useNavigate();
 
@@ -114,7 +115,14 @@ const Registration = () => {
             changePhone(phone)
     }, [smsCheckbox])
 
-    const changePassword = (e) => {
+    useEffect(() => {
+        if (errorPassword === true || password === "" || errorEmail === true || email === ""
+            || login === "" || errorConfirmPassword === true || confirmPassword === "") {
+            setAnyError(true)
+        } else setAnyError(false)
+    }, [errorEmail, errorPassword, errorConfirmPassword])
+
+    const changePassword = React.useCallback((e) => {
         setPassword(e)
 
         if (hideErrorFirstStep === true) { }
@@ -130,9 +138,9 @@ const Registration = () => {
             setErrorPassword(false)
             setErrorPasswordLabel("")
         }
-    }
-    const changeEmail = (e) => {
+    }, [hideErrorFirstStep])
 
+    const changeEmail = React.useCallback((e) => {
         setEmail(e)
         if (hideErrorFirstStep === true) { }
         else if (e === '') {
@@ -148,7 +156,8 @@ const Registration = () => {
             setErrorEmailLabel("")
 
         }
-    }
+    }, [hideErrorFirstStep])
+
     const changePhone = (e) => {
         setPhone(e)
 
@@ -172,7 +181,7 @@ const Registration = () => {
         }
     }
 
-    const changeConfirmPassword = (e) => {
+    const changeConfirmPassword = React.useCallback((e) => {
         setConfirmPassword(e)
 
         if (hideErrorFirstStep === true) { }
@@ -185,8 +194,9 @@ const Registration = () => {
             setErrorConfirmPassword(true)
         }
 
-    }
-    const changeLogin = (e) => {
+    }, [hideErrorFirstStep])
+
+    const changeLogin = React.useCallback((e) => {
         setLogin(e)
 
         if (hideErrorFirstStep === true) { }
@@ -198,14 +208,12 @@ const Registration = () => {
             setErrorLogin(false)
             setErrorLoginLabel("")
         }
-    }
+    }, [hideErrorFirstStep])
 
     const nextFirstStep = () => {
-        if (errorPassword === true || password === "" || errorEmail === true || email === ""
-            || login === "" || errorConfirmPassword === true || confirmPassword === "") {
-            setHideErrorFirstStep(false)
-        }
-        else {
+        setHideErrorFirstStep(false)
+
+        if (!anyError) {
             axios.get('http://localhost:5000/api/Employer/checkUniqueLoginAndEmail',
                 {
                     params: { login: login, email: email },
@@ -289,9 +297,9 @@ const Registration = () => {
     const RenderInfoModal = () => {
         return (
             <InfomModal infoModal={infoModal} setInfoModal={setInfoModal} widthInfomModal={widthInfomModal}
-                maxWidthInfomModal={maxWidthInfomModal} nameTitleInfomModal={nameTitleInfomModal} 
+                maxWidthInfomModal={maxWidthInfomModal} nameTitleInfomModal={nameTitleInfomModal}
                 messageInfomModal={messageInfomModal}
-            />  
+            />
         )
     }
     return (
@@ -508,7 +516,7 @@ const Registration = () => {
                                                 onClick={firstStep === true ? () => nextFirstStep() : () => nextSecoundStep()}
                                             />
                                         </ButtonWrapper>
-                                        <ButtonSpacer/>
+                                        <ButtonSpacer />
                                         <ButtonWrapper>
                                             <Button
                                                 type="submit"
