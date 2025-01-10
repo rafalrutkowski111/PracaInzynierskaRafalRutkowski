@@ -54,17 +54,23 @@ namespace inzRafalRutowski.Controllers
         }
         [AllowAnonymous]
         [HttpGet("register")]
-        public IActionResult Register([FromQuery] string login, [FromQuery] string password, [FromQuery] string email)
+        public IActionResult Register(
+            [FromQuery] string login,
+            [FromQuery] string password,
+            [FromQuery] string email,
+            [FromQuery] string? name = "",
+            [FromQuery] string? surname = "",
+            [FromQuery] string? phone = "")
         {
             string passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
 
             Employer employer = new Employer();
 
-            employer.Name = "aa";
-            employer.Surname = "bb";
+            employer.Name = name;
+            employer.Surname = surname;
             employer.Login = login;
             employer.Password = passwordHash;
-            employer.Phone = "66";
+            employer.Phone = phone;
             employer.Admin = false;
             employer.Email = email;
 

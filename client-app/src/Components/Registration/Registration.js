@@ -250,7 +250,14 @@ const Registration = () => {
     const doRegister = () => {
         axios.get('http://localhost:5000/api/Employer/register',
             {
-                params: { login: login, password: password, email: email },
+                params: { 
+                    login: login,
+                    password: password,
+                    email: email,
+                    name: name,
+                    surname: surname,
+                    phone: phone
+                },
                 withCredentials: true
             })
     }
