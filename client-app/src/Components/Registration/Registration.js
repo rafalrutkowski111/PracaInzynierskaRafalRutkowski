@@ -92,14 +92,6 @@ const Registration = () => {
     const maxWidthInfomModal = 800
     const nameTitleInfomModal = "Wymagania dotyczące hasła"
     const messageInfomModal = "Twoje hasło powinno zawierać co najmniej jedną małą literę, jedną wielką literę, jedną cyfrę oraz jeden znak specjalny, taki jak np. !, @, # czy $. Dodatkowo musi mieć przynajmniej 8 znaków długości."
-    useEffect(() => {
-        if (hideErrorFirstStep === false) {
-            changeEmail(email)
-            changePassword(password)
-            changeConfirmPassword(confirmPassword)
-            changeLogin(login)
-        }
-    }, [hideErrorFirstStep])
 
     useEffect(() => {
         if (hideErrorSecoundStep === false)
@@ -115,12 +107,28 @@ const Registration = () => {
             changePhone(phone)
     }, [smsCheckbox])
 
-    useEffect(() => {
-        if (errorPassword === true || password === "" || errorEmail === true || email === ""
-            || login === "" || errorConfirmPassword === true || confirmPassword === "") {
-            setAnyError(true)
-        } else setAnyError(false)
-    }, [errorEmail, errorPassword, errorConfirmPassword])
+    const changePhone = (e) => {
+        setPhone(e)
+
+        if (hideErrorSecoundStep === true) { }
+        else if (e === '' && smsCheckbox === true) {
+            setErrorPhone(true)
+            setErrorPhoneLabel("Pole nie może być puste")
+        }
+        else if (e === '' && smsCheckbox === false) {
+            setErrorPhone(false)
+            setErrorPhoneLabel("")
+        }
+        else if (!rgxPhone.test(e)) {
+            setErrorPhone(true)
+            setErrorPhoneLabel("Niepoprawny numer telefonu")
+        }
+        else {
+            setErrorPhone(false)
+            setErrorPhoneLabel("")
+
+        }
+    }
 
     const changePassword = React.useCallback((e) => {
         setPassword(e)
@@ -158,29 +166,6 @@ const Registration = () => {
         }
     }, [hideErrorFirstStep])
 
-    const changePhone = (e) => {
-        setPhone(e)
-
-        if (hideErrorSecoundStep === true) { }
-        else if (e === '' && smsCheckbox === true) {
-            setErrorPhone(true)
-            setErrorPhoneLabel("Pole nie może być puste")
-        }
-        else if (e === '' && smsCheckbox === false) {
-            setErrorPhone(false)
-            setErrorPhoneLabel("")
-        }
-        else if (!rgxPhone.test(e)) {
-            setErrorPhone(true)
-            setErrorPhoneLabel("Niepoprawny numer telefonu")
-        }
-        else {
-            setErrorPhone(false)
-            setErrorPhoneLabel("")
-
-        }
-    }
-
     const changeConfirmPassword = React.useCallback((e) => {
         setConfirmPassword(e)
 
@@ -210,10 +195,68 @@ const Registration = () => {
         }
     }, [hideErrorFirstStep])
 
+    const validateFirstStepNow = () => {
+        let foundError = false
+        
+        if (email === '') {
+            foundError = true
+            setErrorEmail(true)
+            setErrorEmailLabel("Pole nie może być puste")
+        }
+        else if (!rgxEmail.test(email)) {
+            foundError = true
+            setErrorEmail(true)
+            setErrorEmailLabel("Email jest niepoprawny")
+        }
+        else {
+            setErrorEmail(false)
+            setErrorEmailLabel("")
+
+        }
+      
+        if (password === '') {
+            foundError = true
+            setErrorPassword(true)
+            setErrorPasswordLabel("Pole nie może być puste")
+        }
+        else if (!rgxPassword.test(password)) {
+            foundError = true
+            setErrorPassword(true)
+            setErrorPasswordLabel("Niepoprawny format hasła: mała ,duża iltera, liczba, znak specjalny, 8 znaków")
+        }
+        else {
+            setErrorPassword(false)
+            setErrorPasswordLabel("")
+        }
+
+        if (confirmPassword === password) {
+            setErrorConfirmPasswordLabel("")
+            setErrorConfirmPassword(false)
+        }
+        else {
+            setErrorConfirmPasswordLabel("Hasło musi być takie samo")
+            setErrorConfirmPassword(true)
+        }
+
+        if (login === '') {
+            setErrorLogin(true)
+            setErrorLoginLabel("Pole nie może być puste")
+        }
+        else {
+            setErrorLogin(false)
+            setErrorLoginLabel("")
+        }
+    
+        return foundError
+      }
+
     const nextFirstStep = () => {
+
         setHideErrorFirstStep(false)
 
-        if (!anyError) {
+        const isError = validateFirstStepNow()
+
+        if (!isError) {
             axios.get('http://localhost:5000/api/Employer/checkUniqueLoginAndEmail',
                 {
                     params: { login: login, email: email },

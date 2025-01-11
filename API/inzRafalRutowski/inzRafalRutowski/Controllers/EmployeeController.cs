@@ -15,7 +15,6 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        //teraz jak nie damy błędnych danych to nie chce przejść(jak damy same dobre) w rejestracji
         // po potwierdzeniu maila można zrobić okno informujące o tym i zrobić przekierowanie na nie w metodzie(VerifityEmailEmployer), aktualnie przekuierowuje na strone główną
 
         //zrobić w kontrolerze GetEmployer(emploter) metode do pobierania employera i uzyjmy jej potem w emailu SendEmplyerEmailConfirm(email controler)
