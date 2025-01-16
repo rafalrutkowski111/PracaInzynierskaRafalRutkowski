@@ -15,7 +15,9 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // po potwierdzeniu maila można zrobić okno informujące o tym i zrobić przekierowanie na nie w metodzie(VerifityEmailEmployer), aktualnie przekuierowuje na strone główną
+        // można zrobić buttony globalne i używać ich w logowaniu i np NavigationButton , lub taki bez ramki (w ConfirmEmail tez mozna)
+        // jak chcemy dodac prace i nie mamy odpowiednich rzeczy (np telefonu) poprosic o to
+        // w ConfirmEmail.js poprawnie mam stworzrzone style. Zrobić tak samo w rejestracji i logowaniu
 
         //zrobić w kontrolerze GetEmployer(emploter) metode do pobierania employera i uzyjmy jej potem w emailu SendEmplyerEmailConfirm(email controler)
 
@@ -106,6 +108,8 @@ namespace inzRafalRutowski.Controllers
         // docker
         // Azure
         // Kubernetes
+
+        // można zmienic strukture folderów w react na Feature-Based lub Atomic Design
 
 
 

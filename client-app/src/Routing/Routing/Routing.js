@@ -18,6 +18,7 @@ import Employee from "../../Components/Employee/ViewEmployee/Employee";
 import ShowJob from "../../Components/Job/ShowJob/ShowJob";
 import Registration from "../../Components/Registration/Registration";
 import ErrorPage from "../../Components/Error/ErrorPage";
+import ConfirmEmail from "../../Components/Registration/ConfirmEmail";
 
 const Router = () => {
 
@@ -78,6 +79,7 @@ const Router = () => {
       ) : (
         <Routes>
           <Route path="/registration" element={<Registration />} />
+          <Route path="/confirmEmail" element={<ConfirmEmail />} />
           <Route path="/*" element={<Login />} />
         </Routes>
       )}
