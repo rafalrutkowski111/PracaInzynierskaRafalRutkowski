@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components'
-import { ButtonWithoutBorder, ButtonWithoutBorderWrapper } from '../Styled/StyledGlobal';
 import { useNavigate } from 'react-router-dom';
+import { NavigationButtonWithoutBorder } from '../Global/NavigationButton';
 
 const Container = styled.div`
   display: flex;
@@ -20,16 +20,12 @@ const ConfirmEmail = () => {
 
     return (
         <Container>
-                <h2>Email został poprawnie potwierdzony.</h2>
+            <h3>Email został poprawnie potwierdzony.</h3>
 
-                <ButtonWithoutBorderWrapper>
-                    <ButtonWithoutBorder
-                        type="submit"
-                        id="button"
-                        value="Logowanie"
-                        onClick={() => navigate("/login")}
-                    />
-                </ButtonWithoutBorderWrapper>
+            <NavigationButtonWithoutBorder
+                value="Logowanie"
+                onClick={() => navigate("/login")}
+            />
         </Container>
     )
 }

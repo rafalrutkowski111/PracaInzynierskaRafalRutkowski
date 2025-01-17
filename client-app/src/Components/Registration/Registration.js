@@ -22,6 +22,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useNavigate } from "react-router-dom";
 import { InfomModal } from '../Global/InfoModal';
+import { NavigationButtonWithoutBorder } from '../Global/NavigationButton';
 
 const MainCompontent = styled.div`
 width: 30%;
@@ -70,7 +71,6 @@ const Registration = () => {
     const [hideErrorFirstStep, setHideErrorFirstStep] = useState(true)
     const [hideErrorSecoundStep, setHideErrorSecoundStep] = useState(true)
     const [infoModal, setInfoModal] = useState(false)
-    const [anyError, setAnyError] = useState(false)
 
     const navigate = useNavigate();
 
@@ -449,14 +449,10 @@ const Registration = () => {
                                                         {errorPasswordLabel}
                                                     </FormHelperText>
                                                 </CenterContainer>
-                                                <ButtonWithoutBorderWrapper>
-                                                    <ButtonWithoutBorder
-                                                        type="submit"
-                                                        id="button"
-                                                        value="Generuj"
-                                                        onClick={() => { password_generator(15) }}
-                                                    />
-                                                </ButtonWithoutBorderWrapper>
+                                                <NavigationButtonWithoutBorder
+                                                value={"Generuj"}
+                                                onClick={() => { password_generator(15) }}
+                                                />
                                             </FormControl>
                                         </CenterContainer>
                                     </RowThird>

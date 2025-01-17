@@ -17,6 +17,7 @@ import * as dayjs from 'dayjs'
 import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
 import ConfirmEmailModal from './ConfirmEmailModal';
+import { NavigationButtonWithoutBorder } from '../Global/NavigationButton';
 const MainCompontent = styled.div`
 width: 30%;
     margin-left: 40%;
@@ -323,23 +324,15 @@ const Login = () => {
                 <RowSpace></RowSpace>
                 <Row hidden={hideLoginElements}>
                     <CenterContainer>
-                        <ButtonWithoutBorderWrapper>
-                            <ButtonWithoutBorder
-                                type="submit"
-                                id="button"
-                                value="Przypomnij"
-                            //onClick={}
-                            />
-                        </ButtonWithoutBorderWrapper>
+                        <NavigationButtonWithoutBorder
+                        value={"Przypomnij"}
+                        //onClick={null}
+                        />
                         <ColumnSpace></ColumnSpace>
-                        <ButtonWithoutBorderWrapper>
-                            <ButtonWithoutBorder
-                                type="submit"
-                                id="button"
-                                value="Rejestracja"
-                                onClick={() => navigate("/registration")}
-                            />
-                        </ButtonWithoutBorderWrapper>
+                        <NavigationButtonWithoutBorder
+                        value={"Rejestracja"}
+                        onClick={() => navigate("/registration")}
+                        />
                     </CenterContainer>
                 </Row>
             </MainCompontent>
