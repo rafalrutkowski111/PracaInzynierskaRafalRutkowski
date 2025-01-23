@@ -40,10 +40,10 @@ namespace inzRafalRutowski.Controllers
             var emailUnique = true;
 
             var loginEmployer = _context.Employers.FirstOrDefault(x=> string.Equals(x.Login, login));
-            if(loginEmployer != null) loginUnique = false;
+            if(loginEmployer is not null) loginUnique = false;
 
             var emailEmployer = _context.Employers.FirstOrDefault(x => string.Equals(x.Email, email));
-            if(emailEmployer != null) emailUnique = false;
+            if(emailEmployer is not null) emailUnique = false;
 
 
             return Ok(new
@@ -121,10 +121,10 @@ namespace inzRafalRutowski.Controllers
         public IActionResult Login([FromQuery] string login, [FromQuery] string password, [FromQuery] bool cookies)
         {
             var employer = _emoyerService.Login(login, password);
-            if (employer == null)
+            if (employer is null)
             {
                 employer = _emoyerService.Login(login, password);
-                if (employer == null) { return BadRequest(new { message = "Nieprawidłowe dane logowania" }); }
+                if (employer is null) { return BadRequest(new { message = "Nieprawidłowe dane logowania" }); }
             }
             if (!employer.ConfirmEmail)
             {
@@ -157,7 +157,7 @@ namespace inzRafalRutowski.Controllers
         public IActionResult VeryfieLogin([FromQuery] int userId, [FromQuery] string hash)
         {
             var employer = _emoyerService.VeryfieLogin(userId);
-            if (employer == null)  return BadRequest(new { message = "Id użytkownika jest niepoprawne" }); 
+            if (employer is null)  return BadRequest(new { message = "Id użytkownika jest niepoprawne" }); 
 
             var builder = _emoyerService.Hush(employer);
             if (string.Equals(builder.ToString(), hash)) return Ok();

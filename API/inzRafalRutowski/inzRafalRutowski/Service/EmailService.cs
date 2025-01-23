@@ -26,7 +26,7 @@ namespace inzRafalRutowski.Service
         
         public string CreateVerificationToken(EmailVerificationToken emailVerificationToken, string controllerAndActionName)
         {
-            if (emailVerificationToken == null)
+            if (emailVerificationToken is null)
                 throw new ArgumentNullException(nameof(emailVerificationToken), "EmailVerificationToken cannot be null");
 
             return $"http://localhost:5000/api/{controllerAndActionName}/VerifityEmail{controllerAndActionName}?tokenId={emailVerificationToken.Id}";
@@ -41,11 +41,11 @@ namespace inzRafalRutowski.Service
             ) where TModel : class
         {
             var token = await _context.EmailVerificationTokens.FirstOrDefaultAsync(x => Equals(x.Id, tokenId));
-            if (token == null) return false;
+            if (token is null) return false;
 
             var modelId = modelIdSelector(token);
             var model = await _context.Set<TModel>().FindAsync(modelId);
-            if (model == null) return false;
+            if (model is null) return false;
 
             if (token.ExpiresOnUtc < DateTime.UtcNow || propertySelector(model)) return false;
 

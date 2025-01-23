@@ -75,7 +75,7 @@ namespace inzRafalRutowski.Controllers
                 if (request.IsUpdate == true)
                     haveSpecialist = request.DataEmployeeWithSpecialization.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId));
 
-                if (haveSpecialist != null)
+                if (haveSpecialist is not null)
                 {
                     restult.Add(haveSpecialist);
                 }
@@ -121,7 +121,7 @@ namespace inzRafalRutowski.Controllers
 
                     jobSpecializationEmployee.SpecializationId = e.SpecializationId;
                     jobSpecializationEmployee.SpecializationName = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, e.SpecializationId)).Name;
-                    if (EmployeeSpecialization != null)
+                    if (EmployeeSpecialization is not null)
                     {
                         jobSpecializationEmployee.Name = _context.Employees.FirstOrDefault(x => x.Id == EmployeeSpecialization.EmployeeId).Name;
                         jobSpecializationEmployee.Surname = _context.Employees.FirstOrDefault(x => x.Id == EmployeeSpecialization.EmployeeId).Surname;
@@ -132,11 +132,11 @@ namespace inzRafalRutowski.Controllers
                         jobSpecializationEmployee.Surname = "";
 
                     }
-                    if (EmployeeSpecialization != null) jobSpecializationEmployee.HaveSpecialist = true;
+                    if (EmployeeSpecialization is not null) jobSpecializationEmployee.HaveSpecialist = true;
                     else jobSpecializationEmployee.HaveSpecialist = false;
-                    if (EmployeeSpecialization != null) jobSpecializationEmployee.EmployeeId = EmployeeSpecialization.EmployeeId;
+                    if (EmployeeSpecialization is not null) jobSpecializationEmployee.EmployeeId = EmployeeSpecialization.EmployeeId;
 
-                    if (EmployeeSpecialization == null)
+                    if (EmployeeSpecialization is null)
                         jobFunctions.AddEmployeeWithoutEmployerToList(e, jobSpecializationEmployee, employeeDTOListInList, _context, listEmployeeSpecializationListEmplty);
 
                     restult.Add(jobSpecializationEmployee);
@@ -161,14 +161,14 @@ namespace inzRafalRutowski.Controllers
                 request.ListEmployeeAddToJob.ForEach(x => // zmiana pobranych wartościu hours na te które zmieniliśmy
                 {
                     var hours = request.JobSpecialization.Find(x2 => x2.SpecializationId == x.SpecializationId);
-                    if (hours != null)
+                    if (hours is not null)
                         x.HoursStart = (int)hours.Hours;
                 });
 
                 request.ListEmployeeAddToJob.ForEach(x =>
                 {
                     var specializationToChange = request.JobSpecialization.FirstOrDefault(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
-                    if (specializationToChange != null)
+                    if (specializationToChange is not null)
                     {
                         specializationToChange.Hours -= (double)x.FinishWorkHours;
                     }
@@ -208,7 +208,7 @@ namespace inzRafalRutowski.Controllers
             {
                 request.listJobSpecializationEmployeeDTO.ForEach(e =>
                 {
-                    if (e.EmployeeId != null)
+                    if (e.EmployeeId is not null)
                     {
                         var newEmployee = new Employee();
                         newEmployee.Name = _context.Employees.First(x => x.Id == e.EmployeeId).Name;
@@ -222,7 +222,7 @@ namespace inzRafalRutowski.Controllers
                 {
                     e.EmployeeInJobList.ForEach(e2 =>
                     {
-                        if (listEmployeeFreeInTime.FirstOrDefault(e3 => e3.Id == e2.EmployeeId) == null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
+                        if (listEmployeeFreeInTime.FirstOrDefault(e3 => e3.Id == e2.EmployeeId) is null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
                         {
                             var newEmployee = new Employee();
                             newEmployee.Name = e2.Name;
@@ -290,7 +290,7 @@ namespace inzRafalRutowski.Controllers
                 {
                     var newEmployee = new Employee();
 
-                    if (_context.Employees.FirstOrDefault(x => x.Id == e.EmployeeId) == null)
+                    if (_context.Employees.FirstOrDefault(x => x.Id == e.EmployeeId) is null)
                     {
                         newEmployee.Name = _context.EmployeeAnothers.First(x => Guid.Equals(x.Id, e.EmployeeId)).Name;
                         newEmployee.Surname = _context.EmployeeAnothers.First(x => Guid.Equals(x.Id, e.EmployeeId)).Surname;
@@ -307,7 +307,7 @@ namespace inzRafalRutowski.Controllers
 
                 freeEmployeeFromDB.ForEach(e =>
                 {
-                    if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.Id) == null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
+                    if (listEmployeeFreeInTime.FirstOrDefault(e2 => e2.Id == e.Id) is null) // jeżeli nie ma specjalisty w tej liście to dodać (nowy dodany)
                     {
                         listEmployeeFreeInTime.Add(e);
                     }
@@ -319,7 +319,7 @@ namespace inzRafalRutowski.Controllers
                     {
                         e.EmployeeInJobList.ForEach(e2 =>
                         {
-                            if (listEmployeeFreeInTime.FirstOrDefault(e3 => e3.Id == e2.EmployeeId) == null)
+                            if (listEmployeeFreeInTime.FirstOrDefault(e3 => e3.Id == e2.EmployeeId) is null)
                             {
                                 var newEmployee = new Employee();
                                 newEmployee.Name = e2.Name;
@@ -371,7 +371,7 @@ namespace inzRafalRutowski.Controllers
                 {
                     employeeSpecializationListListToAdd = _context.EmployeeSpecializationAnothers.Where(e2 => Guid.Equals(e2.EmployeeAnotherId, e.Id)).ToList();
 
-                    if (employeeSpecializationListListToAdd != null)
+                    if (employeeSpecializationListListToAdd is not null)
                         employeeSpecializationListListToAdd.ForEach(x =>
                         {
                             EmployeeSpecialization employeeSpecialization = new EmployeeSpecialization()
@@ -408,14 +408,14 @@ namespace inzRafalRutowski.Controllers
                     {
                         var employeeSpecializationTemp = employeeSpecializationList.FirstOrDefault(x2 => int.Equals(x2.SpecializationId, x.SpecializationId));
 
-                        if (employeeSpecialization != null && employeeSpecializationTemp != null)
+                        if (employeeSpecialization is not null && employeeSpecializationTemp is not null)
                         {
                             if (_context.Experiences.First(x2 => int.Equals(x2.Id, employeeSpecializationTemp.ExperienceId)).ExperienceValue >
                             _context.Experiences.First(x2 => int.Equals(x2.Id, employeeSpecialization.ExperienceId)).ExperienceValue)
                                 employeeSpecialization = employeeSpecializationTemp;
 
                         }
-                        else if (employeeSpecialization != null && employeeSpecializationTemp == null)
+                        else if (employeeSpecialization is not null && employeeSpecializationTemp is null)
                         {
                             // else if wykona się, kiedy już mamy specjalizację, ale kolejny aktualny obiekt z listy nie ma specjalizacji, więc nic nie zmieniamy
                         }
@@ -429,14 +429,14 @@ namespace inzRafalRutowski.Controllers
 
                 Experience currentEmployeeExperiance = new Experience();
                 ListJobSpecialization currentEmployeeSpecialization = new ListJobSpecialization();
-                if (employeeSpecialization != null)
+                if (employeeSpecialization is not null)
                 {
                     currentEmployeeExperiance = _context.Experiences.First(x => int.Equals(x.Id, employeeSpecialization.ExperienceId));
                     currentEmployeeSpecialization = specializationsWithHours.First(x => int.Equals(x.SpecializationId, employeeSpecialization.SpecializationId));
                 }
 
 
-                if (employeeSpecialization != null)
+                if (employeeSpecialization is not null)
                 {
                     currentEmployeeSpecialization.Hours -= (numberOfWorkDays * hoursWorkInDay) * ((double)currentEmployeeExperiance.ExperienceValue / 100);
 
@@ -501,7 +501,7 @@ namespace inzRafalRutowski.Controllers
                 request.ListEmployeeAddToJob.ForEach(x =>
                 {
                     var updateList = listEmployeeInJobDTOList.FirstOrDefault(x2 => x2.SpecializationId == x.SpecializationId);
-                    if (updateList != null)
+                    if (updateList is not null)
                     {
                         updateList.HoursStart = x.HoursStart;
                     }
@@ -553,10 +553,10 @@ namespace inzRafalRutowski.Controllers
                 ).EmployerId == request.EmployerId)
                 ).ToList();
 
-            if (listEmployeeFreeInTime != null)
+            if (listEmployeeFreeInTime is not null)
                 listEmployeeFreeInTime.ForEach(x =>
                 {
-                    if (EmployeeInJob.Find(x2 => x2.EmployeeId == x.Id) == null)
+                    if (EmployeeInJob.Find(x2 => x2.EmployeeId == x.Id) is null)
                     {
                         EmployeeInJobDTO employee = new EmployeeInJobDTO()
                         {
@@ -566,7 +566,7 @@ namespace inzRafalRutowski.Controllers
                         };
 
                         var EmployeeSpecializations = _context.EmployeeSpecializations.FirstOrDefault(x3 => x3.EmployeeId == x.Id && x3.SpecializationId == request.SpecializationId);
-                        if (EmployeeSpecializations != null)
+                        if (EmployeeSpecializations is not null)
                         {
                             employee.ExperienceName = _context.Experiences.First(x3 => x3.Id == EmployeeSpecializations.ExperienceId).ExperienceName;
                         }
@@ -580,10 +580,10 @@ namespace inzRafalRutowski.Controllers
             //lista pracowników szuakjacych pracy
             List<EmployeeAnother> listEmployeeWithoutEmployer = _context.EmployeeAnothers.Where(e => e.IsEmployed == false).ToList();
 
-            if (listEmployeeWithoutEmployer != null)
+            if (listEmployeeWithoutEmployer is not null)
                 listEmployeeWithoutEmployer.ForEach(x =>
                 {
-                    if (EmployeeInJob.Find(x2 => x2.EmployeeId == x.Id) == null)
+                    if (EmployeeInJob.Find(x2 => x2.EmployeeId == x.Id) is null)
                     {
                         EmployeeInJobDTO employee = new EmployeeInJobDTO()
                         {
@@ -594,7 +594,7 @@ namespace inzRafalRutowski.Controllers
 
                         var EmployeeSpecializations = _context.EmployeeSpecializationAnothers
                             .FirstOrDefault(x3 => x3.EmployeeAnotherId == x.Id && x3.SpecializationAnotherId == request.SpecializationId);
-                        if (EmployeeSpecializations != null)
+                        if (EmployeeSpecializations is not null)
                         {
                             employee.ExperienceName = _context.Experiences.First(x3 => x3.Id == EmployeeSpecializations.ExperianceAnotherId).ExperienceName;
                         }
@@ -623,13 +623,13 @@ namespace inzRafalRutowski.Controllers
             var experiencesName = "Brak doświadczenia";
             var experiencesValue = 40;
 
-            if (experienceIdNewEnployee != null && request.Employee.IsEmployed == true)
+            if (experienceIdNewEnployee is not null && request.Employee.IsEmployed == true)
             {
                 var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployee.ExperienceId);
                 experiencesName = experiences.ExperienceName;
                 experiencesValue = experiences.ExperienceValue;
             }
-            else if (experienceIdNewEnployeeWithoutEmployer != null && request.Employee.IsEmployed == false)
+            else if (experienceIdNewEnployeeWithoutEmployer is not null && request.Employee.IsEmployed == false)
             {
                 var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployeeWithoutEmployer.ExperianceAnotherId);
                 experiencesName = experiences.ExperienceName;
@@ -679,11 +679,11 @@ namespace inzRafalRutowski.Controllers
                 x.EmployeeInJobList.ForEach(x2 =>
                 {
                     var employee = _context.Employees.FirstOrDefault(x3 => Guid.Equals(x3.Id, x2.EmployeeId));
-                    if (employee != null) employeeList.Add(employee);
+                    if (employee is not null) employeeList.Add(employee);
                     else
                     {
                         var employeeWithoutEmployer = _context.EmployeeAnothers.FirstOrDefault(x3 => Guid.Equals(x3.Id, x2.EmployeeId));
-                        if (employeeWithoutEmployer != null) // jakby w czasie robienia pracy użytkowni by usuną konto to by nie znalazło go, niżej powinno być sprawdzenie tego
+                        if (employeeWithoutEmployer is not null) // jakby w czasie robienia pracy użytkowni by usuną konto to by nie znalazło go, niżej powinno być sprawdzenie tego
                         {
                             Employee empployeToAdd = new Employee()
                             {
@@ -704,7 +704,7 @@ namespace inzRafalRutowski.Controllers
             employeeList.ForEach(x =>
             {
                 var employee = _context.EmployeeAnothers.FirstOrDefault(x2 => Guid.Equals(x2.Id, x.Id) && bool.Equals(x2.IsEmployed, false));
-                if (employee != null)
+                if (employee is not null)
                 {
                     employeeController.AddEmployeeToEmployer(employee.Id, request.EmployerId);
                 }
@@ -738,7 +738,7 @@ namespace inzRafalRutowski.Controllers
                     jobEmployee.TimeStartJob = request.Start;
                     jobEmployee.TimeFinishJob = (DateTime)x.End;
                     jobEmployee.SpecializationId = x.SpecializationId;
-                    if (x2.ExperienceId != null)
+                    if (x2.ExperienceId is not null)
                         jobEmployee.ExperienceId = (int)x2.ExperienceId;
                     if (x.ResponsiblePersonEmployeeId == x2.EmployeeId)
                         jobEmployee.IsNeed = true;
@@ -785,7 +785,7 @@ namespace inzRafalRutowski.Controllers
                     else
                     {
                         var employeeWithoutEmployer = _context.EmployeeAnothers.FirstOrDefault(x3 => Guid.Equals(x3.Id, x2.EmployeeId));
-                        if (employeeWithoutEmployer != null) // jakby w czasie robienia pracy użytkowni by usuną konto to by nie znalazło go, niżej powinno być sprawdzenie tego
+                        if (employeeWithoutEmployer is not null) // jakby w czasie robienia pracy użytkowni by usuną konto to by nie znalazło go, niżej powinno być sprawdzenie tego
                         {
                             Employee empployeToAdd = new Employee()
                             {
@@ -803,7 +803,7 @@ namespace inzRafalRutowski.Controllers
             employeeList.ForEach(x =>
             {
                 var employee = _context.EmployeeAnothers.FirstOrDefault(x2 => Guid.Equals(x2.Id, x.Id) && bool.Equals(x2.IsEmployed, false));
-                if (employee != null)
+                if (employee is not null)
                 {
                     employeeController.AddEmployeeToEmployer(employee.Id, request.EmployerId);
                 }
@@ -854,7 +854,7 @@ namespace inzRafalRutowski.Controllers
                     jobEmployee.TimeStartJob = request.Start;
                     jobEmployee.TimeFinishJob = (DateTime)x.End;
                     jobEmployee.SpecializationId = x.SpecializationId;
-                    if (x2.ExperienceId != null)
+                    if (x2.ExperienceId is not null)
                         jobEmployee.ExperienceId = (int)x2.ExperienceId;
                     if (x.ResponsiblePersonEmployeeId == x2.EmployeeId)
                         jobEmployee.IsNeed = true;

@@ -25,7 +25,7 @@ namespace inzRafalRutowski.Controllers
         public ActionResult<List<Specialization>> GetSpecializations([FromQuery] int EmployerId)
         {
             var result = _service.GetSpecializations(EmployerId);
-            if (result == null) return BadRequest(new { message = "Id pracodawcy jest niepoprawne" });
+            if (result is null) return BadRequest(new { message = "Id pracodawcy jest niepoprawne" });
             else return Ok(result);
         }
 

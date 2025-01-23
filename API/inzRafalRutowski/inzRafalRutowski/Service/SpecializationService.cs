@@ -17,7 +17,7 @@ namespace inzRafalRutowski.Service
         {
             var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, request.EmployerId));
 
-            if (employer == null) return false;
+            if (employer is null) return false;
 
             Specialization specialization = new Specialization()
             {
@@ -36,9 +36,9 @@ namespace inzRafalRutowski.Service
             var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
             var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, specializationId));
 
-            if (employer == null && specialization == null) return -1;
-            else if (employer == null) return -2;
-            else if (specialization == null) return -3;
+            if (employer is null && specialization is null) return -1;
+            else if (employer is null) return -2;
+            else if (specialization is null) return -3;
 
             var canModify = 0;
             var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
@@ -46,7 +46,7 @@ namespace inzRafalRutowski.Service
             listEmployees.ForEach(x =>
             {
                 if (_context.EmployeeSpecializations.FirstOrDefault(x2 => Guid.Equals(x2.EmployeeId, x.Id) &&
-                int.Equals(x2.SpecializationId, specializationId)) != null)
+                int.Equals(x2.SpecializationId, specializationId)) is not null)
                     canModify = 1;
             });
             return canModify;
@@ -56,7 +56,7 @@ namespace inzRafalRutowski.Service
         {
             var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, specializationId));
 
-            if (specialization == null) return false;
+            if (specialization is null) return false;
 
             _context.Specializations.Remove(_context.Specializations.First(x => int.Equals(x.Id, specializationId)));
             _context.SaveChanges();
@@ -67,7 +67,7 @@ namespace inzRafalRutowski.Service
         {
             var specialization = _context.Specializations.FirstOrDefault(x => int.Equals(x.Id, request.Id));
 
-            if (specialization == null) return false;
+            if (specialization is null) return false;
 
             specialization.Name = request.Name;
             _context.SaveChanges();
@@ -78,7 +78,7 @@ namespace inzRafalRutowski.Service
         {
             var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, EmployerId));
 
-            if (employer == null) return null;
+            if (employer is null) return null;
 
             return _context.Specializations.Where(x => int.Equals(x.EmployerId, EmployerId) || int.Equals(x.EmployerId, null)).ToList();
         }

@@ -64,7 +64,7 @@ namespace inzRafalRutowski.Service
 
             
 
-            if (result != null) 
+            if (result is not null) 
             { /*
                 result.Surname = request.SurnameTest;
                 result.Name = request.Name;
@@ -84,7 +84,7 @@ namespace inzRafalRutowski.Service
             var result = await _context.Employers
                 .FirstOrDefaultAsync(e => e.Id == id);
 
-            if (result != null)
+            if (result is not null)
             {
                 _context.Employers.Remove(result);
 

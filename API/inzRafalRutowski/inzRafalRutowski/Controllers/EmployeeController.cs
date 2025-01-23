@@ -15,7 +15,8 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // można zrobić buttony globalne i używać ich w logowaniu i np NavigationButton , lub taki bez ramki (w ConfirmEmail tez mozna)
+        // w logowaniu zrobić przypomnij(albo i nie bo to na tej samej zasadzie co potwierdzanie maila, coś w stylu że przekierowanie na naszą strone
+        // o ile token jest aktualny i na stronie byłoby poproszenie o zmiane hasła)
         // jak chcemy dodac prace i nie mamy odpowiednich rzeczy (np telefonu) poprosic o to
         // w ConfirmEmail.js poprawnie mam stworzrzone style. Zrobić tak samo w rejestracji i logowaniu
 
@@ -128,7 +129,7 @@ namespace inzRafalRutowski.Controllers
             Employee? employeeSearch;
             var employeeWithoutEmployerSearch = _context.EmployeeAnothers.FirstOrDefault(e => Guid.Equals(e.Id, id));
 
-            if (employeeWithoutEmployerSearch == null)
+            if (employeeWithoutEmployerSearch is null)
             {
                 employeeSearch = _context.Employees.FirstOrDefault(e => Guid.Equals(e.Id, id));
 
@@ -367,7 +368,7 @@ namespace inzRafalRutowski.Controllers
                         int.Equals(x2.SpecializationId, x.SpecializationId) && x2.ExperienceId != x.ExperienceId);
                     }
 
-                    if (changeSpecializationOrExperriance != null || request.IsEdit == false)
+                    if (changeSpecializationOrExperriance is not null || request.IsEdit == false)
                     {
                         modifyWorks = true;
                         var employeeModify = new EmployeeModifyDTO();
@@ -380,11 +381,11 @@ namespace inzRafalRutowski.Controllers
                             var exp = request.ListSpecializationAndExperience.FirstOrDefault(x3 => int.Equals(x3.SpecializationId, x.SpecializationId));
                             int? expId = null;
 
-                            if (exp != null)
+                            if (exp is not null)
                                 expId = exp.ExperienceId;
 
                             int expValue = -1;
-                            if (expId != null)
+                            if (expId is not null)
                                 expValue = _context.Experiences.FirstOrDefault(x2 => int.Equals(x2.Id, expId)).ExperienceValue;
 
                             if (x.IsNeed == true && expValue < 70)
@@ -434,7 +435,7 @@ namespace inzRafalRutowski.Controllers
 
             List<SpecializationAndExperience> dataListSpecializationAndExperience = new List<SpecializationAndExperience>();
 
-            if (employeeSpecializations != null)
+            if (employeeSpecializations is not null)
                 employeeSpecializations.ForEach(x =>
                 {
                     SpecializationAndExperience specializationAndExperience = new SpecializationAndExperience();

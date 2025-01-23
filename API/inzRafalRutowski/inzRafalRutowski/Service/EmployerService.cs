@@ -23,7 +23,7 @@ namespace inzRafalRutowski.Service
         {
             var employer =  _context.Employers.FirstOrDefault(x => (string.Equals(x.Login, login) || string.Equals(x.Email, login)));
 
-            if (employer != null)
+            if (employer is not null)
             {
                 if (BCrypt.Net.BCrypt.EnhancedVerify(password, employer.Password))
                     return employer;
@@ -39,7 +39,7 @@ namespace inzRafalRutowski.Service
 
         public StringBuilder Hush(Employer employer)
         {
-            if (employer == null) return null;
+            if (employer is null) return null;
 
             byte[] data = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes($"{employer.Id}_{employer.Login}_{employer.Password}"));
             var builder = new StringBuilder();

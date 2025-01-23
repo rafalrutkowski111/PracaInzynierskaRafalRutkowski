@@ -61,7 +61,7 @@ namespace inzRafalRutowski.Controllers
         {
             var result = await _service.UpdateEmployer(request);
 
-            if (result == null)
+            if (result is null)
                 return BadRequest("Miss Employer");
            
             return Ok(result);
@@ -74,7 +74,7 @@ namespace inzRafalRutowski.Controllers
 
             var result = await _service.DeleteEmployer(id);
 
-            if (result == null)
+            if (result is null)
                 return BadRequest("Miss Employer");
 
                 return Ok("Poprawnie usunięto pracodawce");

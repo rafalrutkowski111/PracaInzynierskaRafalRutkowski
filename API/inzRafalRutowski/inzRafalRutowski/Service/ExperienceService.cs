@@ -15,7 +15,7 @@ namespace inzRafalRutowski.Service
         }
         public Experience AddExperience(Experience request)
         {
-            if (request == null) return null;
+            if (request is null) return null;
             _context.Experiences.Add(request);
             _context.SaveChanges();
 
@@ -25,9 +25,9 @@ namespace inzRafalRutowski.Service
         public int CheckCanModify(int experianceId, int employerId, int value, bool edit)
         {
             var experiences = _context.Experiences.FirstOrDefault(x => int.Equals(x.Id, experianceId));
-            if (experiences == null) return -1;
+            if (experiences is null) return -1;
             var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
-            if (employer == null) return -2;
+            if (employer is null) return -2;
 
             var canModify = 0;
             var listEmployees = _context.Employees.Where(x => int.Equals(x.EmployerId, employerId)).ToList();
@@ -35,7 +35,7 @@ namespace inzRafalRutowski.Service
             listEmployees.ForEach(x =>
             {
                 if (_context.EmployeeSpecializations.FirstOrDefault(x2 => Guid.Equals(x2.EmployeeId, x.Id) &&
-                int.Equals(x2.ExperienceId, experianceId)) != null)
+                int.Equals(x2.ExperienceId, experianceId)) is not null)
                     canModify = 1;
 
             });
@@ -48,7 +48,7 @@ namespace inzRafalRutowski.Service
         public bool Delete(int experianceId)
         {
             var result = _context.Experiences.FirstOrDefault(x => int.Equals(x.Id, experianceId));
-            if(result == null) return false;
+            if(result is null) return false;
 
             _context.Experiences.Remove(result);
             _context.SaveChanges();
@@ -59,7 +59,7 @@ namespace inzRafalRutowski.Service
         public bool EditExperience(EditExperianceDTO request)
         {
             var experiance = _context.Experiences.FirstOrDefault(x => int.Equals(x.Id, request.ExperianceId));
-            if (experiance == null) return false;
+            if (experiance is null) return false;
 
             experiance.ExperienceName = request.Name;
             experiance.ExperienceValue = request.Value;
@@ -71,7 +71,7 @@ namespace inzRafalRutowski.Service
         public List<Experience> GetExperience(int employerId)
         {
             var employer = _context.Employers.FirstOrDefault(x=> int.Equals(x.Id, employerId));
-            if (employer == null) return null;
+            if (employer is null) return null;
 
             return _context.Experiences.Where(x => int.Equals(x.EmployerId, employerId) || int.Equals(x.EmployerId, null)).ToList();
         }

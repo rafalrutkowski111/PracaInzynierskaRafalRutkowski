@@ -35,7 +35,7 @@ namespace inzRafalRutowski.Controllers
             //if (!CheckAuthoriationOwnUserOrAdmin(employerId)) return Unauthorized(); // ustawienie dostepu do zalogowanej osoby lub admina
 
             var result = _service.GetExperience(employerId);
-            if (result == null) return BadRequest("Id pracodawny jest niepoprawne");
+            if (result is null) return BadRequest("Id pracodawny jest niepoprawne");
             else return Ok(result);
         }
 

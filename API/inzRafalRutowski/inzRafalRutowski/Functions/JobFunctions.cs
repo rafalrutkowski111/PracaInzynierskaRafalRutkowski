@@ -112,7 +112,7 @@ namespace inzRafalRutowski.Class
             request.listEmployeeInJobDTOList.ForEach(x =>
             {
 
-                if(request.listSpecialisationListEmployeeRemoveDTO == null)
+                if(request.listSpecialisationListEmployeeRemoveDTO is null)
                 {
                     UpdateEndTime(x, request.Start);
                 }
