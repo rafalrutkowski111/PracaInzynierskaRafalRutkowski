@@ -73,7 +73,7 @@ const updateDataEmployeeWithSpecialization = (props) => {
         //poniższy kod dodaje właściwość do ukrycia jej w specjalziacji jeżeli nie będzie wykonywana już żadna praca
         let specializationTemp = props.dataListSpecialization.find(x => x.SpecializationId === data.specializationId)
         if (specializationTemp.finishWorkHours != undefined) {
-            if (specializationTemp.Hours == specializationTemp.finishWorkHours.toFixed(0))
+            if (specializationTemp.Hours === specializationTemp.finishWorkHours.toFixed(0))
                 data.hide = true
         }
 

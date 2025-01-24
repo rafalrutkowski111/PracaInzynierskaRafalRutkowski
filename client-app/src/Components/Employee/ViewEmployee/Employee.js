@@ -382,7 +382,7 @@ const Employee = () => {
                                 //dodanie wykonanych prac
                                 if (dataListSpecialization != undefined)
                                   dataListSpecialization.map(x => {
-                                    if (listEmployeeAddToJob.find(x2 => x2.specializationId == x.SpecializationId) == undefined) {
+                                    if (listEmployeeAddToJob.find(x2 => x2.specializationId === x.SpecializationId) === undefined) {
                                       listEmployeeAddToJob.push({
                                         finishWorkHours: x.finishWorkHours,
                                         hoursStart: x.Hours,

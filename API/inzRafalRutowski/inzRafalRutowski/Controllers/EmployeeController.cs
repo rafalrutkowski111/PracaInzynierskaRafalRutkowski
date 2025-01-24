@@ -15,6 +15,8 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
+        // w .net zmienić if(isActive == true) na if(isActive) i if(isActive == false) na if(!isActive)
+
         // w logowaniu zrobić przypomnij(albo i nie bo to na tej samej zasadzie co potwierdzanie maila, coś w stylu że przekierowanie na naszą strone
         // o ile token jest aktualny i na stronie byłoby poproszenie o zmiane hasła)
         // jak chcemy dodac prace i nie mamy odpowiednich rzeczy (np telefonu) poprosic o to
@@ -26,8 +28,6 @@ namespace inzRafalRutowski.Controllers
         // a w drugim co użyłem i gdzie np metod generycznych w EmailService w metodzie VerifityEmail
 
         //zrobić jakiś plik readme w react gdzie będe miał zapisane skróty kawiszowe i skruty szablonów 
-
-        //jeżli chodzi o czystość kodu preferowane jest zamiast "== null" "is null" można zrefaktoryzować
 
         // zmienić metody w kontrolerach i serwisach na asynchroniczne, bo to poprawna praktyka przyspieszajaca dzialanie metod
         // //builder.Services.AddFluentEmail(builder.Configuration);  zrobic to w program.cs

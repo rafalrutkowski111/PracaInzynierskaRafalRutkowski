@@ -23,7 +23,7 @@ const JobDate = (props) => {
             props.setErrorDataStartLabel("Data nie może być pusta");
             props.setErrorDataStart(true);
         }
-        else if (e.$d == "Invalid Date") {
+        else if (e.$d === "Invalid Date") {
             props.setErrorDataStartLabel("Niepoprawna data");
             props.setErrorDataStart(true);
         }
@@ -45,7 +45,7 @@ const JobDate = (props) => {
             props.setErrorDataEndLabel("Data nie może być pusta");
             props.setErrorDataEnd(true);
         }
-        else if (e.$d == "Invalid Date") {
+        else if (e.$d === "Invalid Date") {
             props.setErrorDataEndLabel("Niepoprawna data");
             props.setErrorDataEnd(true);
         }

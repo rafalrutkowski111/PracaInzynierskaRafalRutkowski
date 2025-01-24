@@ -318,7 +318,7 @@ const ViewEmployee = (props) => {
                         id="button"
                         value="Dodaj"
                         onClick={() =>
-                            props.viewSpecialist == true
+                            props.viewSpecialist === true
                                 ? addSpecialistEmployees(props.dataEmployee)
                                 : addNewEmployee(props.dataEmployee)}
                     />

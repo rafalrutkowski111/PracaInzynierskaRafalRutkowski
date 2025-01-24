@@ -41,7 +41,7 @@ const Summary = (props) => {
         //dodanie wykonanych prac
         if (props.dataListSpecialization != undefined)
             props.dataListSpecialization.map(x => {
-                if (props.listEmployeeAddToJob.find(x2 => x2.specializationId == x.SpecializationId) == undefined) {
+                if (props.listEmployeeAddToJob.find(x2 => x2.specializationId === x.SpecializationId) === undefined) {
                     sendlistEmployeeAddToJob.push({
                         finishWorkHours: x.finishWorkHours,
                         hoursStart: x.Hours,
@@ -421,7 +421,7 @@ const ChangeSpecialist = (props) => {
                     <p>{props.listEmployeeAddToJob[props.indexSpecialistToChange].specializationName}</p>
 
                     <Sheet sx={{ heightTabel: 200, maxHeight: 400, overflow: 'auto' }}>
-                        {noData == false
+                        {noData === false
                             ? <><p>Brak dostępnych osób</p></>
                             :
                             < Table

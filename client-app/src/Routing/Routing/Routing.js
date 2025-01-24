@@ -29,7 +29,7 @@ const Router = () => {
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
     const userHashToken = sessionStorage.getItem("userHashToken")
-    if (userId == null || userHashToken == null) setIsLogged(false);
+    if (userId === null || userHashToken === null) setIsLogged(false);
 
     axios.get('http://localhost:5000/api/Employer/veryfieLogin', { params: { userId: userId, hash: userHashToken } })
       .then(response => {
