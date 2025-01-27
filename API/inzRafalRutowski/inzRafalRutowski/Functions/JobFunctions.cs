@@ -116,7 +116,7 @@ namespace inzRafalRutowski.Class
                 {
                     UpdateEndTime(x, request.Start);
                 }
-                else if (request.listSpecialisationListEmployeeRemoveDTO.First(x2 => x2.SpecializationId == x.SpecializationId).HaveSpecialist == false)
+                else if (request.listSpecialisationListEmployeeRemoveDTO!.First(x2 => x2.SpecializationId == x.SpecializationId).HaveSpecialist)
                 {
                     needChangeEnd = true;
                     x.End = new DateTime(2100, 1, 1, 1, 0, 0);
@@ -129,7 +129,7 @@ namespace inzRafalRutowski.Class
             });
             var EndWorkDay = request.listEmployeeInJobDTOList.OrderByDescending(x => x.End).First().End;
 
-            if (needChangeEnd == true) EndWorkDay = new DateTime(2100, 1, 1, 1, 0, 0);
+            if (needChangeEnd) EndWorkDay = new DateTime(2100, 1, 1, 1, 0, 0);
 
             return Tuple.Create(request.listEmployeeInJobDTOList, EndWorkDay);
         }

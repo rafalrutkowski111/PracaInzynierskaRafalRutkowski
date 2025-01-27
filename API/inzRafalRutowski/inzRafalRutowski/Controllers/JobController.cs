@@ -56,7 +56,7 @@ namespace inzRafalRutowski.Controllers
         [HttpPost("JobSpecialization")]
         public IActionResult SpecialisationInJob([FromBody] JobSpecializationDTO request)
         {
-            if (request.IsUpdate == false)
+            if (!request.IsUpdate)
             {
                 request.Start = request.Start.AddDays(1); //dodajemy po dniu, bo zmienila sie data a potrzebujemy poprawnej do obliczeń
                 request.End = request.End.AddDays(1);
@@ -72,7 +72,7 @@ namespace inzRafalRutowski.Controllers
             {
                 JobSpecializationEmployeeDTO? haveSpecialist = null;
 
-                if (request.IsUpdate == true)
+                if (request.IsUpdate)
                     haveSpecialist = request.DataEmployeeWithSpecialization.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId));
 
                 if (haveSpecialist is not null)
@@ -83,7 +83,7 @@ namespace inzRafalRutowski.Controllers
                 {
                     EmployeeSpecialization? EmployeeSpecialization;
 
-                    if (request.RemoveSpecialist == true)
+                    if (request.RemoveSpecialist)
                     {
                         EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                         && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
@@ -94,7 +94,7 @@ namespace inzRafalRutowski.Controllers
                         ).EmployerId == request.EmployerId)
                         && x.EmployeeId != request.EmployeeId);
                     }
-                    else if (request.IsUpdate == true)
+                    else if (request.IsUpdate)
                     {
                         EmployeeSpecialization = _context.EmployeeSpecializations.FirstOrDefault(x => int.Equals(x.SpecializationId, e.SpecializationId)
                         && _context.Employees.FirstOrDefault(y => string.Equals(y.Id, x.EmployeeId)).EmployerId == request.EmployerId
@@ -156,7 +156,7 @@ namespace inzRafalRutowski.Controllers
         public IActionResult EmployeeInJob([FromBody] ListJobSpecializationEmployeeDTO request)
         {
 
-            if (request.IsUpdate == true)
+            if (request.IsUpdate)
             {
                 request.ListEmployeeAddToJob.ForEach(x => // zmiana pobranych wartościu hours na te które zmieniliśmy
                 {
@@ -204,7 +204,7 @@ namespace inzRafalRutowski.Controllers
 
             List<Employee> listEmployeeFreeInTime = new List<Employee>();
 
-            if (request.JustEdit == true) // tylko edycja czyli uwzględniamy tylko tych pracowników którzy byli wcześniej
+            if (request.JustEdit) // tylko edycja czyli uwzględniamy tylko tych pracowników którzy byli wcześniej
             {
                 request.listJobSpecializationEmployeeDTO.ForEach(e =>
                 {
@@ -234,10 +234,10 @@ namespace inzRafalRutowski.Controllers
                     });
                 });
             }
-            else if (request.EmployeeWithoutEmployer == true) //chcemy znaleść wolnych praconików których nie dodaliśmy
+            else if (request.EmployeeWithoutEmployer) //chcemy znaleść wolnych praconików których nie dodaliśmy
             {
 
-                var listEmployeeFreeInTimeFromAnotherTable = _context.EmployeeAnothers.Where(e => e.IsEmployed == false).ToList();
+                var listEmployeeFreeInTimeFromAnotherTable = _context.EmployeeAnothers.Where(e => !e.IsEmployed).ToList();
 
                 listEmployeeFreeInTimeFromAnotherTable.ForEach(x =>
                 {
@@ -250,7 +250,7 @@ namespace inzRafalRutowski.Controllers
                     listEmployeeFreeInTime.Add(newEmploye);
                 });
 
-                List<EmployeeAnother> listEmployeeFreeInTimeTemp = _context.EmployeeAnothers.Where(e => e.IsEmployed == false).ToList(); //zamiast robić głęboką kopie pobrałem to samo
+                List<EmployeeAnother> listEmployeeFreeInTimeTemp = _context.EmployeeAnothers.Where(e => !e.IsEmployed).ToList(); //zamiast robić głęboką kopie pobrałem to samo
                 request.listJobSpecializationEmployeeDTO.ForEach(e => //usunięcie (o ile są) dodani nowi wyspecjalizowani pracownicy, aby ponownie ich nie dodać
                 {
                     listEmployeeFreeInTimeTemp.ForEach(e2 =>
@@ -313,7 +313,7 @@ namespace inzRafalRutowski.Controllers
                     }
                 });
 
-                if (request.IsUpdate == true) //to powinno działać, ale sprawdzić potem jak będziemy zapisywać uzytownikow
+                if (request.IsUpdate) //to powinno działać, ale sprawdzić potem jak będziemy zapisywać uzytownikow
                 {
                     request.ListEmployeeAddToJob.ForEach(e =>
                     {
@@ -367,7 +367,7 @@ namespace inzRafalRutowski.Controllers
                 var employeeSpecializationList = _context.EmployeeSpecializations.Where(e2 => Guid.Equals(e2.EmployeeId, e.Id)).ToList();
 
                 List<EmployeeSpecializationAnother>? employeeSpecializationListListToAdd;
-                if (request.EmployeeWithoutEmployer == true)
+                if (request.EmployeeWithoutEmployer)
                 {
                     employeeSpecializationListListToAdd = _context.EmployeeSpecializationAnothers.Where(e2 => Guid.Equals(e2.EmployeeAnotherId, e.Id)).ToList();
 
@@ -492,11 +492,11 @@ namespace inzRafalRutowski.Controllers
             if (EndWorkDay.Date < request.End.Date)
                 CanStartWork = true;
 
-            if (request.JustEdit == true)
+            if (request.JustEdit)
                 CanStartWork = true;
 
             // zmieniamy dane na takie jak były przy wprowadzeniu. Trzeba je przywrócić, ponieważ w dalszych obliczenaich się do nich odwołuje
-            if (request.IsUpdate == true)
+            if (request.IsUpdate)
             {
                 request.ListEmployeeAddToJob.ForEach(x =>
                 {
@@ -578,7 +578,7 @@ namespace inzRafalRutowski.Controllers
                 });
 
             //lista pracowników szuakjacych pracy
-            List<EmployeeAnother> listEmployeeWithoutEmployer = _context.EmployeeAnothers.Where(e => e.IsEmployed == false).ToList();
+            List<EmployeeAnother> listEmployeeWithoutEmployer = _context.EmployeeAnothers.Where(e => !e.IsEmployed).ToList();
 
             if (listEmployeeWithoutEmployer is not null)
                 listEmployeeWithoutEmployer.ForEach(x =>
@@ -623,13 +623,13 @@ namespace inzRafalRutowski.Controllers
             var experiencesName = "Brak doświadczenia";
             var experiencesValue = 40;
 
-            if (experienceIdNewEnployee is not null && request.Employee.IsEmployed == true)
+            if (experienceIdNewEnployee is not null && request.Employee.IsEmployed)
             {
                 var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployee.ExperienceId);
                 experiencesName = experiences.ExperienceName;
                 experiencesValue = experiences.ExperienceValue;
             }
-            else if (experienceIdNewEnployeeWithoutEmployer is not null && request.Employee.IsEmployed == false)
+            else if (experienceIdNewEnployeeWithoutEmployer is not null && !request.Employee.IsEmployed)
             {
                 var experiences = _context.Experiences.First(x => x.Id == experienceIdNewEnployeeWithoutEmployer.ExperianceAnotherId);
                 experiencesName = experiences.ExperienceName;

@@ -52,7 +52,7 @@
         public string Surname { get; set; }
         public int SpecializationId { get; set; }
         public string specializationName { get; set; }
-        public bool? IsEmployed { get; set; }
+        public bool IsEmployed { get; set; }
 
     }
 

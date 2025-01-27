@@ -15,8 +15,6 @@ namespace inzRafalRutowski.Controllers
     [ApiController]
     public class EmployeeController : HomeController
     {
-        // w .net zmienić if(isActive == true) na if(isActive) i if(isActive == false) na if(!isActive)
-
         // w logowaniu zrobić przypomnij(albo i nie bo to na tej samej zasadzie co potwierdzanie maila, coś w stylu że przekierowanie na naszą strone
         // o ile token jest aktualny i na stronie byłoby poproszenie o zmiane hasła)
         // jak chcemy dodac prace i nie mamy odpowiednich rzeczy (np telefonu) poprosic o to
@@ -362,13 +360,13 @@ namespace inzRafalRutowski.Controllers
                 {
                     SpecializationAndExperience? changeSpecializationOrExperriance = null;
 
-                    if (request.IsEdit == true)
+                    if (request.IsEdit)
                     {
                         changeSpecializationOrExperriance = request.ListSpecializationAndExperience.FirstOrDefault(x2 =>
                         int.Equals(x2.SpecializationId, x.SpecializationId) && x2.ExperienceId != x.ExperienceId);
                     }
 
-                    if (changeSpecializationOrExperriance is not null || request.IsEdit == false)
+                    if (changeSpecializationOrExperriance is not null || !request.IsEdit)
                     {
                         modifyWorks = true;
                         var employeeModify = new EmployeeModifyDTO();
@@ -376,7 +374,7 @@ namespace inzRafalRutowski.Controllers
                         employeeModify.JobName = _context.Jobs.First(x2 => int.Equals(x2.Id, x.JobId)).Title;
                         employeeModify.JobId = _context.Jobs.First(x2 => int.Equals(x2.Id, x.JobId)).Id;
 
-                        if (request.IsEdit == true)
+                        if (request.IsEdit)
                         {
                             var exp = request.ListSpecializationAndExperience.FirstOrDefault(x3 => int.Equals(x3.SpecializationId, x.SpecializationId));
                             int? expId = null;
@@ -388,7 +386,7 @@ namespace inzRafalRutowski.Controllers
                             if (expId is not null)
                                 expValue = _context.Experiences.FirstOrDefault(x2 => int.Equals(x2.Id, expId)).ExperienceValue;
 
-                            if (x.IsNeed == true && expValue < 70)
+                            if (x.IsNeed && expValue < 70)
                             {
                                 removeSpecialist = true;
                                 employeeModify.RemoveSpecialist = true;
@@ -396,7 +394,7 @@ namespace inzRafalRutowski.Controllers
                         }
                         else
                         {
-                            if (x.IsNeed == true)
+                            if (x.IsNeed)
                             {
                                 removeSpecialist = true;
                                 employeeModify.RemoveSpecialist = true;
