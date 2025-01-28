@@ -1,0 +1,20 @@
+﻿
+Opis pliku:
+Ten plik zawiera dokumentację dotyczącą użycia konkretnych rozwiązań programistycznych, technik lub funkcji w projekcie C#.
+Jest to zbiór notatek mających na celu ułatwienie orientacji w kodzie, dokumentowanie ważnych decyzji technicznych oraz identyfikację miejsc,
+gdzie zastosowano specyficzne wzorce, mechanizmy czy podejścia programistyczne.
+
+Plik powstał, ponieważ wiele rozwiązań zostało użytych jedynie raz w konkretnych miejscach. 
+Projekt jest niewielki i większość z tych rozwiązań nie była potrzebna w większym zakresie, a zostały one dodane głównie w celach ćwiczebnych.
+
+///// Plik będe uzupełniał podczas dodawania nowych rzeczy, albo refaktoryzacji, na razie nie chce mi się przeglądać całego kodu i spisywaniu ciekawych rzeczy
+
+Format wpisów:
+[Nazwa klasy]
+[Nazwa metody]
+[Opis]
+
+
+Klasa: EmailService
+Metoda: VerifityEmail<TModel>
+Opis: Przykład zastosowania generycznej metody do uniwersalnej weryfikacji e-maili i obsługi różnych modeli danych.
