@@ -32,7 +32,7 @@ namespace inzRafalRutowski.Service
             return null;
         }
 
-        public Employer VeryfieLogin(int userId)
+        public Employer VeryfieLogin(Guid userId)
         {
             return _context.Employers.FirstOrDefault(x => string.Equals(x.Id, userId));
         }

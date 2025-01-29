@@ -31,8 +31,8 @@ namespace inzRafalRutowski.Migrations
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmployerId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EmployerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ExpiresOnUtc")
                         .HasColumnType("datetime2");
@@ -50,8 +50,8 @@ namespace inzRafalRutowski.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("EmployerId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EmployerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -96,11 +96,9 @@ namespace inzRafalRutowski.Migrations
 
             modelBuilder.Entity("inzRafalRutowski.Models.Employer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Admin")
                         .HasColumnType("bit");
@@ -157,8 +155,8 @@ namespace inzRafalRutowski.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("EmployerId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("EmployerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ExperienceName")
                         .IsRequired()
@@ -193,8 +191,8 @@ namespace inzRafalRutowski.Migrations
                     b.Property<DateTime>("CurrentTimeFinishJob")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmployerId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EmployerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Estimate")
                         .IsRequired()
@@ -255,8 +253,8 @@ namespace inzRafalRutowski.Migrations
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("EmployerId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EmployerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("ExperienceId")
                         .HasColumnType("int");
@@ -366,8 +364,8 @@ namespace inzRafalRutowski.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("EmployerId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("EmployerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -539,7 +537,7 @@ namespace inzRafalRutowski.Migrations
                     b.HasOne("inzRafalRutowski.Models.Job", "Job")
                         .WithMany("JobEmployees")
                         .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Employee");

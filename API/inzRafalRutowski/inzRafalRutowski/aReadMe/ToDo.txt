@@ -1,6 +1,7 @@
 ﻿
 Plik zawiera pomysły które można dodać do projektu
 
+Po zalogowaniu wywala błędy, pewnie dalej coś przez to ze id na guid sie zmienilo
 
 w logowaniu zrobić przypomnij(albo i nie bo to na tej samej zasadzie co potwierdzanie maila, coś w stylu że przekierowanie na naszą strone
 o ile token jest aktualny i na stronie byłoby poproszenie o zmiane hasła)
@@ -15,10 +16,6 @@ zrobić auth controller i przeneisc tam wiekszosc sndpointow z employerControlle
 zrobić przy logowaniu sprawdzanie czy ma sie potwierdzony email, i jak nie to dac opcje zeby wysłać potwierdenie na maila
 sprawdzic gdzie sie pisze changeCos a gdzie hasndleCos
 dodać walidajce po stronie fronta do tego
-
-zmienic w employeer  id z inta na guid
-
-zaktualizować rejestracne o dodanie potwierdzenia rejestracji przez emaila
 
 ustawić żeby w axiosie nie było trzeba za każdym razem pisać przy autoryzacji {withCredentials: true}
 

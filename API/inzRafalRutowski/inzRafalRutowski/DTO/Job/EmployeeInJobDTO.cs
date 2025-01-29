@@ -9,7 +9,7 @@
     public class ListEmployeeInJobWithEmployerIdDTOList
     {
         public List<EmployeeInJobDTOList> listEmployeeInJobDTOList { get; set; }
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
         public int SpecializationId { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }

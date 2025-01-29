@@ -147,7 +147,7 @@ namespace inzRafalRutowski.Controllers
 
         // kopiowanie z danych z EmployeeAnother i robienie nowego pracowniak z nimi w Emplyee, analogicznie z specjalziacjami pracowników
         [HttpPut]
-        public IActionResult AddEmployeeToEmployer([FromQuery] Guid employeeId, [FromQuery] int employerId)
+        public IActionResult AddEmployeeToEmployer([FromQuery] Guid employeeId, [FromQuery] Guid employerId)
         {
             var employee = _context.EmployeeAnothers.First(e => Guid.Equals(e.Id, employeeId));
 

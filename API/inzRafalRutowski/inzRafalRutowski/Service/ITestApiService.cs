@@ -11,10 +11,10 @@ namespace inzRafalRutowski.Service
 
         Task<ActionResult<List<EmployerDTO>>> GetEmployers(); //mapper dodany
 
-        Task<ActionResult<Employer>> GetEmployer(int id);
+        Task<ActionResult<Employer>> GetEmployer(Guid id);
 
         Task<ActionResult<Employer>> UpdateEmployer(EmployerDTO request);
 
-        Task<ActionResult<Employer>> DeleteEmployer(int id);
+        Task<ActionResult<Employer>> DeleteEmployer(Guid id);
     }
 }

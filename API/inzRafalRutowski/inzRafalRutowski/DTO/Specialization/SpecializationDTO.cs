@@ -3,7 +3,7 @@
     public class SpecializationAddDTO
     {
         public string Name { get; set; }
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
     }
     public class SpecializationEditDTO
     {

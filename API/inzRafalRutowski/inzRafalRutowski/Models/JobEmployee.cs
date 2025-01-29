@@ -8,7 +8,7 @@
         public bool IsNeed { get; set; }
         public int SpecializationId { get; set; }
         public int? ExperienceId { get; set; }
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
 
 
         public Guid EmployeeId { get; set; }

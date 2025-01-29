@@ -14,7 +14,7 @@
         public string Surname { get; set; }
         public bool IsEmployed { get; set; }
         public List<SpecializationAndExperience> ListSpecializationAndExperience { get; set; }
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
         public Guid? EmployeeId { get; set; }
     }
 }

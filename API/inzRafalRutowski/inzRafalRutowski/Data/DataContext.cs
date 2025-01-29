@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace inzRafalRutowski.Data
 {
-    public class DataContext :DbContext
+    public class DataContext : DbContext
     {
-        public DataContext (DbContextOptions<DataContext> options) :base(options) { }
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<Employer> Employers { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
@@ -31,6 +31,11 @@ namespace inzRafalRutowski.Data
                 entity.HasIndex(e => e.Login).IsUnique();
                 entity.HasIndex(e => e.Email).IsUnique();
             });
+
+            modelBuilder.Entity<JobEmployee>()
+                .HasOne(j => j.Job)
+                .WithMany(j => j.JobEmployees)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

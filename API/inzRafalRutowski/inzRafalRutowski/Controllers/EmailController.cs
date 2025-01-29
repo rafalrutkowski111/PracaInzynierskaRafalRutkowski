@@ -38,7 +38,7 @@ namespace inzRafalRutowski.Controllers
 
 
         [HttpGet("sendEmplyerEmailConfirm")]
-        public async Task<IActionResult> SendEmplyerEmailConfirm(int employerId, string email, string controllerAndActionName)
+        public async Task<IActionResult> SendEmplyerEmailConfirm(Guid employerId, string email, string controllerAndActionName)
         {
 
                 DateTime utcNow = DateTime.UtcNow;

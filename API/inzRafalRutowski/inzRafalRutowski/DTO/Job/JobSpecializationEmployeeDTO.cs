@@ -4,7 +4,7 @@
     {
         public List<ListJobSpecialization> JobSpecialization { get; set; }
         public List<JobSpecializationEmployeeDTO> listJobSpecializationEmployeeDTO { get; set; }
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public bool EmployeeWithoutEmployer { get; set; }

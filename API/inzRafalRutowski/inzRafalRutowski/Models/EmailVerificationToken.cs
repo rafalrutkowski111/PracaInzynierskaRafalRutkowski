@@ -6,7 +6,7 @@
         public DateTime CreatedOnUtc { get; set; }
         public DateTime ExpiresOnUtc { get; set; }
 
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
         public Employer Employer { get; set; }
     }
 }

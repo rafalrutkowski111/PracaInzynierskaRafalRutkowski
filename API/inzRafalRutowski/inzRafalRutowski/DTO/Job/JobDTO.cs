@@ -9,7 +9,7 @@ namespace inzRafalRutowski.DTO.Job
         public DateTime End { get; set; }
         public DateTime CurrentEnd { get; set; }
         public string Title { get; set; }
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
         public List<ListEmployeeAddToJob> ListEmployeeAddToJob { get; set; }
         public string Color { get; set; }
         public int? JobId { get; set; }

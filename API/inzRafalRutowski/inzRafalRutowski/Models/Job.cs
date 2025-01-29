@@ -20,7 +20,7 @@ namespace inzRafalRutowski.Models
         public bool isEstimate { get; set; }
         public string Estimate { get; set; }
 
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
         public Employer Employer { get; set; }
         public List<JobHistory> JobHistories { get; set; }
         public List<JobEmployee> JobEmployees { get; set; }

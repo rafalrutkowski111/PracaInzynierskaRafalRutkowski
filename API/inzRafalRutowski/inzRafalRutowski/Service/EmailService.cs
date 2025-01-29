@@ -35,7 +35,7 @@ namespace inzRafalRutowski.Service
         // stworzona metoda generyczna na potrzeby przetestowania metod generycznych
         public async Task<bool> VerifityEmail<TModel>(
             Guid tokenId,
-            Func<EmailVerificationToken, int> modelIdSelector,
+            Func<EmailVerificationToken, Guid> modelIdSelector,
             Func<TModel, bool> propertySelector,
             Action<TModel> updateAction   // Action to tez funkcja ale moze miec 1 parametr i nie zwraca nic
             ) where TModel : class

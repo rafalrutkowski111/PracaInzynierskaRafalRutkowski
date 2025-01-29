@@ -9,7 +9,7 @@ namespace inzRafalRutowski.Service
             EmailVerificationToken emailVerificationToken,
             string controllerAndActionName);
         Task<bool> VerifityEmail<TModel>(Guid tokenId,
-            Func<EmailVerificationToken, int> modelIdSelector,
+            Func<EmailVerificationToken, Guid> modelIdSelector,
             Func<TModel, bool> propertySelector,
             Action<TModel> updateAction
             ) where TModel : class;

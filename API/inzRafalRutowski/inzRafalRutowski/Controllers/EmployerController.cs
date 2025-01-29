@@ -154,7 +154,7 @@ namespace inzRafalRutowski.Controllers
         }
         [AllowAnonymous]
         [HttpGet("veryfieLogin")]
-        public IActionResult VeryfieLogin([FromQuery] int userId, [FromQuery] string hash)
+        public IActionResult VeryfieLogin([FromQuery] Guid userId, [FromQuery] string hash)
         {
             var employer = _emoyerService.VeryfieLogin(userId);
             if (employer is null)  return BadRequest(new { message = "Id użytkownika jest niepoprawne" }); 

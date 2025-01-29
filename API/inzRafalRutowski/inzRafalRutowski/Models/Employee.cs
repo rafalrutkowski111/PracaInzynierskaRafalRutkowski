@@ -7,7 +7,7 @@
         public string Surname { get; set; }
 
 
-        public int EmployerId { get; set; }
+        public Guid EmployerId { get; set; }
         public Employer Employer { get; set; }
         public List<EmployeeSpecialization> EmployeeSpecializations { get; set; }
         public List<JobEmployee> JobEmployees { get; set; }

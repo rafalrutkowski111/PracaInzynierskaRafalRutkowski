@@ -40,7 +40,7 @@ namespace inzRafalRutowski.Controllers
         //[FromRoute] Pobiera wartości z danych trasy
         //[FromBody] Pobiera wartości z treści żądania
         //[FromQuery]  Pobiera wartości z ciągu zapytania -w postmanie testuje się Parms-> key,value lub w sciezce np ?key=50
-        public async Task<ActionResult<Employer>> GetEmployer([FromRoute] int id)
+        public async Task<ActionResult<Employer>> GetEmployer([FromRoute] Guid id)
         {
             var result = await _service.GetEmployer(id);
             return Ok(result);
@@ -69,7 +69,7 @@ namespace inzRafalRutowski.Controllers
 
         
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<Employer>> DeleteEmployer(int id)
+        public async Task<ActionResult<Employer>> DeleteEmployer(Guid id)
         {
 
             var result = await _service.DeleteEmployer(id);

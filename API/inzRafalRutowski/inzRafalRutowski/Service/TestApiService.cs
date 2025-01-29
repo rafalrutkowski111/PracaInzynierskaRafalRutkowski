@@ -29,7 +29,7 @@ namespace inzRafalRutowski.Service
             return resultDTO;
         }
 
-        public async Task<ActionResult<Employer>> GetEmployer(int id)
+        public async Task<ActionResult<Employer>> GetEmployer(Guid id)
         {
             return await _context.Employers.FindAsync(id);
         }
@@ -79,7 +79,7 @@ namespace inzRafalRutowski.Service
             return null;
         }
 
-        public async Task<ActionResult<Employer>> DeleteEmployer(int id)
+        public async Task<ActionResult<Employer>> DeleteEmployer(Guid id)
         {
             var result = await _context.Employers
                 .FirstOrDefaultAsync(e => e.Id == id);

@@ -18,3 +18,4 @@ Format wpisów:
 Klasa: EmailService
 Metoda: VerifityEmail<TModel>
 Opis: Przykład zastosowania generycznej metody do uniwersalnej weryfikacji e-maili i obsługi różnych modeli danych.
+	  Użycie delegatów generycznych Func i Action.
