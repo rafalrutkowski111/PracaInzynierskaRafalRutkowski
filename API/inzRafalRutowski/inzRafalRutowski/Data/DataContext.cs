@@ -26,12 +26,11 @@ namespace inzRafalRutowski.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Employer>(entity =>
-            {
-                entity.HasIndex(e => e.Login).IsUnique();
-                entity.HasIndex(e => e.Email).IsUnique();
-            });
+            modelBuilder.Entity<Employer>()
+                .HasIndex(e => new { e.Login, e.Email })
+                .IsUnique();
 
+            // usuwanie kaskadowe mogło powodować cykle lub wiele ścieżek kaskadowych więc zostało zmienione na DeleteBehavior.Restrict
             modelBuilder.Entity<JobEmployee>()
                 .HasOne(j => j.Job)
                 .WithMany(j => j.JobEmployees)
