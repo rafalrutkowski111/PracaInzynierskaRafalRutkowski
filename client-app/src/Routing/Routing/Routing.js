@@ -31,9 +31,6 @@ const Router = () => {
     const userHashToken = sessionStorage.getItem("userHashToken")
     if (userId === null || userHashToken === null) setIsLogged(false);
 
-    console.log("aaaaa")
-    console.log(userId)
-    console.log(userHashToken)
     axios.get('http://localhost:5000/api/Employer/veryfieLogin', { params: { userId: userId, hash: userHashToken } })
       .then(response => {
         setIsLogged(true);

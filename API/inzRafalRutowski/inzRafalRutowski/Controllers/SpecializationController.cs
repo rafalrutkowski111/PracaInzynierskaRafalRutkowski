@@ -22,7 +22,7 @@ namespace inzRafalRutowski.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Specialization>> GetSpecializations([FromQuery] int EmployerId)
+        public ActionResult<List<Specialization>> GetSpecializations([FromQuery] Guid EmployerId)
         {
             var result = _service.GetSpecializations(EmployerId);
             if (result is null) return BadRequest(new { message = "Id pracodawcy jest niepoprawne" });
@@ -46,7 +46,7 @@ namespace inzRafalRutowski.Controllers
         }
 
         [HttpGet("checkCanModify")]
-        public ActionResult<Specialization> CheckIfCanModifySpecialization([FromQuery] int specializationId, int employerId)
+        public ActionResult<Specialization> CheckIfCanModifySpecialization([FromQuery] int specializationId, Guid employerId)
         {
             var result = _service.CheckIfSpecializationIsWithoutEmployee(specializationId, employerId);
 

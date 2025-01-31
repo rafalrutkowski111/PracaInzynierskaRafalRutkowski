@@ -30,7 +30,7 @@ namespace inzRafalRutowski.Service
             return true;
         }
 
-        public int CheckIfSpecializationIsWithoutEmployee( int specializationId, int employerId)
+        public int CheckIfSpecializationIsWithoutEmployee( int specializationId, Guid employerId)
         {
 
             var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, employerId));
@@ -74,7 +74,7 @@ namespace inzRafalRutowski.Service
             return true;
         }
 
-        public List<Specialization> GetSpecializations(int EmployerId)
+        public List<Specialization> GetSpecializations(Guid EmployerId)
         {
             var employer = _context.Employers.FirstOrDefault(x => int.Equals(x.Id, EmployerId));
 

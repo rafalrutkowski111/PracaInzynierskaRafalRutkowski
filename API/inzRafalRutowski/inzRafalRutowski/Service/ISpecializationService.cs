@@ -6,10 +6,10 @@ namespace inzRafalRutowski.Service
 {
     public interface ISpecializationService
     {
-        List<Specialization> GetSpecializations(int EmployerId);
+        List<Specialization> GetSpecializations(Guid EmployerId);
         bool AddSpecialization(SpecializationAddDTO request);
         bool EditSpecialization(SpecializationEditDTO request);
-        int CheckIfSpecializationIsWithoutEmployee(int specializationId, int employerId);
+        int CheckIfSpecializationIsWithoutEmployee(int specializationId, Guid employerId);
         bool DeleteSpecialization(int specializationId);
     }
 }

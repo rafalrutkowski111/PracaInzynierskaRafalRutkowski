@@ -37,9 +37,9 @@ namespace inzRafalRutowski.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<JobDTO>> GetJobs([FromQuery] int userId)
+        public ActionResult<List<JobDTO>> GetJobs([FromQuery] Guid userId)
         {
-            var result = _context.Jobs.Where(x => int.Equals(x.EmployerId, userId)).ToList();
+            var result = _context.Jobs.Where(x => Guid.Equals(x.EmployerId, userId)).ToList();
             var resultDTO = _mapper.Map<List<JobDTO>>(result);
             return Ok(resultDTO);
         }
